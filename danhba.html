@@ -180,6 +180,7 @@
 </div>
 
 <script>
+// ======================== CẤU HÌNH ========================
 const SHEET_ID = "1eOOfhGj1Dh32LfRm2Q9dA4HH6xVdYozoNIuZWTsP1Kg";
 const SHEET_NAME = "Sheet1";
 const PUBLIC_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${SHEET_NAME}`;
@@ -282,9 +283,10 @@ async function fetchSheetData() {
     }).filter(item => item.name !== "");
     
     document.getElementById("totalCount").innerHTML = `👥 ${rawData.length} nhân sự`;
+    console.log("Đã tải:", rawData.length, "người");
     return true;
   } catch (err) {
-    console.error(err);
+    console.error("Lỗi fetch:", err);
     return false;
   }
 }
@@ -315,20 +317,26 @@ function renderFilterTabs() {
     const count = rawData.filter(i => i.group_name === g).length;
     container.innerHTML += `<button class="filter-tab" data-group="${escapeHtml(g)}">👥 ${escapeHtml(g)} (${count})</button>`;
   });
+  
+  // Gắn sự kiện click cho các nút
   document.querySelectorAll(".filter-tab").forEach(btn => {
     btn.addEventListener("click", function() {
       const group = this.getAttribute("data-group");
       currentGroup = group;
+      
+      // Cập nhật active state
       document.querySelectorAll(".filter-tab").forEach(b => b.classList.remove("active"));
       this.classList.add("active");
+      
+      // Hiển thị đúng view
       if (group === "all") {
         document.getElementById("listView").style.display = "block";
         document.getElementById("gridView").style.display = "none";
-        renderListView();
+        renderListView();  // Hiển thị tất cả ở dạng danh sách
       } else {
         document.getElementById("listView").style.display = "none";
         document.getElementById("gridView").style.display = "grid";
-        renderGridView(group);
+        renderGridView(group);  // Hiển thị nhóm được chọn ở dạng thẻ
       }
     });
   });
@@ -339,13 +347,14 @@ function escapeHtml(str) {
   return str.replace(/[&<>]/g, m => m === "&" ? "&amp;" : m === "<" ? "&lt;" : "&gt;");
 }
 
-// ================ LIST VIEW (Dạng danh sách) ================
+// ================ LIST VIEW (Dạng danh sách - Tất cả) ================
 function renderListView() {
   const container = document.getElementById("listView");
   if (!rawData.length) {
     container.innerHTML = `<div class="empty-state">📭 Không có dữ liệu</div>`;
     return;
   }
+  
   let html = "";
   rawData.forEach((person) => {
     const isBirthday = isBirthdayThisMonth(person.birth);
@@ -379,14 +388,16 @@ function renderListView() {
   container.innerHTML = html;
 }
 
-// ================ GRID VIEW (Dạng thẻ) - ĐÃ SỬA LỖI HIỂN THỊ ================
+// ================ GRID VIEW (Dạng thẻ - Theo nhóm) ================
 function renderGridView(group) {
   const container = document.getElementById("gridView");
-  // Lọc đúng theo group được chọn
+  // Lọc dữ liệu theo nhóm được chọn
   const filtered = rawData.filter(p => p.group_name === group);
   
+  console.log(`Hiển thị nhóm "${group}": ${filtered.length} người`);
+  
   if (filtered.length === 0) {
-    container.innerHTML = `<div class="empty-state">🏢 Không có nhân sự trong nhóm này</div>`;
+    container.innerHTML = `<div class="empty-state">🏢 Không có nhân sự trong nhóm "${escapeHtml(group)}"</div>`;
     return;
   }
   
@@ -467,13 +478,15 @@ function exportExcelByGroup() {
 (async function init() {
   const listView = document.getElementById("listView");
   listView.innerHTML = `<div class="loading-state"><div class="loading-spinner"></div><div>Đang tải danh bạ...</div></div>`;
-  await fetchSheetData();
-  if (rawData.length) {
+  
+  const success = await fetchSheetData();
+  
+  if (success && rawData.length) {
     renderBirthdayBanner();
     renderFilterTabs();
-    renderListView();
+    renderListView();  // Mặc định hiển thị dạng danh sách tất cả
   } else {
-    listView.innerHTML = `<div class="empty-state">❌ Không thể tải dữ liệu. Vui lòng kiểm tra kết nối.</div>`;
+    listView.innerHTML = `<div class="empty-state">❌ Không thể tải dữ liệu. Vui lòng kiểm tra:<br>1. Sheet đã được xuất bản công khai chưa?<br>2. Đường dẫn sheet đúng không?</div>`;
   }
 })();
 
