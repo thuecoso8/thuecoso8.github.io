@@ -112,6 +112,7 @@
   .item-name { font-weight: 700; font-size: 16px; color: #0f3b5c; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 4px; }
   .item-position { font-size: 12px; color: #64748b; background: #f1f5f9; display: inline-block; padding: 2px 10px; border-radius: 20px; }
   .birthday-chip { background: #f97316; color: white; font-size: 10px; padding: 2px 8px; border-radius: 20px; font-weight: 500; }
+  .id-badge { background: #e2e8f0; color: #475569; font-size: 10px; padding: 2px 8px; border-radius: 20px; font-weight: 500; }
   .item-contacts { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 10px; padding-left: 66px; }
   .contact-link {
     display: inline-flex;
@@ -128,7 +129,6 @@
   .bank-row { display: flex; flex-wrap: wrap; gap: 8px; padding-left: 66px; font-size: 11px; color: #475569; }
   .bank-item { background: #f8fafc; padding: 4px 10px; border-radius: 12px; }
   .item-birth { padding-left: 66px; font-size: 12px; color: #64748b; margin-top: 8px; display: flex; align-items: center; gap: 8px; }
-  .id-badge-small { background: #e2e8f0; padding: 2px 8px; border-radius: 20px; font-size: 10px; font-weight: 500; color: #475569; }
   .grid-view { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; margin-top: 4px; }
   .profile-card {
     background: white;
@@ -144,12 +144,12 @@
   .birthday-icon { position: absolute; top: 12px; right: 16px; font-size: 28px; }
   .profile-avatar { width: 90px; height: 90px; border-radius: 50%; object-fit: cover; margin-bottom: 12px; border: 3px solid #e2e8f0; }
   .profile-name { font-weight: 700; font-size: 18px; color: #0f3b5c; margin-bottom: 4px; }
+  .profile-id { font-size: 11px; color: #94a3b8; margin-bottom: 6px; }
   .profile-position { font-size: 12px; color: #64748b; background: #f1f5f9; display: inline-block; padding: 4px 12px; border-radius: 20px; margin-bottom: 12px; }
   .profile-contact { margin: 8px 0; display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; }
   .profile-contact a { color: #005baa; text-decoration: none; font-size: 13px; font-weight: 500; background: #eff6ff; padding: 6px 12px; border-radius: 20px; display: inline-flex; align-items: center; gap: 6px; }
   .profile-bank { background: #f8fafc; border-radius: 16px; padding: 10px; margin-top: 12px; font-size: 11px; text-align: left; }
   .profile-birth { margin-top: 10px; font-size: 12px; color: #64748b; }
-  .profile-id { font-size: 10px; color: #94a3b8; margin-top: 4px; }
   .loading-state, .empty-state { text-align: center; padding: 48px 20px; color: #94a3b8; }
   .loading-spinner { width: 40px; height: 40px; border: 3px solid #e2e8f0; border-top-color: #005baa; border-radius: 50%; margin: 0 auto 12px; animation: spin 0.8s linear infinite; }
   @keyframes spin { to { transform: rotate(360deg); } }
@@ -253,7 +253,7 @@ function getAvatarUrl(avatarValue) {
   return "https://ui-avatars.com/api/?background=005baa&color=fff&size=96&name=NV";
 }
 
-// ================ FETCH DATA (GIỮ NGUYÊN CÁCH ĐỌC CỦA CODE CŨ - HOẠT ĐỘNG TỐT) ================
+// ================ FETCH DATA ================
 async function fetchSheetData() {
   try {
     const response = await fetch(PUBLIC_URL);
@@ -310,9 +310,10 @@ function renderBirthdayBanner() {
 function renderFilterTabs() {
   const groups = [...new Set(rawData.map(i => i.group_name))].sort();
   const container = document.getElementById("filterTabs");
-  container.innerHTML = `<button class="filter-tab active" data-group="all">📋 Tất cả</button>`;
+  container.innerHTML = `<button class="filter-tab active" data-group="all">📋 Tất cả (${rawData.length})</button>`;
   groups.forEach(g => {
-    container.innerHTML += `<button class="filter-tab" data-group="${escapeHtml(g)}">👥 ${escapeHtml(g)}</button>`;
+    const count = rawData.filter(i => i.group_name === g).length;
+    container.innerHTML += `<button class="filter-tab" data-group="${escapeHtml(g)}">👥 ${escapeHtml(g)} (${count})</button>`;
   });
   document.querySelectorAll(".filter-tab").forEach(btn => {
     btn.addEventListener("click", function() {
@@ -338,7 +339,7 @@ function escapeHtml(str) {
   return str.replace(/[&<>]/g, m => m === "&" ? "&amp;" : m === "<" ? "&lt;" : "&gt;");
 }
 
-// ================ LIST VIEW (Dạng danh sách) - CÓ HIỂN THỊ ID ================
+// ================ LIST VIEW (Dạng danh sách) ================
 function renderListView() {
   const container = document.getElementById("listView");
   if (!rawData.length) {
@@ -346,7 +347,7 @@ function renderListView() {
     return;
   }
   let html = "";
-  rawData.forEach((person, idx) => {
+  rawData.forEach((person) => {
     const isBirthday = isBirthdayThisMonth(person.birth);
     const avatarUrl = getAvatarUrl(person.avatar);
     const birthDisplay = formatDateDisplay(person.birth);
@@ -357,7 +358,7 @@ function renderListView() {
           <div class="item-info">
             <div class="item-name">
               ${escapeHtml(person.name)} 
-              ${person.id ? `<span class="id-badge-small">ID: ${escapeHtml(person.id)}</span>` : ''}
+              ${person.id ? `<span class="id-badge">ID: ${escapeHtml(person.id)}</span>` : ''}
               ${isBirthday ? '<span class="birthday-chip">🎂 Tháng này</span>' : ''}
             </div>
             <span class="item-position">${escapeHtml(person.position) || "Nhân viên"}</span>
@@ -378,14 +379,17 @@ function renderListView() {
   container.innerHTML = html;
 }
 
-// ================ GRID VIEW (Dạng thẻ) ================
+// ================ GRID VIEW (Dạng thẻ) - ĐÃ SỬA LỖI HIỂN THỊ ================
 function renderGridView(group) {
   const container = document.getElementById("gridView");
+  // Lọc đúng theo group được chọn
   const filtered = rawData.filter(p => p.group_name === group);
+  
   if (filtered.length === 0) {
     container.innerHTML = `<div class="empty-state">🏢 Không có nhân sự trong nhóm này</div>`;
     return;
   }
+  
   let html = "";
   filtered.forEach(person => {
     const isBirthday = isBirthdayThisMonth(person.birth);
@@ -396,7 +400,7 @@ function renderGridView(group) {
         ${isBirthday ? '<div class="birthday-icon">🎂</div>' : ''}
         <img class="profile-avatar" src="${avatarUrl}" onerror="this.src='https://ui-avatars.com/api/?background=005baa&color=fff&name=${encodeURIComponent(person.name.charAt(0))}'">
         <div class="profile-name">${escapeHtml(person.name)}</div>
-        ${person.id ? `<div class="profile-id">ID: ${escapeHtml(person.id)}</div>` : ''}
+        ${person.id ? `<div class="profile-id">🆔 ID: ${escapeHtml(person.id)}</div>` : ''}
         <div class="profile-position">${escapeHtml(person.position) || "Nhân viên"}</div>
         <div class="profile-contact">
           ${person.phone_cq ? `<a href="tel:${encodeURIComponent(person.phone_cq)}">📞</a>` : ''}
@@ -433,8 +437,8 @@ function exportExcelByGroup() {
   groupOrder.forEach(group => {
     const members = grouped[group];
     const birthdayCount = members.filter(m => isBirthdayThisMonth(m.birth)).length;
-    excelRows.push([`📁 ${group.toUpperCase()}`, `Tổng: ${members.length} người`, `Sinh nhật: ${birthdayCount}`, "", "", "", "", ""]);
-    excelRows.push(["STT", "ID", "Họ tên", "Chức vụ", "ĐT cơ quan", "Di động", "BIDV", "Agribank", "Ngày sinh"]);
+    excelRows.push([`📁 ${group.toUpperCase()}`, `Tổng: ${members.length} người`, `Sinh nhật tháng này: ${birthdayCount}`, "", "", "", "", ""]);
+    excelRows.push(["STT", "ID", "Họ tên", "Chức vụ", "ĐT cơ quan", "Điện thoại", "BIDV", "Agribank", "Ngày sinh"]);
     members.forEach((person, idx) => {
       excelRows.push([
         idx + 1,
@@ -453,7 +457,7 @@ function exportExcelByGroup() {
   });
   excelRows.push([`📊 TỔNG SỐ: ${rawData.length} nhân sự - ${groupOrder.length} nhóm/phòng ban`]);
   const ws = XLSX.utils.aoa_to_sheet(excelRows);
-  ws['!cols'] = [{wch:6},{wch:8},{wch:25},{wch:20},{wch:15},{wch:15},{wch:15},{wch:15},{wch:12}];
+  ws['!cols'] = [{wch:6},{wch:8},{wch:28},{wch:22},{wch:16},{wch:16},{wch:16},{wch:16},{wch:14}];
   const wb = XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(wb, ws, "Danh bạ theo nhóm");
   XLSX.writeFile(wb, `danhba_cq_${new Date().toISOString().slice(0,19).replace(/:/g, '-')}.xlsx`);
