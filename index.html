@@ -1,1 +1,123 @@
 
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Danh bạ cơ quan</title>
+
+<style>
+body {
+  font-family: Arial;
+  background: #f5f7fb;
+  margin: 0;
+  padding: 20px;
+}
+
+h2 {
+  color: #005baa;
+}
+
+.card {
+  background: white;
+  padding: 12px;
+  border-radius: 10px;
+  margin-bottom: 10px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+.name {
+  font-weight: bold;
+  font-size: 16px;
+}
+
+.phone a {
+  text-decoration: none;
+  color: #005baa;
+}
+
+.loading {
+  text-align: center;
+  padding: 30px;
+}
+</style>
+</head>
+
+<body>
+
+<h2>📒 Danh bạ cơ quan</h2>
+<div id="totalCount"></div>
+<div id="listView"></div>
+
+<script>
+const SHEET_ID = "1eOOfhGj1Dh32LfRm2Q9dA4HH6xVdYozoNIuZWTsP1Kg";
+const SHEET_NAME = "Sheet1";
+
+const PUBLIC_URL =
+`https://opensheet.elk.sh/${SHEET_ID}/${encodeURIComponent(SHEET_NAME)}`;
+
+let rawData = [];
+
+// ================= FETCH =================
+async function fetchSheetData() {
+  try {
+    const res = await fetch(PUBLIC_URL);
+    const data = await res.json();
+
+    rawData = data.map(row => ({
+      name: (row["Ten"] || "").trim(),
+      position: (row["ChucVu"] || "").trim(),
+      phone: (row["DiDong"] || "").trim(),
+      group: (row["Nhom"] || "").trim(),
+      birth: row["NgaySinh"] || ""
+    })).filter(x => x.name);
+
+    document.getElementById("totalCount").innerHTML =
+      `👥 ${rawData.length} người`;
+
+    return true;
+  } catch (e) {
+    console.error(e);
+    return false;
+  }
+}
+
+// ================= RENDER =================
+function renderListView() {
+  const div = document.getElementById("listView");
+
+  if (!rawData.length) {
+    div.innerHTML = "Không có dữ liệu";
+    return;
+  }
+
+  let html = "";
+
+  rawData.forEach(p => {
+    html += `
+      <div class="card">
+        <div class="name">${p.name}</div>
+        <div>${p.position}</div>
+        <div class="phone">
+          📞 <a href="tel:${p.phone}">${p.phone}</a>
+        </div>
+      </div>
+    `;
+  });
+
+  div.innerHTML = html;
+}
+
+// ================= INIT =================
+(async function init() {
+  document.getElementById("listView").innerHTML =
+    `<div class="loading">Đang tải...</div>`;
+
+  const ok = await fetchSheetData();
+
+  if (ok) renderListView();
+})();
+</script>
+
+</body>
+</html>
