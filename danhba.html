@@ -1,1 +1,500 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Danh bạ cơ quan - Đầy đủ ID & Theo tổ</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: system-ui, -apple-system, 'Segoe UI', Arial, sans-serif;
+    background: #f0f4f9;
+    padding: 16px;
+    color: #0f2b3d;
+  }
+  .header {
+    background: linear-gradient(135deg, #0b5e7e 0%, #023459 100%);
+    color: white;
+    padding: 18px 20px;
+    border-radius: 28px;
+    margin-bottom: 16px;
+  }
+  .header h1 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .badge-total {
+    background: rgba(255,255,255,0.2);
+    padding: 5px 12px;
+    border-radius: 40px;
+    font-size: 0.75rem;
+  }
+  .birthday-banner {
+    background: #fff3e0;
+    border-left: 5px solid #f59e0b;
+    border-radius: 16px;
+    padding: 12px 16px;
+    margin-bottom: 16px;
+  }
+  .birthday-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 6px;
+  }
+  .birthday-item {
+    background: #fef3c7;
+    padding: 4px 12px;
+    border-radius: 30px;
+    font-size: 0.8rem;
+    color: #92400e;
+  }
+  .search-box {
+    width: 100%;
+    padding: 12px 18px;
+    border-radius: 44px;
+    border: 1px solid #cbdde9;
+    background: white;
+    font-size: 14px;
+    margin-bottom: 16px;
+  }
+  .group-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 20px;
+  }
+  .group-btn {
+    background: white;
+    border: 1px solid #cbdde9;
+    color: #2c5a74;
+    padding: 6px 16px;
+    border-radius: 40px;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: 0.2s;
+  }
+  .group-btn.active {
+    background: #0b5e7e;
+    border-color: #0b5e7e;
+    color: white;
+  }
+  .card {
+    background: white;
+    border-radius: 20px;
+    padding: 14px 16px;
+    margin-bottom: 12px;
+    border: 1px solid #e6edf4;
+  }
+  .name {
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: #13547a;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+  }
+  .id-badge {
+    font-size: 0.7rem;
+    background: #e0e7ff;
+    padding: 2px 8px;
+    border-radius: 30px;
+    color: #1e40af;
+    font-weight: normal;
+  }
+  .birth-badge {
+    font-size: 0.7rem;
+    background: #fde68a;
+    padding: 2px 10px;
+    border-radius: 50px;
+    color: #b45309;
+  }
+  .position {
+    font-size: 0.75rem;
+    color: #5e7e9c;
+    margin: 6px 0 8px 0;
+    padding-left: 8px;
+    border-left: 2px solid #94bedb;
+  }
+  .contact {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 8px 0 4px;
+  }
+  .contact a, .bank-info {
+    text-decoration: none;
+    font-size: 0.7rem;
+    padding: 5px 12px;
+    border-radius: 30px;
+    background: #eff5fa;
+    color: #0b6e8f;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .bank-info {
+    background: #f0f2f5;
+    color: #2c5a74;
+  }
+  .empty {
+    text-align: center;
+    background: white;
+    border-radius: 28px;
+    padding: 40px 20px;
+    color: #8ba0b8;
+  }
+  .skeleton {
+    background: #eef2f8;
+    border-radius: 20px;
+    padding: 16px;
+    margin-bottom: 12px;
+    animation: pulse 1.2s infinite;
+  }
+  @keyframes pulse { 0% { opacity: 0.6; } 50% { opacity: 1; } 100% { opacity: 0.6; } }
+  .credit {
+    text-align: center;
+    font-size: 0.7rem;
+    color: #8d9db0;
+    margin-top: 20px;
+  }
+</style>
+</head>
+<body>
 
+<div class="header">
+  <h1>📇 Danh bạ cơ quan <span class="badge-total" id="totalCount">Đang tải...</span></h1>
+</div>
+
+<div id="birthdayBanner" class="birthday-banner" style="display: none;"></div>
+
+<input type="text" class="search-box" id="search" placeholder="🔎 Tìm theo tên, ID, chức vụ, số điện thoại, số tài khoản...">
+
+<div id="groupFilter" class="group-tabs"></div>
+<div id="listView">
+  <div class="skeleton"><div style="height:18px;width:60%;background:#cfdfed;border-radius:12px;margin-bottom:8px"></div><div style="height:12px;width:40%;background:#cfdfed;border-radius:12px"></div></div>
+  <div class="skeleton"><div style="height:18px;width:60%;background:#cfdfed;border-radius:12px;margin-bottom:8px"></div><div style="height:12px;width:40%;background:#cfdfed;border-radius:12px"></div></div>
+</div>
+<div class="credit">🎂 Sinh nhật trong 30 ngày tới | 📌 Dữ liệu từ bảng tính Thuế</div>
+
+<script>
+// ======================== CẤU HÌNH ========================
+const SHEET_ID = "1eOOfhGj1Dh32LfRm2Q9dA4HH6xVdYozoNIuZWTsP1Kg";
+const SHEET_NAME = "Sheet 1";
+const GVIZ_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(SHEET_NAME)}`;
+
+let masterData = [];
+let currentGroup = "all";
+let searchKeyword = "";
+let searchTimeout = null;
+
+// ================ TIỆN ÍCH ================
+function escapeHtml(str) {
+  if (!str) return '';
+  return str.replace(/[&<>]/g, function(m) {
+    if (m === '&') return '&amp;';
+    if (m === '<') return '&lt;';
+    if (m === '>') return '&gt;';
+    return m;
+  });
+}
+
+// Tính sinh nhật sắp tới
+function getNextBirthdayInfo(birthStr) {
+  if (!birthStr) return null;
+  let day = null, month = null;
+  let parts = birthStr.split(/[\/\-]/);
+  if (parts.length === 3) {
+    if (parts[0].length === 4) {
+      month = parseInt(parts[1], 10);
+      day = parseInt(parts[2], 10);
+    } else {
+      day = parseInt(parts[0], 10);
+      month = parseInt(parts[1], 10);
+    }
+  }
+  if (!day || !month || isNaN(day) || isNaN(month)) return null;
+  const today = new Date();
+  const currentYear = today.getFullYear();
+  let birthDate = new Date(currentYear, month-1, day);
+  let diffDays = Math.ceil((birthDate - today) / (1000 * 60 * 60 * 24));
+  if (diffDays < 0) {
+    birthDate = new Date(currentYear+1, month-1, day);
+    diffDays = Math.ceil((birthDate - today) / (1000 * 60 * 60 * 24));
+  }
+  if (diffDays <= 30 && diffDays >= 0) {
+    return { days: diffDays, date: `${day}/${month}` };
+  }
+  return null;
+}
+
+function getUpcomingBirthdays(employees) {
+  const upcoming = [];
+  for (let emp of employees) {
+    if (emp.birth) {
+      const info = getNextBirthdayInfo(emp.birth);
+      if (info) upcoming.push({ name: emp.name, days: info.days, date: info.date });
+    }
+  }
+  upcoming.sort((a,b) => a.days - b.days);
+  return upcoming;
+}
+
+function renderBirthdayBanner(employees) {
+  const banner = document.getElementById("birthdayBanner");
+  const upcoming = getUpcomingBirthdays(employees);
+  if (upcoming.length === 0) {
+    banner.style.display = "none";
+    return;
+  }
+  banner.style.display = "block";
+  let html = `<strong>🎂 Sinh nhật sắp tới:</strong><div class="birthday-list">`;
+  upcoming.forEach(b => {
+    let text = b.days === 0 ? "Hôm nay" : (b.days === 1 ? "Ngày mai" : `Sau ${b.days} ngày`);
+    html += `<span class="birthday-item">🎈 ${escapeHtml(b.name)} (${b.date} - ${text})</span>`;
+  });
+  html += `</div>`;
+  banner.innerHTML = html;
+}
+
+// Lọc dữ liệu
+function getFilteredData() {
+  let filtered = [...masterData];
+  if (currentGroup !== "all") {
+    filtered = filtered.filter(emp => emp.group_name === currentGroup);
+  }
+  if (searchKeyword.trim() !== "") {
+    const kw = searchKeyword.trim().toLowerCase();
+    filtered = filtered.filter(emp => {
+      return (emp.id && emp.id.toString().includes(kw)) ||
+             (emp.name && emp.name.toLowerCase().includes(kw)) ||
+             (emp.position && emp.position.toLowerCase().includes(kw)) ||
+             (emp.phone_mobile && emp.phone_mobile.toLowerCase().includes(kw)) ||
+             (emp.phone_cq && emp.phone_cq.toLowerCase().includes(kw)) ||
+             (emp.bidv && emp.bidv.toString().includes(kw)) ||
+             (emp.agribank && emp.agribank.toString().includes(kw));
+    });
+  }
+  return filtered;
+}
+
+// Render danh sách thẻ
+function renderCards() {
+  const container = document.getElementById("listView");
+  const data = getFilteredData();
+  if (!data.length) {
+    container.innerHTML = `<div class="empty">📭 Không có nhân sự phù hợp.</div>`;
+    document.getElementById("totalCount").innerHTML = `👥 0 / ${masterData.length}`;
+    return;
+  }
+  let html = "";
+  for (let emp of data) {
+    const birthInfo = emp.birth ? getNextBirthdayInfo(emp.birth) : null;
+    const birthHtml = birthInfo ? `<span class="birth-badge">${birthInfo.days === 0 ? "🎂 Hôm nay" : (birthInfo.days === 1 ? "🎂 Ngày mai" : `🎂 Sau ${birthInfo.days} ngày`)}</span>` : "";
+    
+    let bankHtml = "";
+    if (emp.bidv || emp.agribank) {
+      let banks = [];
+      if (emp.bidv) banks.push(`🏦 BIDV: ${emp.bidv}`);
+      if (emp.agribank) banks.push(`🌾 Agribank: ${emp.agribank}`);
+      bankHtml = `<div class="bank-info">${banks.join(' | ')}</div>`;
+    }
+    
+    // Hiển thị ID nếu có
+    const idHtml = emp.id ? `<span class="id-badge">ID: ${escapeHtml(emp.id)}</span>` : "";
+    
+    html += `
+      <div class="card">
+        <div class="name">
+          <span>${escapeHtml(emp.name)} ${idHtml}</span>
+          ${birthHtml}
+        </div>
+        <div class="position">${escapeHtml(emp.position) || "—"}</div>
+        <div class="contact">
+          ${emp.phone_cq ? `<a href="tel:${emp.phone_cq.replace(/[^\d+]/g, '')}">📞 CQ: ${escapeHtml(emp.phone_cq)}</a>` : ""}
+          ${emp.phone_mobile ? `<a href="tel:${emp.phone_mobile.replace(/[^\d+]/g, '')}">📱 Mobile: ${escapeHtml(emp.phone_mobile)}</a>` : ""}
+        </div>
+        ${bankHtml ? `<div style="margin-top: 6px;">${bankHtml}</div>` : ""}
+      </div>
+    `;
+  }
+  container.innerHTML = html;
+  document.getElementById("totalCount").innerHTML = `👥 ${data.length} / ${masterData.length}`;
+  renderBirthdayBanner(masterData);
+}
+
+// Tạo bộ lọc tổ
+function renderGroupTabs(groups) {
+  const container = document.getElementById("groupFilter");
+  if (!container) return;
+  let btns = `<button class="group-btn ${currentGroup === 'all' ? 'active' : ''}" data-group="all">📂 Tất cả (${masterData.length})</button>`;
+  for (let g of groups) {
+    const count = masterData.filter(emp => emp.group_name === g).length;
+    btns += `<button class="group-btn ${currentGroup === g ? 'active' : ''}" data-group="${escapeHtml(g)}">📁 ${escapeHtml(g)} (${count})</button>`;
+  }
+  container.innerHTML = btns;
+  document.querySelectorAll(".group-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      currentGroup = btn.getAttribute("data-group");
+      renderGroupTabs(groups);
+      renderCards();
+    });
+  });
+}
+
+function getUniqueGroups() {
+  const groups = new Set();
+  for (let emp of masterData) {
+    if (emp.group_name && emp.group_name.trim()) groups.add(emp.group_name);
+  }
+  return Array.from(groups).sort();
+}
+
+// ================ LẤY DỮ LIỆU GOOGLE SHEETS ================
+async function fetchSheetData() {
+  try {
+    // Hiển thị loading
+    document.getElementById("listView").innerHTML = `
+      <div class="skeleton"><div style="height:18px;width:60%;background:#cfdfed;border-radius:12px;margin-bottom:8px"></div><div style="height:12px;width:40%;background:#cfdfed;border-radius:12px"></div></div>
+      <div class="skeleton"><div style="height:18px;width:60%;background:#cfdfed;border-radius:12px;margin-bottom:8px"></div><div style="height:12px;width:40%;background:#cfdfed;border-radius:12px"></div></div>
+    `;
+    
+    const response = await fetch(GVIZ_URL, { cache: "no-store" });
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    const rawText = await response.text();
+    
+    // Parse JSON từ GViz
+    let jsonStart = rawText.indexOf('{');
+    let jsonEnd = rawText.lastIndexOf('}');
+    if (jsonStart === -1 || jsonEnd === -1) throw new Error("Sai định dạng dữ liệu");
+    const jsonContent = rawText.substring(jsonStart, jsonEnd + 1);
+    const parsed = JSON.parse(jsonContent);
+    
+    if (!parsed.table || !parsed.table.rows) throw new Error("Không tìm thấy bảng");
+    const rows = parsed.table.rows;
+    if (rows.length === 0) {
+      masterData = [];
+      renderCards();
+      return;
+    }
+    
+    // QUAN TRỌNG: Xác định dòng nào là header (chứa tên cột)
+    // Dòng header thường có chứa các từ như 'name', 'id', 'position'...
+    let headerRowIndex = -1;
+    for (let i = 0; i < Math.min(rows.length, 5); i++) {
+      const row = rows[i];
+      const cells = row.c || [];
+      const firstCells = cells.slice(0, 3).map(c => c?.v ? String(c.v).toLowerCase() : "");
+      // Nếu có chứa 'name' hoặc 'id' thì coi là header
+      if (firstCells.some(cell => cell === 'name' || cell === 'id' || cell === 'position')) {
+        headerRowIndex = i;
+        break;
+      }
+    }
+    
+    // Nếu không tìm thấy header, giả định dòng đầu tiên là header
+    if (headerRowIndex === -1 && rows.length > 0) {
+      headerRowIndex = 0;
+    }
+    
+    // Đọc header
+    const headerRow = rows[headerRowIndex].c || [];
+    const headers = [];
+    for (let i = 0; i < headerRow.length; i++) {
+      let val = headerRow[i]?.v;
+      headers.push(val ? String(val).trim().toLowerCase() : "");
+    }
+    
+    // Xác định index của các cột
+    const colIndex = {
+      id: headers.findIndex(h => h === 'id'),
+      name: headers.findIndex(h => h === 'name'),
+      position: headers.findIndex(h => h === 'position'),
+      phone_cq: headers.findIndex(h => h === 'phone_cq'),
+      phone_mobile: headers.findIndex(h => h === 'phone_mobile'),
+      bidv: headers.findIndex(h => h === 'bidv'),
+      agribank: headers.findIndex(h => h === 'agribank'),
+      group_name: headers.findIndex(h => h === 'group_name'),
+      birth: headers.findIndex(h => h === 'birth')
+    };
+    
+    // Nếu không tìm thấy, dùng vị trí mặc định (dựa trên cấu trúc sheet)
+    if (colIndex.id === -1) colIndex.id = 0;
+    if (colIndex.name === -1) colIndex.name = 1;
+    if (colIndex.position === -1) colIndex.position = 2;
+    if (colIndex.phone_cq === -1) colIndex.phone_cq = 3;
+    if (colIndex.phone_mobile === -1) colIndex.phone_mobile = 4;
+    if (colIndex.bidv === -1) colIndex.bidv = 5;
+    if (colIndex.agribank === -1) colIndex.agribank = 6;
+    if (colIndex.group_name === -1) colIndex.group_name = 8;
+    if (colIndex.birth === -1) colIndex.birth = 9;
+    
+    // Duyệt tất cả các dòng, BẮT ĐẦU TỪ DÒNG ĐẦU TIÊN (0) nhưng bỏ qua dòng header
+    const employees = [];
+    for (let i = 0; i < rows.length; i++) {
+      if (i === headerRowIndex) continue; // bỏ qua dòng header
+      
+      const cells = rows[i].c || [];
+      const getName = cells[colIndex.name]?.v ? String(cells[colIndex.name].v).trim() : "";
+      // Nếu không có tên thì bỏ qua (dòng trống)
+      if (!getName) continue;
+      
+      employees.push({
+        id: cells[colIndex.id]?.v ? String(cells[colIndex.id].v).trim() : "",
+        name: getName,
+        position: cells[colIndex.position]?.v ? String(cells[colIndex.position].v).trim() : "",
+        phone_cq: cells[colIndex.phone_cq]?.v ? String(cells[colIndex.phone_cq].v).trim() : "",
+        phone_mobile: cells[colIndex.phone_mobile]?.v ? String(cells[colIndex.phone_mobile].v).trim() : "",
+        bidv: cells[colIndex.bidv]?.v ? String(cells[colIndex.bidv].v).trim() : "",
+        agribank: cells[colIndex.agribank]?.v ? String(cells[colIndex.agribank].v).trim() : "",
+        group_name: cells[colIndex.group_name]?.v ? String(cells[colIndex.group_name].v).trim() : "Chưa phân tổ",
+        birth: cells[colIndex.birth]?.v ? String(cells[colIndex.birth].v).trim() : ""
+      });
+    }
+    
+    masterData = employees;
+    console.log("✅ Đã tải thành công:", masterData.length, "nhân sự");
+    
+    // Kiểm tra ID 1 - Hứa Hữu Hoài
+    const hoai = masterData.find(emp => emp.id === "1" || emp.name.includes("Hứa Hữu Hoài"));
+    if (hoai) {
+      console.log("✅ Tìm thấy ID 1 - Hứa Hữu Hoài:", hoai);
+    } else {
+      console.warn("⚠️ Không tìm thấy ID 1 - Hứa Hữu Hoài. Danh sách ID có:", masterData.map(emp => emp.id).join(", "));
+    }
+    
+    const groups = getUniqueGroups();
+    renderGroupTabs(groups);
+    renderCards();
+  } catch (err) {
+    console.error("Lỗi tải dữ liệu:", err);
+    document.getElementById("listView").innerHTML = `<div class="empty">⚠️ Lỗi: ${err.message}<br>Kiểm tra lại Sheet đã được công khai chưa.</div>`;
+    document.getElementById("totalCount").innerHTML = "❌ Lỗi";
+  }
+}
+
+// Tìm kiếm
+function handleSearch() {
+  if (searchTimeout) clearTimeout(searchTimeout);
+  searchTimeout = setTimeout(() => {
+    searchKeyword = document.getElementById("search").value;
+    renderCards();
+  }, 280);
+}
+
+// Khởi tạo
+function init() {
+  document.getElementById("search").addEventListener("input", handleSearch);
+  fetchSheetData();
+}
+init();
+</script>
+</body>
+</html>
