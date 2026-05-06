@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title>Thuế cơ sở 8 - Thái Nguyên</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
+
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -17,6 +17,10 @@
             color: white;
             padding: 15px;
             text-align: center;
+        }
+
+        header h1 {
+            margin: 0;
         }
 
         nav {
@@ -36,30 +40,39 @@
             text-decoration: underline;
         }
 
-        /* ✅ Banner dùng ảnh thật của bạn */
+        nav a.active {
+            color: yellow;
+        }
+
+        /* Banner */
         .banner {
             background: url('https://thuecoso8.github.io/Avatas/banner3.png') no-repeat center;
             background-size: cover;
-            height: 280px;
+            height: 300px;
         }
 
         .container {
             padding: 20px;
+            max-width: 1100px;
+            margin: auto;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
         }
 
         .card {
             background: white;
-            padding: 15px;
-            margin-bottom: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            padding: 18px;
+            border-radius: 10px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
         }
 
-        footer {
-            background: #003d73;
-            color: white;
-            text-align: center;
-            padding: 10px;
+        .card h2 {
+            margin-top: 0;
+            color: #005bac;
         }
 
         .btn {
@@ -68,11 +81,25 @@
             background: #005bac;
             color: white;
             text-decoration: none;
-            border-radius: 5px;
+            border-radius: 6px;
+            margin-top: 10px;
         }
 
         .btn:hover {
             background: #004080;
+        }
+
+        input {
+            padding: 8px;
+            width: 200px;
+        }
+
+        footer {
+            background: #003d73;
+            color: white;
+            text-align: center;
+            padding: 12px;
+            margin-top: 20px;
         }
     </style>
 </head>
@@ -85,11 +112,12 @@
 </header>
 
 <nav>
-    <a href="#">Trang chủ</a>
+    <a href="index.html" class="active">Trang chủ</a>
     <a href="#">Giới thiệu</a>
     <a href="#">Tin tức</a>
     <a href="#">Văn bản</a>
     <a href="#">Tra cứu MST</a>
+    <a href="/danhba.html">Danh bạ</a> <!-- ✅ link chuẩn -->
     <a href="#">Liên hệ</a>
 </nav>
 
@@ -97,27 +125,46 @@
 
 <div class="container">
 
-    <div class="card">
-        <h2>Giới thiệu</h2>
-        <p>
-            Thuế cơ sở 8 trực thuộc Chi cục Thuế khu vực tỉnh Thái Nguyên,
-            thực hiện chức năng quản lý thuế và hỗ trợ người nộp thuế.
-        </p>
-    </div>
+    <div class="grid">
 
-    <div class="card">
-        <h2>Tin tức - Thông báo</h2>
-        <ul>
-            <li>📢 Thông báo quyết toán thuế năm 2025</li>
-            <li>📢 Hướng dẫn đăng ký mã số thuế cá nhân</li>
-            <li>📢 Chính sách thuế mới cập nhật</li>
-        </ul>
-    </div>
+        <div class="card">
+            <h2>Giới thiệu</h2>
+            <p>
+                Thuế cơ sở 8 trực thuộc Chi cục Thuế khu vực tỉnh Thái Nguyên,
+                thực hiện chức năng quản lý thuế và hỗ trợ người nộp thuế.
+            </p>
+        </div>
 
-    <div class="card">
-        <h2>Tra cứu nhanh</h2>
-        <input type="text" placeholder="Nhập MST..." style="padding:8px; width:200px;">
-        <button class="btn">Tra cứu</button>
+        <div class="card">
+            <h2>Tin tức - Thông báo</h2>
+            <ul>
+                <li>📢 Quyết toán thuế năm 2025</li>
+                <li>📢 Hướng dẫn đăng ký MST cá nhân</li>
+                <li>📢 Chính sách thuế mới</li>
+            </ul>
+        </div>
+
+        <div class="card">
+            <h2>Tra cứu nhanh</h2>
+            <p>Nhập mã số thuế:</p>
+            <input type="text" placeholder="Nhập MST...">
+            <br>
+            <button class="btn">Tra cứu</button>
+        </div>
+
+        <div class="card">
+            <h2>Danh bạ nội bộ</h2>
+            <p>Xem danh sách cán bộ, số điện thoại nội bộ.</p>
+            <a href="/danhba.html" class="btn">Mở danh bạ</a>
+        </div>
+
+        <div class="card">
+            <h2>Liên hệ</h2>
+            <p>📍 Thái Nguyên</p>
+            <p>📞 0208.xxx.xxxx</p>
+            <p>📧 thuecoso8@thainguyen.gov.vn</p>
+        </div>
+
     </div>
 
 </div>
