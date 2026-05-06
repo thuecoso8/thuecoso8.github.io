@@ -1,123 +1,137 @@
-
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Danh bạ cơ quan</title>
+    <meta charset="UTF-8">
+    <title>Thuế cơ sở 8 - Thái Nguyên</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            background: #f4f6f9;
+        }
 
-<style>
-body {
-  font-family: Arial;
-  background: #f5f7fb;
-  margin: 0;
-  padding: 20px;
-}
+        header {
+            background: #005bac;
+            color: white;
+            padding: 15px;
+            text-align: center;
+        }
 
-h2 {
-  color: #005baa;
-}
+        nav {
+            background: #003d73;
+            padding: 10px;
+            text-align: center;
+        }
 
-.card {
-  background: white;
-  padding: 12px;
-  border-radius: 10px;
-  margin-bottom: 10px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-}
+        nav a {
+            color: white;
+            margin: 0 15px;
+            text-decoration: none;
+            font-weight: bold;
+        }
 
-.name {
-  font-weight: bold;
-  font-size: 16px;
-}
+        nav a:hover {
+            text-decoration: underline;
+        }
 
-.phone a {
-  text-decoration: none;
-  color: #005baa;
-}
+        .banner {
+            background: url('https://via.placeholder.com/1200x300') no-repeat center;
+            background-size: cover;
+            height: 250px;
+        }
 
-.loading {
-  text-align: center;
-  padding: 30px;
-}
-</style>
+        .container {
+            padding: 20px;
+        }
+
+        .card {
+            background: white;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        footer {
+            background: #003d73;
+            color: white;
+            text-align: center;
+            padding: 10px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 10px 15px;
+            background: #005bac;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+
+        .btn:hover {
+            background: #004080;
+        }
+    </style>
 </head>
 
 <body>
 
-<h2>📒 Danh bạ cơ quan</h2>
-<div id="totalCount"></div>
-<div id="listView"></div>
+<header>
+    <h1>THUẾ CƠ SỞ 8</h1>
+    <p>Chi cục Thuế khu vực - Tỉnh Thái Nguyên</p>
+</header>
 
-<script>
-const SHEET_ID = "1eOOfhGj1Dh32LfRm2Q9dA4HH6xVdYozoNIuZWTsP1Kg";
-const SHEET_NAME = "Sheet1";
+<nav>
+    <a href="#">Trang chủ</a>
+    <a href="#">Giới thiệu</a>
+    <a href="#">Tin tức</a>
+    <a href="#">Văn bản</a>
+    <a href="#">Tra cứu MST</a>
+    <a href="#">Liên hệ</a>
+</nav>
 
-const PUBLIC_URL =
-`https://opensheet.elk.sh/${SHEET_ID}/${encodeURIComponent(SHEET_NAME)}`;
+<div class="banner"></div>
 
-let rawData = [];
+<div class="container">
 
-// ================= FETCH =================
-async function fetchSheetData() {
-  try {
-    const res = await fetch(PUBLIC_URL);
-    const data = await res.json();
+    <div class="card">
+        <h2>Giới thiệu</h2>
+        <p>
+            Thuế cơ sở 8 trực thuộc Chi cục Thuế khu vực tỉnh Thái Nguyên,
+            thực hiện chức năng quản lý thuế, hỗ trợ người nộp thuế và triển khai chính sách thuế theo quy định của Nhà nước.
+        </p>
+    </div>
 
-    rawData = data.map(row => ({
-      name: (row["Ten"] || "").trim(),
-      position: (row["ChucVu"] || "").trim(),
-      phone: (row["DiDong"] || "").trim(),
-      group: (row["Nhom"] || "").trim(),
-      birth: row["NgaySinh"] || ""
-    })).filter(x => x.name);
+    <div class="card">
+        <h2>Tin tức - Thông báo</h2>
+        <ul>
+            <li>📢 Thông báo quyết toán thuế năm 2025</li>
+            <li>📢 Hướng dẫn đăng ký mã số thuế cá nhân</li>
+            <li>📢 Chính sách thuế mới cập nhật</li>
+        </ul>
+    </div>
 
-    document.getElementById("totalCount").innerHTML =
-      `👥 ${rawData.length} người`;
+    <div class="card">
+        <h2>Tra cứu nhanh</h2>
+        <p>Nhập mã số thuế để tra cứu thông tin:</p>
+        <input type="text" placeholder="Nhập MST..." style="padding:8px; width:200px;">
+        <button class="btn">Tra cứu</button>
+    </div>
 
-    return true;
-  } catch (e) {
-    console.error(e);
-    return false;
-  }
-}
+    <div class="card">
+        <h2>Liên hệ</h2>
+        <p>📍 Địa chỉ: Thái Nguyên</p>
+        <p>📞 Điện thoại: 0208.xxx.xxxx</p>
+        <p>📧 Email: thuecoso8@thainguyen.gov.vn</p>
+    </div>
 
-// ================= RENDER =================
-function renderListView() {
-  const div = document.getElementById("listView");
+</div>
 
-  if (!rawData.length) {
-    div.innerHTML = "Không có dữ liệu";
-    return;
-  }
-
-  let html = "";
-
-  rawData.forEach(p => {
-    html += `
-      <div class="card">
-        <div class="name">${p.name}</div>
-        <div>${p.position}</div>
-        <div class="phone">
-          📞 <a href="tel:${p.phone}">${p.phone}</a>
-        </div>
-      </div>
-    `;
-  });
-
-  div.innerHTML = html;
-}
-
-// ================= INIT =================
-(async function init() {
-  document.getElementById("listView").innerHTML =
-    `<div class="loading">Đang tải...</div>`;
-
-  const ok = await fetchSheetData();
-
-  if (ok) renderListView();
-})();
-</script>
+<footer>
+    <p>© 2026 Thuế cơ sở 8 - Thái Nguyên</p>
+</footer>
 
 </body>
 </html>
