@@ -5,7 +5,11 @@ export default function DanhBaPhongBan() {
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Danh bạ phòng ban</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.tailwindcss.com">window.onload = () => {
+      document.getElementById('sheetUrl').value = defaultSheetUrl;
+      loadSheet();
+    }
+  </script>
 </head>
 <body class="bg-gray-100 min-h-screen">
   <div class="max-w-7xl mx-auto p-6">
@@ -17,7 +21,7 @@ export default function DanhBaPhongBan() {
         <input
           id="sheetUrl"
           type="text"
-          placeholder="Dán link Google Sheet public"
+          value="https://docs.google.com/spreadsheets/d/1wH_rQwpF2jRO_8s277hq_kmuN-i79JMzKqNx43XAK0Y/edit?usp=sharing"
           class="flex-1 border rounded-2xl px-4 py-3"
         />
 
@@ -56,10 +60,11 @@ export default function DanhBaPhongBan() {
 
   <script>
     let employees = [];
+    const defaultSheetUrl = 'https://docs.google.com/spreadsheets/d/1wH_rQwpF2jRO_8s277hq_kmuN-i79JMzKqNx43XAK0Y/edit?usp=sharing';
     let selectedDepartment = 'all';
 
     async function loadSheet() {
-      const url = document.getElementById('sheetUrl').value.trim();
+      const url = document.getElementById('sheetUrl').value.trim() || defaultSheetUrl;
 
       if (!url) {
         alert('Vui lòng nhập link Google Sheet');
@@ -204,4 +209,3 @@ export default function DanhBaPhongBan() {
     </div>
   );
 }
-
