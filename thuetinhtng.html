@@ -1,1 +1,207 @@
+export default function DanhBaPhongBan() {
+  const html = `<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Danh bạ phòng ban</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen">
+  <div class="max-w-7xl mx-auto p-6">
+    <div class="bg-white rounded-3xl shadow-xl p-6 mb-6">
+      <h1 class="text-3xl font-bold mb-2">Danh bạ nội bộ</h1>
+      <p class="text-gray-500 mb-4">Xem danh sách nhân sự theo phòng ban từ Google Sheet</p>
+
+      <div class="flex flex-col md:flex-row gap-4">
+        <input
+          id="sheetUrl"
+          type="text"
+          placeholder="Dán link Google Sheet public"
+          class="flex-1 border rounded-2xl px-4 py-3"
+        />
+
+        <button
+          onclick="loadSheet()"
+          class="bg-black text-white px-6 py-3 rounded-2xl hover:opacity-90"
+        >
+          Tải dữ liệu
+        </button>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+      <div class="bg-white rounded-3xl shadow-xl p-4">
+        <h2 class="font-bold text-lg mb-4">Phòng ban</h2>
+        <div id="departmentList" class="space-y-2"></div>
+      </div>
+
+      <div class="lg:col-span-3 bg-white rounded-3xl shadow-xl p-4">
+        <div class="flex justify-between items-center mb-4">
+          <h2 id="currentDepartment" class="font-bold text-xl">Tất cả nhân sự</h2>
+
+          <input
+            id="searchInput"
+            type="text"
+            placeholder="Tìm kiếm tên..."
+            class="border rounded-xl px-4 py-2"
+            oninput="renderEmployees()"
+          />
+        </div>
+
+        <div id="employeeGrid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let employees = [];
+    let selectedDepartment = 'all';
+
+    async function loadSheet() {
+      const url = document.getElementById('sheetUrl').value.trim();
+
+      if (!url) {
+        alert('Vui lòng nhập link Google Sheet');
+        return;
+      }
+
+      try {
+        const match = url.match(/\/d\/([^/]+)/);
+
+        if (!match) {
+          alert('Link Google Sheet không hợp lệ');
+          return;
+        }
+
+        const sheetId = match[1];
+
+        const apiUrl = `https://opensheet.elk.sh/${sheetId}/Sheet1`;
+
+        const response = await fetch(apiUrl);
+        const data = await response.json();
+
+        employees = data;
+
+        renderDepartments();
+        renderEmployees();
+      } catch (error) {
+        console.error(error);
+        alert('Không thể tải dữ liệu');
+      }
+    }
+
+    function renderDepartments() {
+      const container = document.getElementById('departmentList');
+
+      const departments = [...new Set(
+        employees.map(item => item.donVi).filter(Boolean)
+      )].sort();
+
+      const allButton = `
+        <button
+          onclick="selectDepartment('all')"
+          class="w-full text-left px-4 py-3 rounded-2xl bg-black text-white"
+        >
+          Tất cả
+        </button>
+      `;
+
+      const buttons = departments.map(dep => `
+        <button
+          onclick="selectDepartment('${dep.replace(/'/g, "\\'")}')"
+          class="w-full text-left px-4 py-3 rounded-2xl bg-gray-100 hover:bg-gray-200"
+        >
+          ${dep}
+        </button>
+      `).join('');
+
+      container.innerHTML = allButton + buttons;
+    }
+
+    function selectDepartment(dep) {
+      selectedDepartment = dep;
+      renderEmployees();
+
+      document.getElementById('currentDepartment').innerText =
+        dep === 'all' ? 'Tất cả nhân sự' : dep;
+    }
+
+    function renderEmployees() {
+      const grid = document.getElementById('employeeGrid');
+      const keyword = document.getElementById('searchInput').value.toLowerCase();
+
+      let filtered = employees;
+
+      if (selectedDepartment !== 'all') {
+        filtered = filtered.filter(item => item.donVi === selectedDepartment);
+      }
+
+      if (keyword) {
+        filtered = filtered.filter(item =>
+          (item.hoTen || '').toLowerCase().includes(keyword)
+        );
+      }
+
+      if (!filtered.length) {
+        grid.innerHTML = `
+          <div class="text-gray-500">Không có dữ liệu</div>
+        `;
+        return;
+      }
+
+      grid.innerHTML = filtered.map(item => `
+        <div class="border rounded-3xl p-4 hover:shadow-lg transition bg-white">
+          <div class="flex items-center gap-4 mb-4">
+            <img
+              src="${item.avatar || 'https://ui-avatars.com/api/?name=' + encodeURIComponent(item.hoTen || 'User')}"
+              class="w-16 h-16 rounded-full object-cover border"
+            />
+
+            <div>
+              <h3 class="font-bold text-lg">${item.hoTen || ''}</h3>
+              <p class="text-gray-500 text-sm">${item.congViec || ''}</p>
+            </div>
+          </div>
+
+          <div class="space-y-2 text-sm">
+            <div>
+              <span class="font-semibold">Đơn vị:</span>
+              ${item.donVi || ''}
+            </div>
+
+            <div>
+              <span class="font-semibold">Điện thoại:</span>
+              <a href="tel:${item.soDienThoai || ''}" class="text-blue-600">
+                ${item.soDienThoai || ''}
+              </a>
+            </div>
+
+            <div>
+              <span class="font-semibold">Phone CQ:</span>
+              ${item.phone_cq || ''}
+            </div>
+
+            <div>
+              <span class="font-semibold">Ngày sinh:</span>
+              ${item.ngaySinh || ''}
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+  </script>
+</body>
+</html>`;
+
+  return (
+    <div className="w-full h-screen">
+      <iframe
+        title="Danh bạ nội bộ"
+        srcDoc={html}
+        className="w-full h-full border-0"
+      />
+    </div>
+  );
+}
 
