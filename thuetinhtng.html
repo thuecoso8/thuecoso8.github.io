@@ -2,472 +2,635 @@
 <html lang="vi">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Danh bạ cơ quan</title>
-
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Danh bạ cơ quan | Theo phòng ban</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet" />
   <style>
-    *{
-      margin:0;
-      padding:0;
-      box-sizing:border-box;
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
     }
 
-    body{
-      font-family: Inter, sans-serif;
-      background:#f5f7fb;
-      color:#222;
+    body {
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      background: #f1f5f9;
+      color: #0f172a;
     }
 
-    .header{
-      background:linear-gradient(135deg,#0f62fe,#2563eb);
-      color:white;
-      padding:30px 20px;
-      text-align:center;
-      box-shadow:0 4px 20px rgba(0,0,0,0.1);
+    /* Header */
+    .header {
+      background: linear-gradient(135deg, #0a5e8f, #0f3b5c);
+      color: white;
+      padding: 28px 20px;
+      text-align: center;
+      box-shadow: 0 6px 14px rgba(0, 0, 0, 0.08);
     }
 
-    .header h1{
-      font-size:32px;
-      margin-bottom:10px;
+    .header h1 {
+      font-size: 28px;
+      font-weight: 700;
+      letter-spacing: -0.3px;
+      margin-bottom: 8px;
     }
 
-    .header p{
-      opacity:0.9;
+    .header p {
+      font-size: 15px;
+      opacity: 0.85;
     }
 
-    .container{
-      max-width:1200px;
-      margin:auto;
-      padding:20px;
+    /* container */
+    .app-container {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 28px 20px 48px;
     }
 
-    .toolbar{
-      display:flex;
-      gap:15px;
-      flex-wrap:wrap;
-      margin-bottom:25px;
+    /* breadcrumb & back button */
+    .nav-section {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 28px;
+      flex-wrap: wrap;
     }
 
-    .search-box,
-    .filter-box{
-      flex:1;
-      min-width:220px;
+    .back-btn {
+      background: white;
+      border: 1px solid #cbd5e1;
+      padding: 8px 20px;
+      border-radius: 40px;
+      font-weight: 500;
+      font-size: 14px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+      color: #1e293b;
     }
 
-    input,
-    select{
-      width:100%;
-      padding:14px;
-      border-radius:14px;
-      border:1px solid #ddd;
-      font-size:15px;
-      outline:none;
-      background:white;
+    .back-btn:hover {
+      background: #f8fafc;
+      border-color: #94a3b8;
+      transform: translateX(-2px);
     }
 
-    .grid{
-      display:grid;
-      grid-template-columns:repeat(auto-fill,minmax(280px,1fr));
-      gap:20px;
+    .current-dept-badge {
+      background: #e6f0ff;
+      padding: 8px 20px;
+      border-radius: 40px;
+      font-size: 14px;
+      font-weight: 600;
+      color: #0f62fe;
     }
 
-    .card{
-      background:white;
-      border-radius:22px;
-      padding:20px;
-      box-shadow:0 4px 18px rgba(0,0,0,0.06);
-      transition:0.25s;
-      cursor:pointer;
-      position:relative;
-      overflow:hidden;
+    /* Department grid (cards) */
+    .dept-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 20px;
     }
 
-    .card:hover{
-      transform:translateY(-5px);
-      box-shadow:0 10px 25px rgba(0,0,0,0.12);
+    .dept-card {
+      background: white;
+      border-radius: 28px;
+      padding: 24px 20px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.04);
+      cursor: pointer;
+      transition: all 0.25s ease;
+      border: 1px solid #e9eef3;
+      text-align: center;
     }
 
-    .top{
-      display:flex;
-      gap:15px;
-      align-items:center;
-      margin-bottom:15px;
+    .dept-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 20px 30px -12px rgba(0, 0, 0, 0.12);
+      border-color: #cbdff5;
+      background: #ffffff;
     }
 
-    .avatar{
-      width:72px;
-      height:72px;
-      border-radius:50%;
-      object-fit:cover;
-      border:3px solid #eaeaea;
-      background:#eee;
+    .dept-icon {
+      font-size: 44px;
+      margin-bottom: 16px;
     }
 
-    .name{
-      font-size:18px;
-      font-weight:700;
-      margin-bottom:4px;
+    .dept-name {
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      color: #0f3b5c;
     }
 
-    .job{
-      color:#666;
-      font-size:14px;
+    .dept-count {
+      font-size: 13px;
+      color: #5b6e8c;
+      background: #f1f5f9;
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 30px;
     }
 
-    .info{
-      margin-top:12px;
+    /* staff grid */
+    .staff-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 22px;
     }
 
-    .info-item{
-      display:flex;
-      justify-content:space-between;
-      padding:8px 0;
-      border-bottom:1px dashed #eee;
-      font-size:14px;
+    .staff-card {
+      background: white;
+      border-radius: 24px;
+      padding: 18px;
+      box-shadow: 0 5px 14px rgba(0, 0, 0, 0.03);
+      transition: 0.2s;
+      border: 1px solid #eef2f8;
+      cursor: pointer;
     }
 
-    .tag{
-      display:inline-block;
-      margin-top:15px;
-      background:#edf4ff;
-      color:#0f62fe;
-      padding:8px 14px;
-      border-radius:999px;
-      font-size:13px;
-      font-weight:600;
+    .staff-card:hover {
+      box-shadow: 0 12px 22px rgba(0, 0, 0, 0.08);
+      transform: translateY(-3px);
     }
 
-    .loading{
-      text-align:center;
-      padding:40px;
-      color:#666;
+    .staff-top {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+      margin-bottom: 16px;
     }
 
-    .modal{
-      position:fixed;
-      inset:0;
-      background:rgba(0,0,0,0.45);
-      display:none;
-      align-items:center;
-      justify-content:center;
-      z-index:999;
-      padding:20px;
+    .staff-avatar {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      object-fit: cover;
+      background: #eef2ff;
+      border: 2px solid white;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
     }
 
-    .modal-content{
-      background:white;
-      width:100%;
-      max-width:500px;
-      border-radius:24px;
-      padding:30px;
-      position:relative;
-      animation:show .2s ease;
+    .staff-name {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 6px;
+      color: #0c4e6e;
     }
 
-    @keyframes show{
-      from{
-        transform:scale(.95);
-        opacity:0;
+    .staff-title {
+      font-size: 13px;
+      font-weight: 500;
+      color: #2c6e9e;
+      background: #ecf7ff;
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 40px;
+    }
+
+    .staff-info-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 0;
+      font-size: 14px;
+      border-bottom: 1px dashed #ecf3f9;
+    }
+
+    .staff-tag-dept {
+      margin-top: 12px;
+      font-size: 12px;
+      color: #5b6e8c;
+      background: #f8fafc;
+      padding: 6px 12px;
+      border-radius: 30px;
+      display: inline-block;
+    }
+
+    .empty-state {
+      background: #fef9e3;
+      border-radius: 28px;
+      padding: 48px 20px;
+      text-align: center;
+      color: #b45309;
+      font-weight: 500;
+    }
+
+    .loading-state {
+      text-align: center;
+      padding: 60px;
+      color: #2c6e9e;
+      font-weight: 500;
+    }
+
+    /* modal */
+    .modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(3px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      padding: 20px;
+    }
+
+    .modal-card {
+      background: white;
+      max-width: 520px;
+      width: 100%;
+      border-radius: 36px;
+      padding: 28px 28px 32px;
+      position: relative;
+      animation: fadeSlide 0.2s ease;
+      box-shadow: 0 30px 40px rgba(0, 0, 0, 0.2);
+    }
+
+    @keyframes fadeSlide {
+      from {
+        opacity: 0;
+        transform: scale(0.96);
       }
-      to{
-        transform:scale(1);
-        opacity:1;
+      to {
+        opacity: 1;
+        transform: scale(1);
       }
     }
 
-    .close{
-      position:absolute;
-      right:18px;
-      top:14px;
-      font-size:28px;
-      cursor:pointer;
-      color:#888;
+    .modal-close {
+      position: absolute;
+      right: 20px;
+      top: 18px;
+      font-size: 30px;
+      cursor: pointer;
+      color: #8ba0bc;
+      transition: 0.15s;
     }
 
-    .detail-avatar{
-      width:110px;
-      height:110px;
-      border-radius:50%;
-      object-fit:cover;
-      display:block;
-      margin:auto;
-      margin-bottom:20px;
+    .modal-close:hover {
+      color: #1e293b;
     }
 
-    .detail-name{
-      text-align:center;
-      font-size:26px;
-      font-weight:700;
-      margin-bottom:6px;
+    .modal-avatar {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin: 0 auto 18px;
+      display: block;
+      border: 3px solid #eef2ff;
     }
 
-    .detail-job{
-      text-align:center;
-      color:#666;
-      margin-bottom:24px;
+    .modal-name {
+      font-size: 26px;
+      font-weight: 700;
+      text-align: center;
+      margin-bottom: 6px;
     }
 
-    .detail-list{
-      display:grid;
-      gap:14px;
+    .modal-job {
+      text-align: center;
+      color: #0f62fe;
+      font-weight: 500;
+      background: #ecf5ff;
+      display: inline-block;
+      padding: 4px 18px;
+      border-radius: 40px;
+      margin: 0 auto 20px;
+      width: fit-content;
     }
 
-    .detail-item{
-      background:#f8f9fc;
-      padding:14px;
-      border-radius:14px;
+    .detail-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      margin-top: 14px;
     }
 
-    .detail-item b{
-      display:block;
-      margin-bottom:5px;
-      color:#444;
+    .detail-item {
+      background: #f9fcff;
+      padding: 12px 16px;
+      border-radius: 20px;
+      border: 1px solid #eef2fa;
     }
 
-    @media(max-width:768px){
-      .header h1{
-        font-size:24px;
+    .detail-item b {
+      display: block;
+      font-size: 13px;
+      color: #3b5e7e;
+      margin-bottom: 6px;
+    }
+
+    hr {
+      margin: 8px 0;
+    }
+
+    @media (max-width: 640px) {
+      .staff-grid {
+        grid-template-columns: 1fr;
+      }
+      .dept-grid {
+        grid-template-columns: 1fr;
       }
     }
   </style>
 </head>
-
 <body>
 
-  <div class="header">
-    <h1>DANH BẠ CƠ QUAN</h1>
-    <p>Tra cứu thông tin cán bộ - công chức</p>
+<div class="header">
+  <h1>📋 DANH BẠ CƠ QUAN</h1>
+  <p>Chọn phòng ban → xem danh sách cán bộ (sắp xếp theo chức danh)</p>
+</div>
+
+<div class="app-container">
+  <!-- khu vực điều hướng, chỉ hiển thị khi đang ở chế độ xem nhân sự -->
+  <div class="nav-section" id="navSection" style="display: none;">
+    <button class="back-btn" id="backToDeptBtn">← Tất cả phòng ban</button>
+    <div class="current-dept-badge" id="currentDeptLabel"></div>
   </div>
 
-  <div class="container">
-
-    <div class="toolbar">
-      <div class="search-box">
-        <input type="text" id="searchInput" placeholder="Tìm kiếm tên, số điện thoại..." />
-      </div>
-
-      <div class="filter-box">
-        <select id="unitFilter">
-          <option value="">Tất cả đơn vị</option>
-        </select>
-      </div>
-    </div>
-
-    <div id="loading" class="loading">
-      Đang tải dữ liệu...
-    </div>
-
-    <div class="grid" id="grid"></div>
-
+  <!-- Khu vực danh sách phòng ban -->
+  <div id="deptView">
+    <div class="loading-state" id="deptLoading">Đang tải danh sách phòng ban...</div>
+    <div class="dept-grid" id="deptGrid"></div>
   </div>
 
-  <!-- Modal -->
-  <div class="modal" id="modal">
-    <div class="modal-content">
-      <span class="close" onclick="closeModal()">&times;</span>
+  <!-- Khu vực danh sách nhân sự theo phòng (ẩn ban đầu) -->
+  <div id="staffView" style="display: none;">
+    <div class="loading-state" id="staffLoading" style="display: none;">Đang tải nhân sự...</div>
+    <div class="staff-grid" id="staffGrid"></div>
+  </div>
+</div>
 
-      <img id="mAvatar" class="detail-avatar">
-
-      <div class="detail-name" id="mName"></div>
-      <div class="detail-job" id="mJob"></div>
-
-      <div class="detail-list">
-        <div class="detail-item">
-          <b>Đơn vị</b>
-          <div id="mUnit"></div>
-        </div>
-
-        <div class="detail-item">
-          <b>Điện thoại</b>
-          <div id="mPhone"></div>
-        </div>
-
-        <div class="detail-item">
-          <b>Số máy cơ quan</b>
-          <div id="mOfficePhone"></div>
-        </div>
-
-        <div class="detail-item">
-          <b>Ngày sinh</b>
-          <div id="mBirth"></div>
-        </div>
-
-        <div class="detail-item">
-          <b>BIDV</b>
-          <div id="mBidv"></div>
-        </div>
-
-        <div class="detail-item">
-          <b>Agribank</b>
-          <div id="mAgri"></div>
-        </div>
-      </div>
-
+<!-- Modal chi tiết nhân sự -->
+<div class="modal" id="staffModal">
+  <div class="modal-card">
+    <span class="modal-close" id="closeModalBtn">&times;</span>
+    <img id="modalAvatar" class="modal-avatar" src="https://i.imgur.com/HeIi0wU.png" alt="avatar">
+    <div class="modal-name" id="modalName">---</div>
+    <div style="display: flex; justify-content: center;"><div class="modal-job" id="modalJob"></div></div>
+    <div class="detail-grid">
+      <div class="detail-item"><b>🏢 Đơn vị</b><span id="modalUnit"></span></div>
+      <div class="detail-item"><b>📱 Điện thoại di động</b><span id="modalPhone"></span></div>
+      <div class="detail-item"><b>☎️ Máy cơ quan</b><span id="modalOfficePhone"></span></div>
+      <div class="detail-item"><b>🎂 Ngày sinh</b><span id="modalBirth"></span></div>
+      <div class="detail-item"><b>🏦 BIDV</b><span id="modalBidv"></span></div>
+      <div class="detail-item"><b>🌾 Agribank</b><span id="modalAgri"></span></div>
     </div>
   </div>
+</div>
 
 <script>
+  // Google Sheet URL (opensheet)
+  const SHEET_URL = 'https://opensheet.elk.sh/1wH_rQwpF2jRO_8s277hq_kmuN-i79JMzKqNx43XAK0Y/Sheet1';
+  
+  let masterData = [];        // lưu toàn bộ dòng dữ liệu gốc
+  let departmentsSet = new Set(); // tập phòng ban
+  let currentDept = null;     // phòng ban đang được chọn
 
-const SHEET_URL =
-'https://opensheet.elk.sh/1wH_rQwpF2jRO_8s277hq_kmuN-i79JMzKqNx43XAK0Y/Sheet1';
+  // DOM elements
+  const deptViewDiv = document.getElementById('deptView');
+  const staffViewDiv = document.getElementById('staffView');
+  const navSection = document.getElementById('navSection');
+  const currentDeptLabel = document.getElementById('currentDeptLabel');
+  const backBtn = document.getElementById('backToDeptBtn');
+  const deptGrid = document.getElementById('deptGrid');
+  const staffGrid = document.getElementById('staffGrid');
+  const deptLoadingSpan = document.getElementById('deptLoading');
+  const staffLoadingSpan = document.getElementById('staffLoading');
 
-let allData = [];
+  // Modal elements
+  const modal = document.getElementById('staffModal');
+  const closeModalBtn = document.getElementById('closeModalBtn');
+  const modalAvatar = document.getElementById('modalAvatar');
+  const modalName = document.getElementById('modalName');
+  const modalJob = document.getElementById('modalJob');
+  const modalUnit = document.getElementById('modalUnit');
+  const modalPhone = document.getElementById('modalPhone');
+  const modalOfficePhone = document.getElementById('modalOfficePhone');
+  const modalBirth = document.getElementById('modalBirth');
+  const modalBidv = document.getElementById('modalBidv');
+  const modalAgri = document.getElementById('modalAgri');
 
-async function loadData(){
-
-  const res = await fetch(SHEET_URL);
-  const data = await res.json();
-
-  allData = data;
-
-  renderUnits(data);
-  renderCards(data);
-
-  document.getElementById('loading').style.display='none';
-}
-
-function renderUnits(data){
-
-  const units = [...new Set(data.map(i => i.donVi).filter(Boolean))];
-
-  const select = document.getElementById('unitFilter');
-
-  units.forEach(unit => {
-
-    const op = document.createElement('option');
-    op.value = unit;
-    op.textContent = unit;
-
-    select.appendChild(op);
-  });
-}
-
-function renderCards(data){
-
-  const grid = document.getElementById('grid');
-
-  grid.innerHTML = '';
-
-  if(data.length === 0){
-    grid.innerHTML = '<p>Không có dữ liệu</p>';
-    return;
+  // ----- helper: sắp xếp nhân sự theo chức danh (công việc) ưu tiên: trưởng phòng > phó > chuyên viên...
+  function sortByJobTitle(employees) {
+    // Hàm xác định thứ tự ưu tiên dựa trên từ khóa chức danh
+    const getRank = (jobTitle = '') => {
+      const title = jobTitle.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+      if (title.includes('truong phong') || title.includes('trưởng phòng') || title === 'trưởng phòng') return 1;
+      if (title.includes('pho phong') || title.includes('phó phòng')) return 2;
+      if (title.includes('chuyen vien chinh') || title.includes('chuyên viên chính')) return 3;
+      if (title.includes('chuyen vien') || title.includes('chuyên viên')) return 4;
+      if (title.includes('nhan vien') || title.includes('nhân viên')) return 5;
+      return 6; // khác
+    };
+    return [...employees].sort((a, b) => {
+      const rankA = getRank(a.congViec);
+      const rankB = getRank(b.congViec);
+      if (rankA !== rankB) return rankA - rankB;
+      // nếu cùng cấp thì sắp xếp theo tên
+      return (a.hoTen || '').localeCompare(b.hoTen || '', 'vi');
+    });
   }
 
-  data.forEach(item => {
-
-    const card = document.createElement('div');
-    card.className = 'card';
-
-    card.onclick = () => openModal(item);
-
-    card.innerHTML = `
-      <div class="top">
-
-        <img class="avatar"
-          src="${item.avatar || 'https://i.imgur.com/HeIi0wU.png'}">
-
-        <div>
-          <div class="name">${item.hoTen || ''}</div>
-          <div class="job">${item.congViec || ''}</div>
-        </div>
-
-      </div>
-
-      <div class="info">
-
-        <div class="info-item">
-          <span>Di động</span>
-          <b>${item.soDienThoai || ''}</b>
-        </div>
-
-        <div class="info-item">
-          <span>Máy CQ</span>
-          <b>${item.phone_cq || ''}</b>
-        </div>
-
-      </div>
-
-      <div class="tag">${item.donVi || ''}</div>
-    `;
-
-    grid.appendChild(card);
-
-  });
-}
-
-function openModal(item){
-
-  document.getElementById('modal').style.display='flex';
-
-  document.getElementById('mAvatar').src =
-    item.avatar || 'https://i.imgur.com/HeIi0wU.png';
-
-  document.getElementById('mName').textContent = item.hoTen || '';
-  document.getElementById('mJob').textContent = item.congViec || '';
-
-  document.getElementById('mUnit').textContent = item.donVi || '';
-  document.getElementById('mPhone').textContent = item.soDienThoai || '';
-  document.getElementById('mOfficePhone').textContent = item.phone_cq || '';
-  document.getElementById('mBirth').textContent = item.ngaySinh || '';
-  document.getElementById('mBidv').textContent = item.bidv || '';
-  document.getElementById('mAgri').textContent = item.agribank || '';
-}
-
-function closeModal(){
-  document.getElementById('modal').style.display='none';
-}
-
-document.getElementById('searchInput')
-.addEventListener('input', filterData);
-
-document.getElementById('unitFilter')
-.addEventListener('change', filterData);
-
-function filterData(){
-
-  const keyword =
-    document.getElementById('searchInput')
-    .value.toLowerCase();
-
-  const unit =
-    document.getElementById('unitFilter')
-    .value;
-
-  const filtered = allData.filter(item => {
-
-    const text = `
-      ${item.hoTen}
-      ${item.soDienThoai}
-      ${item.phone_cq}
-      ${item.congViec}
-      ${item.donVi}
-    `.toLowerCase();
-
-    const matchKeyword = text.includes(keyword);
-
-    const matchUnit =
-      !unit || item.donVi === unit;
-
-    return matchKeyword && matchUnit;
-  });
-
-  renderCards(filtered);
-}
-
-window.onclick = function(e){
-
-  const modal = document.getElementById('modal');
-
-  if(e.target === modal){
-    closeModal();
+  // Hiển thị danh sách phòng ban (từ masterData)
+  function renderDepartments() {
+    deptLoadingSpan.style.display = 'none';
+    if (!masterData.length) {
+      deptGrid.innerHTML = '<div class="empty-state">⚠️ Không tìm thấy dữ liệu từ Google Sheet</div>';
+      return;
+    }
+    // thu thập các phòng ban hợp lệ (bỏ qua null/empty)
+    const deptMap = new Map(); // key: tên phòng, value: số lượng
+    masterData.forEach(item => {
+      const dept = item.donVi;
+      if (dept && typeof dept === 'string' && dept.trim() !== '') {
+        const key = dept.trim();
+        deptMap.set(key, (deptMap.get(key) || 0) + 1);
+      }
+    });
+    if (deptMap.size === 0) {
+      deptGrid.innerHTML = '<div class="empty-state">📭 Chưa có dữ liệu phòng ban</div>';
+      return;
+    }
+    const sortedDepts = Array.from(deptMap.keys()).sort((a,b) => a.localeCompare(b, 'vi'));
+    deptGrid.innerHTML = '';
+    for (let deptName of sortedDepts) {
+      const count = deptMap.get(deptName);
+      const card = document.createElement('div');
+      card.className = 'dept-card';
+      card.setAttribute('data-dept', deptName);
+      card.innerHTML = `
+        <div class="dept-icon">🏛️</div>
+        <div class="dept-name">${escapeHtml(deptName)}</div>
+        <div class="dept-count">${count} cán bộ</div>
+      `;
+      card.addEventListener('click', (e) => {
+        e.stopPropagation();
+        openStaffByDepartment(deptName);
+      });
+      deptGrid.appendChild(card);
+    }
   }
-}
 
-loadData();
+  // Mở danh sách nhân sự theo phòng ban + sắp xếp theo chức danh
+  function openStaffByDepartment(departmentName) {
+    if (!departmentName) return;
+    currentDept = departmentName;
+    // lọc nhân sự thuộc phòng ban đó
+    let filtered = masterData.filter(item => {
+      const itemDept = item.donVi ? item.donVi.trim() : '';
+      return itemDept === departmentName;
+    });
+    // sắp xếp theo chức danh
+    const sortedStaff = sortByJobTitle(filtered);
+    
+    // Cập nhật giao diện: ẩn deptView, hiện staffView + nav
+    deptViewDiv.style.display = 'none';
+    staffViewDiv.style.display = 'block';
+    navSection.style.display = 'flex';
+    currentDeptLabel.textContent = departmentName;
+    
+    renderStaffList(sortedStaff, departmentName);
+  }
 
+  // Render danh sách thẻ nhân viên theo thứ tự chức vụ
+  function renderStaffList(staffList, deptName) {
+    staffLoadingSpan.style.display = 'none';
+    if (!staffList.length) {
+      staffGrid.innerHTML = `<div class="empty-state">🏢 Phòng "${escapeHtml(deptName)}" hiện chưa có cán bộ nào.</div>`;
+      return;
+    }
+    staffGrid.innerHTML = '';
+    staffList.forEach(person => {
+      const card = document.createElement('div');
+      card.className = 'staff-card';
+      const avatarUrl = person.avatar && person.avatar.trim() !== '' ? person.avatar : 'https://i.imgur.com/HeIi0wU.png';
+      const fullName = person.hoTen || 'Chưa cập nhật';
+      const jobTitle = person.congViec || 'Chức danh';
+      const phone = person.soDienThoai || '---';
+      const officePhone = person.phone_cq || '---';
+      card.innerHTML = `
+        <div class="staff-top">
+          <img class="staff-avatar" src="${avatarUrl}" alt="avatar" onerror="this.src='https://i.imgur.com/HeIi0wU.png'">
+          <div>
+            <div class="staff-name">${escapeHtml(fullName)}</div>
+            <div class="staff-title">${escapeHtml(jobTitle)}</div>
+          </div>
+        </div>
+        <div class="staff-info-row">
+          <span>📞 Di động</span>
+          <b>${escapeHtml(phone)}</b>
+        </div>
+        <div class="staff-info-row">
+          <span>📞 Máy CQ</span>
+          <b>${escapeHtml(officePhone)}</b>
+        </div>
+        <div class="staff-tag-dept">🏷️ ${escapeHtml(deptName)}</div>
+      `;
+      // mở modal khi click vào thẻ nhân viên
+      card.addEventListener('click', (e) => {
+        e.stopPropagation();
+        openStaffModal(person);
+      });
+      staffGrid.appendChild(card);
+    });
+  }
+
+  // Mở modal chi tiết nhân viên
+  function openStaffModal(person) {
+    const avatarUrl = (person.avatar && person.avatar.trim()) ? person.avatar : 'https://i.imgur.com/HeIi0wU.png';
+    modalAvatar.src = avatarUrl;
+    modalName.textContent = person.hoTen || '---';
+    modalJob.textContent = person.congViec || 'Chức vụ';
+    modalUnit.textContent = person.donVi || '---';
+    modalPhone.textContent = person.soDienThoai || '---';
+    modalOfficePhone.textContent = person.phone_cq || '---';
+    modalBirth.textContent = person.ngaySinh || '---';
+    modalBidv.textContent = person.bidv || '---';
+    modalAgri.textContent = person.agribank || '---';
+    modal.style.display = 'flex';
+  }
+
+  function closeModal() {
+    modal.style.display = 'none';
+  }
+
+  // Quay lại màn hình danh sách phòng ban
+  function backToDepartments() {
+    currentDept = null;
+    deptViewDiv.style.display = 'block';
+    staffViewDiv.style.display = 'none';
+    navSection.style.display = 'none';
+    // làm mới danh sách phòng ban (tránh sai lệch)
+    renderDepartments();
+  }
+
+  // Helper: escape HTML cơ bản tránh XSS
+  function escapeHtml(str) {
+    if (!str) return '';
+    return str.replace(/[&<>]/g, function(m) {
+      if (m === '&') return '&amp;';
+      if (m === '<') return '&lt;';
+      if (m === '>') return '&gt;';
+      return m;
+    }).replace(/[\uD800-\uDBFF][\uDC00-\uDFFF]/g, function(c) {
+      return c;
+    });
+  }
+
+  // Tải dữ liệu từ Google Sheet
+  async function loadMasterData() {
+    try {
+      deptLoadingSpan.style.display = 'block';
+      deptLoadingSpan.textContent = 'Đang tải dữ liệu từ cơ sở dữ liệu...';
+      const response = await fetch(SHEET_URL);
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      const rawData = await response.json();
+      if (!Array.isArray(rawData) || rawData.length === 0) {
+        masterData = [];
+        deptLoadingSpan.textContent = 'Không có dữ liệu hoặc sheet trống';
+        renderDepartments();
+        return;
+      }
+      // Chuẩn hóa dữ liệu: các trường cần thiết
+      masterData = rawData.map(row => ({
+        hoTen: row.hoTen || row['Họ tên'] || '',
+        donVi: row.donVi || row['Đơn vị'] || '',
+        congViec: row.congViec || row['Chức danh'] || row['Công việc'] || '',
+        soDienThoai: row.soDienThoai || row['Số điện thoại'] || row['Di động'] || '',
+        phone_cq: row.phone_cq || row['Máy cơ quan'] || row['phone_cq'] || '',
+        ngaySinh: row.ngaySinh || row['Ngày sinh'] || '',
+        bidv: row.bidv || row['BIDV'] || '',
+        agribank: row.agribank || row['Agribank'] || '',
+        avatar: row.avatar || row['Avatar'] || ''
+      })).filter(item => item.hoTen && item.hoTen.trim() !== ''); // chỉ lấy những dòng có tên
+      
+      // nếu vẫn không có dữ liệu thì hiển thị thông báo
+      if (masterData.length === 0) {
+        deptLoadingSpan.textContent = '⚠️ Không tìm thấy dữ liệu nhân sự hợp lệ';
+      } else {
+        deptLoadingSpan.style.display = 'none';
+      }
+      renderDepartments();
+    } catch (err) {
+      console.error(err);
+      deptLoadingSpan.textContent = '❌ Lỗi tải dữ liệu: ' + err.message;
+      deptGrid.innerHTML = `<div class="empty-state">Không thể kết nối đến nguồn dữ liệu. Vui lòng thử lại sau.</div>`;
+    }
+  }
+
+  // Sự kiện back button
+  backBtn.addEventListener('click', backToDepartments);
+  
+  // Đóng modal khi click nút X hoặc bên ngoài
+  closeModalBtn.addEventListener('click', closeModal);
+  window.addEventListener('click', (e) => {
+    if (e.target === modal) closeModal();
+  });
+
+  // Khởi chạy ứng dụng
+  loadMasterData();
 </script>
-
 </body>
 </html>
