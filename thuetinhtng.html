@@ -6,7 +6,6 @@ export default function DanhBaPhongBan() {
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Danh bạ phòng ban</title>
   <script src="https://cdn.tailwindcss.com">window.onload = () => {
-      document.getElementById('sheetUrl').value = defaultSheetUrl;
       loadSheet();
     }
   </script>
@@ -15,23 +14,7 @@ export default function DanhBaPhongBan() {
   <div class="max-w-7xl mx-auto p-6">
     <div class="bg-white rounded-3xl shadow-xl p-6 mb-6">
       <h1 class="text-3xl font-bold mb-2">Danh bạ nội bộ</h1>
-      <p class="text-gray-500 mb-4">Xem danh sách nhân sự theo phòng ban từ Google Sheet</p>
-
-      <div class="flex flex-col md:flex-row gap-4">
-        <input
-          id="sheetUrl"
-          type="text"
-          value="https://docs.google.com/spreadsheets/d/1wH_rQwpF2jRO_8s277hq_kmuN-i79JMzKqNx43XAK0Y/edit?usp=sharing"
-          class="flex-1 border rounded-2xl px-4 py-3"
-        />
-
-        <button
-          onclick="loadSheet()"
-          class="bg-black text-white px-6 py-3 rounded-2xl hover:opacity-90"
-        >
-          Tải dữ liệu
-        </button>
-      </div>
+      <p class="text-gray-500">Dữ liệu được đồng bộ tự động từ Google Sheet</p>
     </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
@@ -64,7 +47,7 @@ export default function DanhBaPhongBan() {
     let selectedDepartment = 'all';
 
     async function loadSheet() {
-      const url = document.getElementById('sheetUrl').value.trim() || defaultSheetUrl;
+      const url = defaultSheetUrl;
 
       if (!url) {
         alert('Vui lòng nhập link Google Sheet');
