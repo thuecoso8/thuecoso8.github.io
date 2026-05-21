@@ -2,214 +2,472 @@
 <html lang="vi">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Danh bạ nội bộ - Thuế cơ sở 8</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Danh bạ cơ quan</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
   <style>
-    .loading-spinner { border: 3px solid #f3f3f3; border-top: 3px solid #005bac; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 20px auto; }
-    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-    .active-department { background-color: #005bac !important; color: white !important; box-shadow: 0 2px 8px rgba(0,91,172,0.3); }
-    .card-hover:hover { transform: translateY(-4px); transition: all 0.2s ease; box-shadow: 0 20px 25px -12px rgba(0,0,0,0.15); }
+    *{
+      margin:0;
+      padding:0;
+      box-sizing:border-box;
+    }
+
+    body{
+      font-family: Inter, sans-serif;
+      background:#f5f7fb;
+      color:#222;
+    }
+
+    .header{
+      background:linear-gradient(135deg,#0f62fe,#2563eb);
+      color:white;
+      padding:30px 20px;
+      text-align:center;
+      box-shadow:0 4px 20px rgba(0,0,0,0.1);
+    }
+
+    .header h1{
+      font-size:32px;
+      margin-bottom:10px;
+    }
+
+    .header p{
+      opacity:0.9;
+    }
+
+    .container{
+      max-width:1200px;
+      margin:auto;
+      padding:20px;
+    }
+
+    .toolbar{
+      display:flex;
+      gap:15px;
+      flex-wrap:wrap;
+      margin-bottom:25px;
+    }
+
+    .search-box,
+    .filter-box{
+      flex:1;
+      min-width:220px;
+    }
+
+    input,
+    select{
+      width:100%;
+      padding:14px;
+      border-radius:14px;
+      border:1px solid #ddd;
+      font-size:15px;
+      outline:none;
+      background:white;
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fill,minmax(280px,1fr));
+      gap:20px;
+    }
+
+    .card{
+      background:white;
+      border-radius:22px;
+      padding:20px;
+      box-shadow:0 4px 18px rgba(0,0,0,0.06);
+      transition:0.25s;
+      cursor:pointer;
+      position:relative;
+      overflow:hidden;
+    }
+
+    .card:hover{
+      transform:translateY(-5px);
+      box-shadow:0 10px 25px rgba(0,0,0,0.12);
+    }
+
+    .top{
+      display:flex;
+      gap:15px;
+      align-items:center;
+      margin-bottom:15px;
+    }
+
+    .avatar{
+      width:72px;
+      height:72px;
+      border-radius:50%;
+      object-fit:cover;
+      border:3px solid #eaeaea;
+      background:#eee;
+    }
+
+    .name{
+      font-size:18px;
+      font-weight:700;
+      margin-bottom:4px;
+    }
+
+    .job{
+      color:#666;
+      font-size:14px;
+    }
+
+    .info{
+      margin-top:12px;
+    }
+
+    .info-item{
+      display:flex;
+      justify-content:space-between;
+      padding:8px 0;
+      border-bottom:1px dashed #eee;
+      font-size:14px;
+    }
+
+    .tag{
+      display:inline-block;
+      margin-top:15px;
+      background:#edf4ff;
+      color:#0f62fe;
+      padding:8px 14px;
+      border-radius:999px;
+      font-size:13px;
+      font-weight:600;
+    }
+
+    .loading{
+      text-align:center;
+      padding:40px;
+      color:#666;
+    }
+
+    .modal{
+      position:fixed;
+      inset:0;
+      background:rgba(0,0,0,0.45);
+      display:none;
+      align-items:center;
+      justify-content:center;
+      z-index:999;
+      padding:20px;
+    }
+
+    .modal-content{
+      background:white;
+      width:100%;
+      max-width:500px;
+      border-radius:24px;
+      padding:30px;
+      position:relative;
+      animation:show .2s ease;
+    }
+
+    @keyframes show{
+      from{
+        transform:scale(.95);
+        opacity:0;
+      }
+      to{
+        transform:scale(1);
+        opacity:1;
+      }
+    }
+
+    .close{
+      position:absolute;
+      right:18px;
+      top:14px;
+      font-size:28px;
+      cursor:pointer;
+      color:#888;
+    }
+
+    .detail-avatar{
+      width:110px;
+      height:110px;
+      border-radius:50%;
+      object-fit:cover;
+      display:block;
+      margin:auto;
+      margin-bottom:20px;
+    }
+
+    .detail-name{
+      text-align:center;
+      font-size:26px;
+      font-weight:700;
+      margin-bottom:6px;
+    }
+
+    .detail-job{
+      text-align:center;
+      color:#666;
+      margin-bottom:24px;
+    }
+
+    .detail-list{
+      display:grid;
+      gap:14px;
+    }
+
+    .detail-item{
+      background:#f8f9fc;
+      padding:14px;
+      border-radius:14px;
+    }
+
+    .detail-item b{
+      display:block;
+      margin-bottom:5px;
+      color:#444;
+    }
+
+    @media(max-width:768px){
+      .header h1{
+        font-size:24px;
+      }
+    }
   </style>
 </head>
-<body class="bg-gradient-to-br from-gray-50 to-gray-100 min-h-screen">
 
-<div class="max-w-7xl mx-auto p-4 md:p-6">
-  <!-- Header -->
-  <div class="bg-white rounded-2xl shadow-lg p-5 md:p-6 mb-6 border-l-8 border-l-[#005bac]">
-    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-3">
-      <div>
-        <div class="flex items-center gap-3">
-          <i class="fas fa-address-book text-3xl text-[#005bac]"></i>
-          <h1 class="text-2xl md:text-3xl font-bold text-gray-800">Danh bạ nội bộ</h1>
-        </div>
-        <p class="text-gray-500 mt-1 text-sm flex items-center gap-2">
-          <i class="fas fa-building"></i> Thuế cơ sở 8 - Chi cục Thuế khu vực tỉnh Thái Nguyên
-        </p>
-      </div>
-      <div id="updateBadge" class="bg-blue-50 px-4 py-2 rounded-xl text-sm text-[#005bac]">
-        <i class="fas fa-sync-alt mr-1"></i> Đang tải dữ liệu...
-      </div>
-    </div>
+<body>
+
+  <div class="header">
+    <h1>DANH BẠ CƠ QUAN</h1>
+    <p>Tra cứu thông tin cán bộ - công chức</p>
   </div>
 
-  <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
-    <!-- Sidebar phòng ban -->
-    <div class="bg-white rounded-2xl shadow-lg p-4 h-fit lg:sticky lg:top-6">
-      <div class="flex items-center gap-2 mb-5 pb-2 border-b border-gray-200">
-        <i class="fas fa-users-viewfinder text-[#005bac] text-xl"></i>
-        <h2 class="font-bold text-lg text-gray-700">Phòng / Ban</h2>
+  <div class="container">
+
+    <div class="toolbar">
+      <div class="search-box">
+        <input type="text" id="searchInput" placeholder="Tìm kiếm tên, số điện thoại..." />
       </div>
-      <div id="departmentList" class="space-y-2 max-h-[70vh] overflow-y-auto pr-1">
-        <div class="loading-spinner"></div>
+
+      <div class="filter-box">
+        <select id="unitFilter">
+          <option value="">Tất cả đơn vị</option>
+        </select>
       </div>
     </div>
 
-    <!-- Main content -->
-    <div class="lg:col-span-3">
-      <div class="bg-white rounded-2xl shadow-lg p-4 md:p-5">
-        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-5 pb-3 border-b border-gray-100">
-          <div class="flex items-center gap-2">
-            <i class="fas fa-user-tie text-[#005bac] text-xl"></i>
-            <h2 id="currentDepartment" class="font-bold text-xl text-gray-800">Tất cả nhân sự</h2>
-            <span id="employeeCount" class="bg-gray-200 text-gray-600 text-xs px-2 py-1 rounded-full ml-2">0</span>
-          </div>
-          <div class="relative w-full sm:w-72">
-            <i class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm"></i>
-            <input id="searchInput" type="text" placeholder="Tìm kiếm theo tên, chức vụ..." class="w-full border border-gray-200 rounded-xl pl-10 pr-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#005bac] focus:border-transparent shadow-sm" oninput="renderEmployees()" />
-          </div>
+    <div id="loading" class="loading">
+      Đang tải dữ liệu...
+    </div>
+
+    <div class="grid" id="grid"></div>
+
+  </div>
+
+  <!-- Modal -->
+  <div class="modal" id="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal()">&times;</span>
+
+      <img id="mAvatar" class="detail-avatar">
+
+      <div class="detail-name" id="mName"></div>
+      <div class="detail-job" id="mJob"></div>
+
+      <div class="detail-list">
+        <div class="detail-item">
+          <b>Đơn vị</b>
+          <div id="mUnit"></div>
         </div>
-        <div id="employeeGrid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-2 gap-5"></div>
+
+        <div class="detail-item">
+          <b>Điện thoại</b>
+          <div id="mPhone"></div>
+        </div>
+
+        <div class="detail-item">
+          <b>Số máy cơ quan</b>
+          <div id="mOfficePhone"></div>
+        </div>
+
+        <div class="detail-item">
+          <b>Ngày sinh</b>
+          <div id="mBirth"></div>
+        </div>
+
+        <div class="detail-item">
+          <b>BIDV</b>
+          <div id="mBidv"></div>
+        </div>
+
+        <div class="detail-item">
+          <b>Agribank</b>
+          <div id="mAgri"></div>
+        </div>
       </div>
+
     </div>
   </div>
-</div>
 
 <script>
-  // ======================= CẤU HÌNH GOOGLE SHEET CỦA BẠN =======================
-  const SHEET_ID = '1wH_rQwpF2jRO_8s277hq_kmuN-i79JMzKqNx43XAK0Y';
-  const SHEET_NAME = 'Sheet1'; // 👈 Nếu tên trang tính của bạn khác, sửa lại ở đây
-  const API_URL = `https://opensheet.elk.sh/${SHEET_ID}/${SHEET_NAME}`;
-  
-  let employees = [];
-  let selectedDepartment = 'all';
 
-  // Hàm tải dữ liệu từ Google Sheet
-  async function loadDataFromSheet() {
-    const updateBadge = document.getElementById('updateBadge');
-    const departmentContainer = document.getElementById('departmentList');
-    
-    try {
-      updateBadge.innerHTML = '<i class="fas fa-spinner fa-pulse mr-1"></i> Đang đồng bộ...';
-      
-      const response = await fetch(API_URL);
-      if (!response.ok) throw new Error(`HTTP ${response.status}`);
-      
-      const rawData = await response.json();
-      
-      if (!rawData || rawData.length === 0) {
-        throw new Error('Sheet không có dữ liệu hoặc tên trang tính không đúng');
-      }
-      
-      // Chuẩn hóa dữ liệu (loại bỏ dòng header nếu trùng, đảm bảo các field)
-      employees = rawData.map(row => ({
-        hoTen: row.hoTen || row.hoten || row.HỌ_TÊN || row['Họ và tên'] || 'Chưa cập nhật',
-        congViec: row.congViec || row.chucvu || row.CHỨC_VỤ || row['Chức vụ'] || '',
-        donVi: row.donVi || row.phongban || row.PHÒNG_BAN || row['Đơn vị'] || 'Chưa phân công',
-        soDienThoai: row.soDienThoai || row.dienthoai || row.SĐT || row['Số điện thoại'] || '',
-        phone_cq: row.phone_cq || row.phonecq || row.PHONE_CQ || row['Phone cơ quan'] || '',
-        ngaySinh: row.ngaySinh || row.ngaysinh || row.NGÀY_SINH || row['Ngày sinh'] || '',
-        avatar: row.avatar || `https://ui-avatars.com/api/?background=005bac&color=fff&name=${encodeURIComponent(row.hoTen || 'User')}&length=2&fontsize=0.35&size=80`
-      }));
-      
-      // Cập nhật giao diện
-      renderDepartments();
-      renderEmployees();
-      updateBadge.innerHTML = '<i class="fas fa-check-circle mr-1"></i> Đã cập nhật: ' + new Date().toLocaleTimeString('vi-VN');
-      
-    } catch (error) {
-      console.error('Lỗi khi tải dữ liệu:', error);
-      updateBadge.innerHTML = '<i class="fas fa-exclamation-triangle mr-1 text-red-600"></i> Không thể tải dữ liệu';
-      
-      // Hiển thị thông báo lỗi thân thiện
-      departmentContainer.innerHTML = `
-        <div class="bg-red-50 p-3 rounded-xl text-red-700 text-sm">
-          <i class="fas fa-database mr-2"></i> Lỗi kết nối Sheet.<br>
-          Vui lòng kiểm tra:
-          <ul class="list-disc pl-4 mt-2 space-y-1">
-            <li>Sheet đã được publish (File → Share → Publish to web)</li>
-            <li>Tên trang tính có đúng là "${SHEET_NAME}" không?</li>
-            <li>Các cột dữ liệu có tên: hoTen, donVi, soDienThoai,...</li>
-          </ul>
-          <button onclick="loadDataFromSheet()" class="mt-3 bg-red-600 text-white px-3 py-1 rounded-lg text-xs">Thử lại</button>
-        </div>
-      `;
-      document.getElementById('employeeGrid').innerHTML = `<div class="text-gray-500 text-center p-8">Không thể hiển thị danh sách do lỗi dữ liệu.</div>`;
-    }
+const SHEET_URL =
+'https://opensheet.elk.sh/1wH_rQwpF2jRO_8s277hq_kmuN-i79JMzKqNx43XAK0Y/Sheet1';
+
+let allData = [];
+
+async function loadData(){
+
+  const res = await fetch(SHEET_URL);
+  const data = await res.json();
+
+  allData = data;
+
+  renderUnits(data);
+  renderCards(data);
+
+  document.getElementById('loading').style.display='none';
+}
+
+function renderUnits(data){
+
+  const units = [...new Set(data.map(i => i.donVi).filter(Boolean))];
+
+  const select = document.getElementById('unitFilter');
+
+  units.forEach(unit => {
+
+    const op = document.createElement('option');
+    op.value = unit;
+    op.textContent = unit;
+
+    select.appendChild(op);
+  });
+}
+
+function renderCards(data){
+
+  const grid = document.getElementById('grid');
+
+  grid.innerHTML = '';
+
+  if(data.length === 0){
+    grid.innerHTML = '<p>Không có dữ liệu</p>';
+    return;
   }
 
-  // Hiển thị danh sách phòng ban
-  function renderDepartments() {
-    const container = document.getElementById('departmentList');
-    const departments = [...new Set(employees.map(item => item.donVi).filter(Boolean))].sort();
-    
-    const allButton = `
-      <button onclick="selectDepartment('all')" id="dept-all" class="w-full text-left px-4 py-3 rounded-xl bg-gray-100 hover:bg-gray-200 transition flex items-center gap-2">
-        <i class="fas fa-layer-group"></i> <span>Tất cả (${employees.length})</span>
-      </button>
-    `;
-    
-    const buttons = departments.map(dep => `
-      <button onclick="selectDepartment('${dep.replace(/'/g, "\\'")}')" data-dept="${dep}" class="w-full text-left px-4 py-3 rounded-xl bg-gray-100 hover:bg-gray-200 transition flex items-center gap-2">
-        <i class="fas fa-building"></i> <span>${dep} (${employees.filter(e => e.donVi === dep).length})</span>
-      </button>
-    `).join('');
-    
-    container.innerHTML = allButton + buttons;
-    
-    // Highlight phòng ban đang chọn
-    document.querySelectorAll('#departmentList button').forEach(btn => {
-      if (selectedDepartment === 'all' && btn.id === 'dept-all') btn.classList.add('active-department');
-      else if (btn.getAttribute('data-dept') === selectedDepartment) btn.classList.add('active-department');
-    });
-  }
+  data.forEach(item => {
 
-  window.selectDepartment = function(dep) {
-    selectedDepartment = dep;
-    renderEmployees();
-    // Cập nhật active style
-    document.querySelectorAll('#departmentList button').forEach(btn => btn.classList.remove('active-department'));
-    if (dep === 'all') document.getElementById('dept-all')?.classList.add('active-department');
-    else document.querySelector(`button[data-dept="${dep}"]`)?.classList.add('active-department');
-    
-    document.getElementById('currentDepartment').innerText = dep === 'all' ? 'Tất cả nhân sự' : dep;
-  };
+    const card = document.createElement('div');
+    card.className = 'card';
 
-  function renderEmployees() {
-    const grid = document.getElementById('employeeGrid');
-    const keyword = document.getElementById('searchInput').value.toLowerCase();
-    
-    let filtered = employees.filter(emp => emp.hoTen && emp.hoTen !== 'Chưa cập nhật');
-    
-    if (selectedDepartment !== 'all') {
-      filtered = filtered.filter(item => item.donVi === selectedDepartment);
-    }
-    if (keyword) {
-      filtered = filtered.filter(item => 
-        item.hoTen.toLowerCase().includes(keyword) || 
-        (item.congViec && item.congViec.toLowerCase().includes(keyword))
-      );
-    }
-    
-    document.getElementById('employeeCount').innerText = filtered.length;
-    
-    if (!filtered.length) {
-      grid.innerHTML = `<div class="col-span-full text-gray-500 text-center py-12 bg-gray-50 rounded-2xl"><i class="fas fa-user-slash text-4xl mb-2 block"></i> Không tìm thấy nhân sự phù hợp</div>`;
-      return;
-    }
-    
-    grid.innerHTML = filtered.map(item => `
-      <div class="border border-gray-100 rounded-2xl p-4 hover:shadow-lg transition-all bg-white card-hover">
-        <div class="flex items-center gap-4 mb-4">
-          <img src="${item.avatar}" class="w-16 h-16 rounded-full object-cover border-2 border-white shadow-md" alt="avatar" onerror="this.src='https://ui-avatars.com/api/?background=ccc&color=333&name=${encodeURIComponent(item.hoTen)}'">
-          <div>
-            <h3 class="font-bold text-lg text-gray-800">${item.hoTen}</h3>
-            <p class="text-[#005bac] text-sm font-medium"><i class="fas fa-briefcase mr-1"></i> ${item.congViec || 'Chức vụ'}</p>
-          </div>
+    card.onclick = () => openModal(item);
+
+    card.innerHTML = `
+      <div class="top">
+
+        <img class="avatar"
+          src="${item.avatar || 'https://i.imgur.com/HeIi0wU.png'}">
+
+        <div>
+          <div class="name">${item.hoTen || ''}</div>
+          <div class="job">${item.congViec || ''}</div>
         </div>
-        <div class="space-y-2 text-sm border-t pt-3 border-gray-50">
-          <div class="flex items-start gap-2"><i class="fas fa-building text-gray-400 w-5 mt-0.5"></i> <span>${item.donVi}</span></div>
-          ${item.soDienThoai ? `<div class="flex items-center gap-2"><i class="fas fa-phone-alt text-blue-500 w-5"></i> <a href="tel:${item.soDienThoai}" class="text-blue-600 hover:underline">${item.soDienThoai}</a></div>` : ''}
-          ${item.phone_cq ? `<div class="flex items-center gap-2"><i class="fas fa-building text-gray-400 w-5"></i> <span>CQ: ${item.phone_cq}</span></div>` : ''}
-          ${item.ngaySinh ? `<div class="flex items-center gap-2"><i class="fas fa-calendar-alt text-gray-400 w-5"></i> <span>${item.ngaySinh}</span></div>` : ''}
-        </div>
+
       </div>
-    `).join('');
+
+      <div class="info">
+
+        <div class="info-item">
+          <span>Di động</span>
+          <b>${item.soDienThoai || ''}</b>
+        </div>
+
+        <div class="info-item">
+          <span>Máy CQ</span>
+          <b>${item.phone_cq || ''}</b>
+        </div>
+
+      </div>
+
+      <div class="tag">${item.donVi || ''}</div>
+    `;
+
+    grid.appendChild(card);
+
+  });
+}
+
+function openModal(item){
+
+  document.getElementById('modal').style.display='flex';
+
+  document.getElementById('mAvatar').src =
+    item.avatar || 'https://i.imgur.com/HeIi0wU.png';
+
+  document.getElementById('mName').textContent = item.hoTen || '';
+  document.getElementById('mJob').textContent = item.congViec || '';
+
+  document.getElementById('mUnit').textContent = item.donVi || '';
+  document.getElementById('mPhone').textContent = item.soDienThoai || '';
+  document.getElementById('mOfficePhone').textContent = item.phone_cq || '';
+  document.getElementById('mBirth').textContent = item.ngaySinh || '';
+  document.getElementById('mBidv').textContent = item.bidv || '';
+  document.getElementById('mAgri').textContent = item.agribank || '';
+}
+
+function closeModal(){
+  document.getElementById('modal').style.display='none';
+}
+
+document.getElementById('searchInput')
+.addEventListener('input', filterData);
+
+document.getElementById('unitFilter')
+.addEventListener('change', filterData);
+
+function filterData(){
+
+  const keyword =
+    document.getElementById('searchInput')
+    .value.toLowerCase();
+
+  const unit =
+    document.getElementById('unitFilter')
+    .value;
+
+  const filtered = allData.filter(item => {
+
+    const text = `
+      ${item.hoTen}
+      ${item.soDienThoai}
+      ${item.phone_cq}
+      ${item.congViec}
+      ${item.donVi}
+    `.toLowerCase();
+
+    const matchKeyword = text.includes(keyword);
+
+    const matchUnit =
+      !unit || item.donVi === unit;
+
+    return matchKeyword && matchUnit;
+  });
+
+  renderCards(filtered);
+}
+
+window.onclick = function(e){
+
+  const modal = document.getElementById('modal');
+
+  if(e.target === modal){
+    closeModal();
   }
-  
-  // Khởi tạo
-  loadDataFromSheet();
+}
+
+loadData();
+
 </script>
+
 </body>
 </html>
