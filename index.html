@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <title>Danh bạ Thuế tỉnh Thái Nguyên | Sinh nhật</title>
+  <title>Danh bạ Thuế tỉnh Thái Nguyên | Tìm kiếm & Sinh nhật</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet" />
   <style>
     * {
@@ -18,7 +18,6 @@
       color: #0f172a;
     }
 
-    /* Header */
     .header {
       background: linear-gradient(135deg, #0a5e8f, #0f3b5c);
       color: white;
@@ -40,7 +39,6 @@
       opacity: 0.85;
     }
 
-    /* birthday badge */
     .birthday-badge {
       position: absolute;
       top: 20px;
@@ -67,14 +65,64 @@
       font-size: 18px;
     }
 
-    /* container */
     .app-container {
       max-width: 1280px;
       margin: 0 auto;
       padding: 28px 20px 48px;
     }
 
-    /* breadcrumb & back button */
+    /* Search Bar */
+    .search-section {
+      margin-bottom: 28px;
+    }
+    .search-box {
+      background: white;
+      border-radius: 60px;
+      padding: 8px 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+      border: 1px solid #e2e8f0;
+      transition: all 0.2s;
+    }
+    .search-box:focus-within {
+      border-color: #0f62fe;
+      box-shadow: 0 4px 12px rgba(15, 98, 254, 0.1);
+    }
+    .search-icon {
+      font-size: 20px;
+      color: #94a3b8;
+    }
+    .search-input {
+      flex: 1;
+      border: none;
+      padding: 12px 0;
+      font-size: 16px;
+      outline: none;
+      font-family: 'Inter', sans-serif;
+    }
+    .search-clear {
+      background: none;
+      border: none;
+      font-size: 20px;
+      cursor: pointer;
+      color: #94a3b8;
+      padding: 4px 8px;
+      border-radius: 50%;
+      transition: 0.2s;
+    }
+    .search-clear:hover {
+      background: #f1f5f9;
+      color: #475569;
+    }
+    .search-result-info {
+      margin-top: 12px;
+      font-size: 14px;
+      color: #5b6e8c;
+      padding-left: 16px;
+    }
+
     .nav-section {
       display: flex;
       align-items: center;
@@ -114,7 +162,6 @@
       color: #0f62fe;
     }
 
-    /* Department grid */
     .dept-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -160,10 +207,9 @@
       border-radius: 30px;
     }
 
-    /* staff grid */
     .staff-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
       gap: 22px;
     }
 
@@ -183,7 +229,6 @@
       transform: translateY(-3px);
     }
 
-    /* birthday highlight on card */
     .staff-card.birthday-today {
       background: linear-gradient(145deg, #fff9ef, #fff3e0);
       border-left: 5px solid #f97316;
@@ -266,7 +311,6 @@
       font-weight: 500;
     }
 
-    /* modal */
     .modal {
       position: fixed;
       inset: 0;
@@ -365,7 +409,6 @@
       margin-bottom: 6px;
     }
 
-    /* birthday modal special */
     .birthday-toast-list {
       max-height: 400px;
       overflow-y: auto;
@@ -424,6 +467,9 @@
         flex-direction: column;
         align-items: center;
       }
+      .search-box {
+        padding: 6px 16px;
+      }
     }
   </style>
 </head>
@@ -440,6 +486,16 @@
 </div>
 
 <div class="app-container">
+  <!-- Search Box -->
+  <div class="search-section" id="searchSection">
+    <div class="search-box">
+      <span class="search-icon">🔍</span>
+      <input type="text" class="search-input" id="searchInput" placeholder="Tìm kiếm theo tên cán bộ...">
+      <button class="search-clear" id="searchClearBtn" style="display: none;">✕</button>
+    </div>
+    <div class="search-result-info" id="searchResultInfo"></div>
+  </div>
+
   <div class="nav-section" id="navSection" style="display: none;">
     <button class="back-btn" id="backToDeptBtn">← Tất cả phòng ban</button>
     <div class="current-dept-badge" id="currentDeptLabel"></div>
@@ -454,9 +510,13 @@
     <div class="loading-state" id="staffLoading" style="display: none;">Đang tải nhân sự...</div>
     <div class="staff-grid" id="staffGrid"></div>
   </div>
+  
+  <div id="searchView" style="display: none;">
+    <div class="staff-grid" id="searchGrid"></div>
+  </div>
 </div>
 
-<!-- Modal chi tiết nhân sự -->
+<!-- Modals (giữ nguyên) -->
 <div class="modal" id="staffModal">
   <div class="modal-card">
     <span class="modal-close" id="closeModalBtn">&times;</span>
@@ -474,7 +534,6 @@
   </div>
 </div>
 
-<!-- Modal danh sách sinh nhật hôm nay -->
 <div class="modal" id="birthdayModal">
   <div class="modal-card">
     <span class="modal-close" id="closeBirthdayModalBtn">&times;</span>
@@ -483,9 +542,7 @@
       <h2 style="margin-top: 6px;">Sinh nhật hôm nay</h2>
       <p style="color: #c2410c; font-weight: 500;" id="birthdayModalDate"></p>
     </div>
-    <div id="birthdayListContainer" class="birthday-toast-list">
-      <!-- dynamic birthday people -->
-    </div>
+    <div id="birthdayListContainer" class="birthday-toast-list"></div>
     <div style="text-align: center; margin-top: 16px;">
       <button class="back-btn" id="closeBirthdayInnerBtn" style="background:#f1f5f9;">Đóng</button>
     </div>
@@ -497,17 +554,23 @@
   
   let masterData = [];        
   let currentDept = null;     
+  let currentSearchKeyword = '';
 
   // DOM elements
   const deptViewDiv = document.getElementById('deptView');
   const staffViewDiv = document.getElementById('staffView');
+  const searchViewDiv = document.getElementById('searchView');
   const navSection = document.getElementById('navSection');
   const currentDeptLabel = document.getElementById('currentDeptLabel');
   const backBtn = document.getElementById('backToDeptBtn');
   const deptGrid = document.getElementById('deptGrid');
   const staffGrid = document.getElementById('staffGrid');
+  const searchGrid = document.getElementById('searchGrid');
   const deptLoadingSpan = document.getElementById('deptLoading');
   const staffLoadingSpan = document.getElementById('staffLoading');
+  const searchInput = document.getElementById('searchInput');
+  const searchClearBtn = document.getElementById('searchClearBtn');
+  const searchResultInfo = document.getElementById('searchResultInfo');
 
   // Modal elements
   const modal = document.getElementById('staffModal');
@@ -522,7 +585,6 @@
   const modalBidv = document.getElementById('modalBidv');
   const modalAgri = document.getElementById('modalAgri');
 
-  // Birthday modal
   const birthdayModal = document.getElementById('birthdayModal');
   const closeBirthdayModalBtn = document.getElementById('closeBirthdayModalBtn');
   const closeBirthdayInnerBtn = document.getElementById('closeBirthdayInnerBtn');
@@ -531,13 +593,11 @@
   const birthdayBadgeBtn = document.getElementById('birthdayBadgeBtn');
   const birthdayModalDateSpan = document.getElementById('birthdayModalDate');
 
-  // ----- Helper: kiểm tra sinh nhật hôm nay (so sánh ngày - tháng)
+  // Helper functions
   function isBirthdayToday(birthDateStr) {
     if (!birthDateStr || birthDateStr.trim() === '') return false;
-    // try to parse dd/mm/yyyy or dd-mm-yyyy
     let day = null, month = null;
     const str = birthDateStr.trim();
-    // formats: dd/mm/yyyy, dd-mm-yyyy, dd.mm.yyyy
     let parts = str.split(/[\/\-\.]/);
     if (parts.length >= 2) {
       day = parseInt(parts[0], 10);
@@ -550,41 +610,32 @@
     return (day === todayDay && month === todayMonth);
   }
 
-  // Lấy danh sách nhân sự sinh nhật hôm nay
   function getTodayBirthdayPeople() {
     return masterData.filter(person => isBirthdayToday(person.ngaySinh));
   }
 
-  // Cập nhật badge số lượng sinh nhật + highlight trên card nếu đang ở chế độ staff view
   function updateBirthdayUI() {
     const birthdayPeople = getTodayBirthdayPeople();
     const count = birthdayPeople.length;
     birthdayCountLabel.innerText = count;
-    if (count > 0) {
-      birthdayBadgeBtn.style.background = "#ffddd3";
-    } else {
-      birthdayBadgeBtn.style.background = "#ffecd6";
-    }
-
-    // Nếu đang ở chế độ xem nhân sự (staffView hiển thị), highlight các card có sinh nhật
+    birthdayBadgeBtn.style.background = count > 0 ? "#ffddd3" : "#ffecd6";
     if (staffViewDiv.style.display === 'block') {
-      const allStaffCards = document.querySelectorAll('.staff-card');
-      // gắn lại highlight nhưng không làm mất dữ liệu? ta sẽ gọi hàm refresh highlight riêng
       highlightBirthdayCards();
+    }
+    if (searchViewDiv.style.display === 'block') {
+      highlightSearchBirthdayCards();
     }
   }
 
-  // Hightlight các thẻ nhân viên có sinh nhật trong staffGrid hiện tại (dựa trên data attribute)
   function highlightBirthdayCards() {
     if (!staffGrid) return;
     const cards = staffGrid.querySelectorAll('.staff-card');
     cards.forEach(card => {
       const personId = card.getAttribute('data-person-id');
       if (personId) {
-        const person = masterData.find(p => (p.hoTen + p.soDienThoai) === personId); // rough id
+        const person = masterData.find(p => (p.hoTen + p.soDienThoai + p.donVi) === personId);
         if (person && isBirthdayToday(person.ngaySinh)) {
           card.classList.add('birthday-today');
-          // thêm icon nếu chưa có
           if (!card.querySelector('.birthday-icon-card')) {
             const iconSpan = document.createElement('div');
             iconSpan.className = 'birthday-icon-card';
@@ -601,18 +652,42 @@
     });
   }
 
-  // Mở modal danh sách sinh nhật
+  function highlightSearchBirthdayCards() {
+    if (!searchGrid) return;
+    const cards = searchGrid.querySelectorAll('.staff-card');
+    cards.forEach(card => {
+      const personId = card.getAttribute('data-person-id');
+      if (personId) {
+        const person = masterData.find(p => (p.hoTen + p.soDienThoai + p.donVi) === personId);
+        if (person && isBirthdayToday(person.ngaySinh)) {
+          card.classList.add('birthday-today');
+          if (!card.querySelector('.birthday-icon-card')) {
+            const iconSpan = document.createElement('div');
+            iconSpan.className = 'birthday-icon-card';
+            iconSpan.innerHTML = '🎂';
+            iconSpan.title = 'Hôm nay là sinh nhật!';
+            card.appendChild(iconSpan);
+          }
+        } else {
+          card.classList.remove('birthday-today');
+          const existingIcon = card.querySelector('.birthday-icon-card');
+          if (existingIcon) existingIcon.remove();
+        }
+      }
+    });
+  }
+
   function openBirthdayModal() {
     const birthdayList = getTodayBirthdayPeople();
     if (birthdayList.length === 0) {
-      alert("Hôm nay không có ai sinh nhật 🎂");
+      alert("🎂 Hôm nay không có ai sinh nhật!");
       return;
     }
     const today = new Date();
     const formatted = `${today.getDate()}/${today.getMonth()+1}`;
-    birthdayModalDateSpan.innerText = `Hôm nay ${formatted}`;
+    birthdayModalDateSpan.innerText = `🎈 Ngày ${formatted} · Chúc mừng sinh nhật 🎈`;
     birthdayListContainer.innerHTML = '';
-    birthdayList.forEach(person => {
+    birthdayList.forEach((person) => {
       const itemDiv = document.createElement('div');
       itemDiv.className = 'birthday-person-item';
       const avatarUrl = (person.avatar && person.avatar.trim()) ? person.avatar : 'https://i.imgur.com/HeIi0wU.png';
@@ -623,7 +698,7 @@
           <div style="font-size:12px; color:#7b5e3b;">${escapeHtml(person.congViec || '')} · ${escapeHtml(person.donVi || '')}</div>
           <div style="font-size:12px;">📞 ${escapeHtml(person.soDienThoai || '---')}</div>
         </div>
-        <button class="view-profile-birthday" data-name="${escapeHtml(person.hoTen)}" data-idx="${masterData.indexOf(person)}">Xem chi tiết</button>
+        <button class="view-profile-birthday">Xem chi tiết</button>
       `;
       const viewBtn = itemDiv.querySelector('.view-profile-birthday');
       viewBtn.addEventListener('click', (e) => {
@@ -636,12 +711,12 @@
     birthdayModal.style.display = 'flex';
   }
 
-  // Sắp xếp theo chức danh
+  // Sort by job title
   function sortByJobTitle(employees) {
     const getRank = (jobTitle = '') => {
       const title = jobTitle.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-      if (title.includes('truong phong') || title.includes('trưởng phòng')) return 1;
-      if (title.includes('pho phong') || title.includes('phó phòng')) return 2;
+      if (title.includes('truongphong') || title.includes('trưởng phòng')) return 1;
+      if (title.includes('phophong') || title.includes('phó phòng')) return 2;
       if (title.includes('chuyen vien chinh') || title.includes('chuyên viên chính')) return 3;
       if (title.includes('chuyen vien') || title.includes('chuyên viên')) return 4;
       if (title.includes('nhan vien') || title.includes('nhân viên')) return 5;
@@ -655,6 +730,88 @@
     });
   }
 
+  // Search function
+  function searchStaff(keyword) {
+    if (!keyword.trim()) {
+      clearSearch();
+      return;
+    }
+    const lowerKeyword = keyword.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+    const results = masterData.filter(person => {
+      const name = (person.hoTen || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+      return name.includes(lowerKeyword);
+    });
+    const sortedResults = sortByJobTitle(results);
+    
+    // Hide other views
+    deptViewDiv.style.display = 'none';
+    staffViewDiv.style.display = 'none';
+    searchViewDiv.style.display = 'block';
+    navSection.style.display = 'flex';
+    currentDeptLabel.textContent = `Kết quả tìm kiếm: "${keyword}"`;
+    
+    searchResultInfo.innerHTML = `🔍 Tìm thấy ${sortedResults.length} kết quả cho "${escapeHtml(keyword)}"`;
+    
+    if (sortedResults.length === 0) {
+      searchGrid.innerHTML = `<div class="empty-state">😔 Không tìm thấy cán bộ nào với tên "${escapeHtml(keyword)}"</div>`;
+      return;
+    }
+    
+    searchGrid.innerHTML = '';
+    sortedResults.forEach(person => {
+      const card = createStaffCard(person);
+      searchGrid.appendChild(card);
+    });
+    highlightSearchBirthdayCards();
+  }
+  
+  function createStaffCard(person) {
+    const card = document.createElement('div');
+    card.className = 'staff-card';
+    const uniqueKey = (person.hoTen || '') + (person.soDienThoai || '') + (person.donVi || '');
+    card.setAttribute('data-person-id', uniqueKey);
+    const avatarUrl = person.avatar && person.avatar.trim() !== '' ? person.avatar : 'https://i.imgur.com/HeIi0wU.png';
+    const fullName = person.hoTen || 'Chưa cập nhật';
+    const jobTitle = person.congViec || 'Chức danh';
+    const phone = person.soDienThoai || '---';
+    const officePhone = person.phone_cq || '---';
+    const deptName = person.donVi || 'Chưa có phòng';
+    card.innerHTML = `
+      <div class="staff-top">
+        <img class="staff-avatar" src="${avatarUrl}" alt="avatar" onerror="this.src='https://i.imgur.com/HeIi0wU.png'">
+        <div>
+          <div class="staff-name">${escapeHtml(fullName)}</div>
+          <div class="staff-title">${escapeHtml(jobTitle)}</div>
+        </div>
+      </div>
+      <div class="staff-info-row"><span>📞 Di động</span><b>${escapeHtml(phone)}</b></div>
+      <div class="staff-info-row"><span>📞 Máy CQ</span><b>${escapeHtml(officePhone)}</b></div>
+      <div class="staff-tag-dept">🏷️ ${escapeHtml(deptName)}</div>
+    `;
+    card.addEventListener('click', () => openStaffModal(person));
+    return card;
+  }
+  
+  function clearSearch() {
+    currentSearchKeyword = '';
+    searchInput.value = '';
+    searchClearBtn.style.display = 'none';
+    searchResultInfo.innerHTML = '';
+    if (currentDept) {
+      // Return to current department view
+      deptViewDiv.style.display = 'none';
+      staffViewDiv.style.display = 'block';
+      searchViewDiv.style.display = 'none';
+      navSection.style.display = 'flex';
+      currentDeptLabel.textContent = currentDept;
+      const filtered = masterData.filter(item => (item.donVi ? item.donVi.trim() : '') === currentDept);
+      renderStaffList(filtered, currentDept);
+    } else {
+      // Return to department list
+      backToDepartments();
+    }
+  }
+  
   function renderDepartments() {
     deptLoadingSpan.style.display = 'none';
     if (!masterData.length) {
@@ -691,10 +848,11 @@
     const sortedStaff = sortByJobTitle(filtered);
     deptViewDiv.style.display = 'none';
     staffViewDiv.style.display = 'block';
+    searchViewDiv.style.display = 'none';
     navSection.style.display = 'flex';
     currentDeptLabel.textContent = departmentName;
     renderStaffList(sortedStaff, departmentName);
-    setTimeout(() => highlightBirthdayCards(), 50);
+    setTimeout(() => highlightBirthdayCards(), 30);
   }
 
   function renderStaffList(staffList, deptName) {
@@ -705,29 +863,7 @@
     }
     staffGrid.innerHTML = '';
     staffList.forEach(person => {
-      const card = document.createElement('div');
-      card.className = 'staff-card';
-      // tạo id tạm thời để highlight
-      const personKey = (person.hoTen || '') + (person.soDienThoai || '');
-      card.setAttribute('data-person-id', personKey);
-      const avatarUrl = person.avatar && person.avatar.trim() !== '' ? person.avatar : 'https://i.imgur.com/HeIi0wU.png';
-      const fullName = person.hoTen || 'Chưa cập nhật';
-      const jobTitle = person.congViec || 'Chức danh';
-      const phone = person.soDienThoai || '---';
-      const officePhone = person.phone_cq || '---';
-      card.innerHTML = `
-        <div class="staff-top">
-          <img class="staff-avatar" src="${avatarUrl}" alt="avatar" onerror="this.src='https://i.imgur.com/HeIi0wU.png'">
-          <div>
-            <div class="staff-name">${escapeHtml(fullName)}</div>
-            <div class="staff-title">${escapeHtml(jobTitle)}</div>
-          </div>
-        </div>
-        <div class="staff-info-row"><span>📞 Di động</span><b>${escapeHtml(phone)}</b></div>
-        <div class="staff-info-row"><span>📞 Máy CQ</span><b>${escapeHtml(officePhone)}</b></div>
-        <div class="staff-tag-dept">🏷️ ${escapeHtml(deptName)}</div>
-      `;
-      card.addEventListener('click', () => openStaffModal(person));
+      const card = createStaffCard(person);
       staffGrid.appendChild(card);
     });
     highlightBirthdayCards();
@@ -751,8 +887,13 @@
   function closeBirthdayModalFn() { birthdayModal.style.display = 'none'; }
   function backToDepartments() {
     currentDept = null;
+    currentSearchKeyword = '';
+    searchInput.value = '';
+    searchClearBtn.style.display = 'none';
+    searchResultInfo.innerHTML = '';
     deptViewDiv.style.display = 'block';
     staffViewDiv.style.display = 'none';
+    searchViewDiv.style.display = 'none';
     navSection.style.display = 'none';
     renderDepartments();
   }
@@ -770,7 +911,7 @@
   async function loadMasterData() {
     try {
       deptLoadingSpan.style.display = 'block';
-      deptLoadingSpan.textContent = 'Đang tải dữ liệu từ cơ sở dữ liệu...';
+      deptLoadingSpan.textContent = '🔄 Đang đồng bộ dữ liệu từ Google Sheets...';
       const response = await fetch(SHEET_URL);
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
       const rawData = await response.json();
@@ -792,14 +933,17 @@
         avatar: row.avatar || row['Avatar'] || ''
       })).filter(item => item.hoTen && item.hoTen.trim() !== '');
       
-      if (masterData.length === 0) deptLoadingSpan.textContent = '⚠️ Không tìm thấy dữ liệu nhân sự hợp lệ';
-      else deptLoadingSpan.style.display = 'none';
+      if (masterData.length === 0) {
+        deptLoadingSpan.textContent = '⚠️ Không tìm thấy dữ liệu nhân sự hợp lệ';
+      } else {
+        deptLoadingSpan.style.display = 'none';
+      }
       renderDepartments();
       updateBirthdayUI();
     } catch (err) {
       console.error(err);
-      deptLoadingSpan.textContent = '❌ Lỗi tải dữ liệu: ' + err.message;
-      deptGrid.innerHTML = `<div class="empty-state">Không thể kết nối đến nguồn dữ liệu.</div>`;
+      deptLoadingSpan.textContent = '❌ Lỗi kết nối: ' + err.message;
+      deptGrid.innerHTML = `<div class="empty-state">Không thể tải dữ liệu. Vui lòng kiểm tra kết nối.</div>`;
     }
   }
 
@@ -810,6 +954,24 @@
   birthdayBadgeBtn.addEventListener('click', openBirthdayModal);
   closeBirthdayModalBtn.addEventListener('click', closeBirthdayModalFn);
   closeBirthdayInnerBtn.addEventListener('click', closeBirthdayModalFn);
+  
+  // Search events
+  searchInput.addEventListener('input', (e) => {
+    const keyword = e.target.value;
+    if (keyword.trim()) {
+      searchClearBtn.style.display = 'flex';
+      searchStaff(keyword);
+    } else {
+      searchClearBtn.style.display = 'none';
+      clearSearch();
+    }
+  });
+  
+  searchClearBtn.addEventListener('click', () => {
+    searchInput.value = '';
+    searchClearBtn.style.display = 'none';
+    clearSearch();
+  });
 
   loadMasterData();
 </script>
