@@ -1,635 +1,974 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Danh bạ Thuế tỉnh Thái Nguyên</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Danh bạ Thuế tỉnh Thái Nguyên | Tra cứu cán bộ công chức</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet" />
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    body {
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      background: #f1f5f9;
+      color: #0f172a;
+    }
 
-<style>
-*{
-  margin:0;
-  padding:0;
-  box-sizing:border-box;
-}
+    .header {
+      background: linear-gradient(135deg, #0a5e8f, #0f3b5c);
+      color: white;
+      padding: 28px 20px;
+      text-align: center;
+      box-shadow: 0 6px 14px rgba(0, 0, 0, 0.08);
+      position: relative;
+    }
 
-body{
-  font-family:'Inter',sans-serif;
-  background:#f1f5f9;
-  color:#0f172a;
-}
+    .header h1 {
+      font-size: 28px;
+      font-weight: 700;
+      letter-spacing: -0.3px;
+      margin-bottom: 8px;
+    }
 
-.header{
-  background:linear-gradient(135deg,#0a5e8f,#0f3b5c);
-  color:white;
-  padding:28px 20px;
-  text-align:center;
-}
+    .header p {
+      font-size: 15px;
+      opacity: 0.85;
+    }
 
-.header h1{
-  font-size:28px;
-  margin-bottom:8px;
-}
+    .birthday-badge {
+      position: absolute;
+      top: 20px;
+      right: 24px;
+      background: #ffecd6;
+      border-radius: 60px;
+      padding: 6px 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 600;
+      font-size: 14px;
+      color: #c2410c;
+      cursor: pointer;
+      transition: 0.2s;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      border: 1px solid #ffd8ae;
+    }
+    .birthday-badge:hover {
+      background: #ffe0bc;
+      transform: scale(1.02);
+    }
+    .birthday-badge span {
+      font-size: 18px;
+    }
 
-.header p{
-  opacity:.9;
-}
+    .app-container {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 28px 20px 48px;
+    }
 
-.container{
-  max-width:1280px;
-  margin:auto;
-  padding:24px;
-}
+    .search-section {
+      margin-bottom: 28px;
+    }
+    .search-box {
+      background: white;
+      border-radius: 60px;
+      padding: 8px 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+      border: 1px solid #e2e8f0;
+      transition: all 0.2s;
+    }
+    .search-box:focus-within {
+      border-color: #0f62fe;
+      box-shadow: 0 4px 12px rgba(15, 98, 254, 0.1);
+    }
+    .search-icon {
+      font-size: 20px;
+      color: #94a3b8;
+    }
+    .search-input {
+      flex: 1;
+      border: none;
+      padding: 12px 0;
+      font-size: 16px;
+      outline: none;
+      font-family: 'Inter', sans-serif;
+    }
+    .search-clear {
+      background: none;
+      border: none;
+      font-size: 20px;
+      cursor: pointer;
+      color: #94a3b8;
+      padding: 4px 8px;
+      border-radius: 50%;
+      transition: 0.2s;
+    }
+    .search-clear:hover {
+      background: #f1f5f9;
+      color: #475569;
+    }
+    .search-result-info {
+      margin-top: 12px;
+      font-size: 14px;
+      color: #5b6e8c;
+      padding-left: 16px;
+    }
 
-.search-box{
-  background:white;
-  border-radius:50px;
-  display:flex;
-  align-items:center;
-  padding:10px 18px;
-  margin-bottom:24px;
-  border:1px solid #dbe4ee;
-}
+    .nav-section {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 28px;
+      flex-wrap: wrap;
+    }
 
-.search-input{
-  flex:1;
-  border:none;
-  outline:none;
-  font-size:16px;
-  padding:10px;
-}
+    .back-btn {
+      background: white;
+      border: 1px solid #cbd5e1;
+      padding: 8px 20px;
+      border-radius: 40px;
+      font-weight: 500;
+      font-size: 14px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+      color: #1e293b;
+    }
 
-.grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(280px,1fr));
-  gap:20px;
-}
+    .back-btn:hover {
+      background: #f8fafc;
+      border-color: #94a3b8;
+      transform: translateX(-2px);
+    }
 
-.card{
-  background:white;
-  border-radius:24px;
-  padding:20px;
-  box-shadow:0 4px 12px rgba(0,0,0,.05);
-  transition:.2s;
-  cursor:pointer;
-}
+    .current-dept-badge {
+      background: #e6f0ff;
+      padding: 8px 20px;
+      border-radius: 40px;
+      font-size: 14px;
+      font-weight: 600;
+      color: #0f62fe;
+    }
 
-.card:hover{
-  transform:translateY(-4px);
-}
+    .dept-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 20px;
+    }
 
-.dept-name{
-  font-size:20px;
-  font-weight:700;
-  margin-bottom:10px;
-  color:#0f3b5c;
-}
+    .dept-card {
+      background: white;
+      border-radius: 28px;
+      padding: 24px 20px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.04);
+      cursor: pointer;
+      transition: all 0.25s ease;
+      border: 1px solid #e9eef3;
+      text-align: center;
+    }
 
-.count{
-  background:#eff6ff;
-  display:inline-block;
-  padding:4px 12px;
-  border-radius:30px;
-  font-size:13px;
-}
+    .dept-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 20px 30px -12px rgba(0, 0, 0, 0.12);
+      border-color: #cbdff5;
+      background: #ffffff;
+    }
 
-.staff-card{
-  background:white;
-  border-radius:24px;
-  padding:18px;
-  box-shadow:0 4px 12px rgba(0,0,0,.04);
-  cursor:pointer;
-  transition:.2s;
-  position:relative;
-}
+    .dept-icon {
+      font-size: 44px;
+      margin-bottom: 16px;
+    }
 
-.staff-card:hover{
-  transform:translateY(-3px);
-}
+    .dept-name {
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      color: #0f3b5c;
+    }
 
-.staff-top{
-  display:flex;
-  gap:14px;
-  margin-bottom:16px;
-}
+    .dept-count {
+      font-size: 13px;
+      color: #5b6e8c;
+      background: #f1f5f9;
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 30px;
+    }
 
-.avatar{
-  width:72px;
-  height:72px;
-  border-radius:50%;
-  object-fit:cover;
-}
+    .staff-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+      gap: 22px;
+    }
 
-.name{
-  font-size:18px;
-  font-weight:700;
-  margin-bottom:6px;
-}
+    .staff-card {
+      background: white;
+      border-radius: 24px;
+      padding: 18px;
+      box-shadow: 0 5px 14px rgba(0, 0, 0, 0.03);
+      transition: 0.2s;
+      border: 1px solid #eef2f8;
+      cursor: pointer;
+      position: relative;
+    }
 
-.job{
-  background:#ecf5ff;
-  color:#0f62fe;
-  display:inline-block;
-  padding:4px 12px;
-  border-radius:30px;
-  font-size:13px;
-}
+    .staff-card:hover {
+      box-shadow: 0 12px 22px rgba(0, 0, 0, 0.08);
+      transform: translateY(-3px);
+    }
 
-.info{
-  margin-top:10px;
-  font-size:14px;
-}
+    .staff-card.birthday-today {
+      background: linear-gradient(145deg, #fff9ef, #fff3e0);
+      border-left: 5px solid #f97316;
+      border-radius: 24px;
+    }
 
-.info-row{
-  display:flex;
-  justify-content:space-between;
-  padding:8px 0;
-  border-bottom:1px dashed #e2e8f0;
-}
+    .birthday-icon-card {
+      position: absolute;
+      top: 12px;
+      right: 16px;
+      font-size: 22px;
+      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
+    }
 
-.tag{
-  margin-top:12px;
-  background:#f8fafc;
-  display:inline-block;
-  padding:6px 12px;
-  border-radius:30px;
-  font-size:12px;
-}
+    .staff-top {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+      margin-bottom: 16px;
+    }
 
-.back-btn{
-  margin-bottom:20px;
-  background:white;
-  border:1px solid #cbd5e1;
-  padding:10px 18px;
-  border-radius:40px;
-  cursor:pointer;
-}
+    .staff-avatar {
+      width: 70px;
+      height: 70px;
+      border-radius: 50%;
+      object-fit: cover;
+      background: #eef2ff;
+      border: 2px solid white;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    }
 
-.modal{
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,.45);
-  display:none;
-  align-items:center;
-  justify-content:center;
-  z-index:1000;
-  padding:20px;
-}
+    .staff-name {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 6px;
+      color: #0c4e6e;
+    }
 
-.modal-content{
-  background:white;
-  width:100%;
-  max-width:500px;
-  border-radius:30px;
-  padding:28px;
-  position:relative;
-}
+    .staff-title {
+      font-size: 13px;
+      font-weight: 500;
+      color: #2c6e9e;
+      background: #ecf7ff;
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 40px;
+    }
 
-.close{
-  position:absolute;
-  right:18px;
-  top:12px;
-  font-size:28px;
-  cursor:pointer;
-}
+    .staff-info-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 0;
+      font-size: 14px;
+      border-bottom: 1px dashed #ecf3f9;
+    }
 
-.modal-avatar{
-  width:100px;
-  height:100px;
-  border-radius:50%;
-  object-fit:cover;
-  display:block;
-  margin:auto;
-}
+    .staff-tag-dept {
+      margin-top: 12px;
+      font-size: 12px;
+      color: #5b6e8c;
+      background: #f8fafc;
+      padding: 6px 12px;
+      border-radius: 30px;
+      display: inline-block;
+    }
 
-.modal-name{
-  text-align:center;
-  font-size:24px;
-  font-weight:700;
-  margin-top:14px;
-}
+    .empty-state {
+      background: #fef9e3;
+      border-radius: 28px;
+      padding: 48px 20px;
+      text-align: center;
+      color: #b45309;
+      font-weight: 500;
+    }
 
-.modal-job{
-  text-align:center;
-  margin-top:8px;
-  color:#0f62fe;
-}
+    .loading-state {
+      text-align: center;
+      padding: 60px;
+      color: #2c6e9e;
+      font-weight: 500;
+    }
 
-.detail{
-  margin-top:20px;
-}
+    .modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(3px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      padding: 20px;
+    }
 
-.detail-item{
-  background:#f8fafc;
-  padding:14px;
-  border-radius:18px;
-  margin-bottom:12px;
-}
+    .modal-card {
+      background: white;
+      max-width: 520px;
+      width: 100%;
+      border-radius: 36px;
+      padding: 28px 28px 32px;
+      position: relative;
+      animation: fadeSlide 0.2s ease;
+      box-shadow: 0 30px 40px rgba(0, 0, 0, 0.2);
+    }
 
-.birthday{
-  border-left:5px solid #f97316;
-  background:#fff7ed;
-}
+    @keyframes fadeSlide {
+      from {
+        opacity: 0;
+        transform: scale(0.96);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
 
-.birthday-icon{
-  position:absolute;
-  right:14px;
-  top:12px;
-  font-size:22px;
-}
+    .modal-close {
+      position: absolute;
+      right: 20px;
+      top: 18px;
+      font-size: 30px;
+      cursor: pointer;
+      color: #8ba0bc;
+      transition: 0.15s;
+    }
 
-@media(max-width:640px){
-  .grid{
-    grid-template-columns:1fr;
-  }
-}
-</style>
+    .modal-close:hover {
+      color: #1e293b;
+    }
+
+    .modal-avatar {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin: 0 auto 18px;
+      display: block;
+      border: 3px solid #eef2ff;
+    }
+
+    .modal-name {
+      font-size: 26px;
+      font-weight: 700;
+      text-align: center;
+      margin-bottom: 6px;
+    }
+
+    .modal-job {
+      text-align: center;
+      color: #0f62fe;
+      font-weight: 500;
+      background: #ecf5ff;
+      display: inline-block;
+      padding: 4px 18px;
+      border-radius: 40px;
+      margin: 0 auto 20px;
+      width: fit-content;
+    }
+
+    .detail-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      margin-top: 14px;
+    }
+
+    .detail-item {
+      background: #f9fcff;
+      padding: 12px 16px;
+      border-radius: 20px;
+      border: 1px solid #eef2fa;
+    }
+
+    .detail-item b {
+      display: block;
+      font-size: 13px;
+      color: #3b5e7e;
+      margin-bottom: 6px;
+    }
+
+    .birthday-toast-list {
+      max-height: 400px;
+      overflow-y: auto;
+      margin-top: 8px;
+    }
+    .birthday-person-item {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 12px;
+      border-bottom: 1px solid #ffe2c6;
+      background: #fffaf2;
+      border-radius: 20px;
+      margin-bottom: 8px;
+    }
+    .birthday-person-item img {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+    .birthday-person-info {
+      flex: 1;
+    }
+    .birthday-person-name {
+      font-weight: 700;
+      color: #c2410c;
+    }
+    .view-profile-birthday {
+      background: none;
+      border: none;
+      color: #0f62fe;
+      font-weight: 500;
+      cursor: pointer;
+      font-size: 12px;
+    }
+
+    @media (max-width: 640px) {
+      .staff-grid {
+        grid-template-columns: 1fr;
+      }
+      .dept-grid {
+        grid-template-columns: 1fr;
+      }
+      .birthday-badge {
+        position: relative;
+        top: auto;
+        right: auto;
+        display: inline-flex;
+        width: fit-content;
+        margin: 12px auto 0;
+        justify-content: center;
+      }
+      .header {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+      .search-box {
+        padding: 6px 16px;
+      }
+    }
+  </style>
 </head>
-
 <body>
 
 <div class="header">
-  <h1>📋 DANH BẠ THUẾ TỈNH THÁI NGUYÊN</h1>
-  <p>Tra cứu công chức theo phòng ban</p>
+  <div>
+    <h1>📋 DANH BẠ THUẾ TỈNH THÁI NGUYÊN</h1>
+    <p>Tra cứu công chức Thuế tỉnh Thái Nguyên theo phòng ban</p>
+  </div>
+  <div class="birthday-badge" id="birthdayBadgeBtn">
+    <span>🎂</span> <span id="birthdayCountLabel">0</span> <span>sinh nhật hôm nay</span>
+  </div>
 </div>
 
-<div class="container">
-
-  <div class="search-box">
-    🔍
-    <input type="text" id="searchInput" class="search-input" placeholder="Tìm theo tên hoặc phòng ban...">
+<div class="app-container">
+  <div class="search-section">
+    <div class="search-box">
+      <span class="search-icon">🔍</span>
+      <input type="text" class="search-input" id="searchInput" placeholder="Tìm kiếm theo tên cán bộ...">
+      <button class="search-clear" id="searchClearBtn" style="display: none;">✕</button>
+    </div>
+    <div class="search-result-info" id="searchResultInfo"></div>
   </div>
 
-  <button class="back-btn" id="backBtn" style="display:none;">
-    ← Quay lại phòng ban
-  </button>
+  <div class="nav-section" id="navSection" style="display: none;">
+    <button class="back-btn" id="backToDeptBtn">← Tất cả phòng ban</button>
+    <div class="current-dept-badge" id="currentDeptLabel"></div>
+  </div>
 
-  <div id="departmentView" class="grid"></div>
+  <div id="deptView">
+    <div class="loading-state" id="deptLoading">Đang tải danh sách phòng ban...</div>
+    <div class="dept-grid" id="deptGrid"></div>
+  </div>
 
-  <div id="staffView" class="grid" style="display:none;"></div>
-
+  <div id="staffView" style="display: none;">
+    <div class="staff-grid" id="staffGrid"></div>
+  </div>
+  
+  <div id="searchView" style="display: none;">
+    <div class="staff-grid" id="searchGrid"></div>
+  </div>
 </div>
 
-<div class="modal" id="modal">
-  <div class="modal-content">
+<!-- Modal chi tiết -->
+<div class="modal" id="staffModal">
+  <div class="modal-card">
+    <span class="modal-close" id="closeModalBtn">&times;</span>
+    <img id="modalAvatar" class="modal-avatar" src="" alt="avatar">
+    <div class="modal-name" id="modalName">---</div>
+    <div style="display: flex; justify-content: center;"><div class="modal-job" id="modalJob"></div></div>
+    <div class="detail-grid">
+      <div class="detail-item"><b>🏢 Đơn vị</b><span id="modalUnit"></span></div>
+      <div class="detail-item"><b>📱 Điện thoại di động</b><span id="modalPhone"></span></div>
+      <div class="detail-item"><b>☎️ Máy cơ quan</b><span id="modalOfficePhone"></span></div>
+      <div class="detail-item"><b>🎂 Ngày sinh</b><span id="modalBirth"></span></div>
+      <div class="detail-item"><b>🏦 BIDV</b><span id="modalBidv"></span></div>
+      <div class="detail-item"><b>🌾 Agribank</b><span id="modalAgri"></span></div>
+    </div>
+  </div>
+</div>
 
-    <span class="close" id="closeModal">&times;</span>
-
-    <img id="modalAvatar" class="modal-avatar">
-
-    <div class="modal-name" id="modalName"></div>
-
-    <div class="modal-job" id="modalJob"></div>
-
-    <div class="detail">
-
-      <div class="detail-item">
-        <b>🏢 Đơn vị</b><br>
-        <span id="modalDept"></span>
-      </div>
-
-      <div class="detail-item">
-        <b>📱 Điện thoại</b><br>
-        <span id="modalPhone"></span>
-      </div>
-
-      <div class="detail-item">
-        <b>☎️ Máy CQ</b><br>
-        <span id="modalOffice"></span>
-      </div>
-
-      <div class="detail-item">
-        <b>🎂 Ngày sinh</b><br>
-        <span id="modalBirth"></span>
-      </div>
-
-      <div class="detail-item">
-        <b>🏦 BIDV</b><br>
-        <span id="modalBidv"></span>
-      </div>
-
-      <div class="detail-item">
-        <b>🌾 Agribank</b><br>
-        <span id="modalAgri"></span>
-      </div>
-
+<!-- Modal sinh nhật -->
+<div class="modal" id="birthdayModal">
+  <div class="modal-card">
+    <span class="modal-close" id="closeBirthdayModalBtn">&times;</span>
+    <div style="text-align: center; margin-bottom: 16px;">
+      <span style="font-size: 48px;">🎉</span>
+      <h2 style="margin-top: 6px;">Sinh nhật hôm nay</h2>
+      <p style="color: #c2410c; font-weight: 500;" id="birthdayModalDate"></p>
+    </div>
+    <div id="birthdayListContainer" class="birthday-toast-list"></div>
+    <div style="text-align: center; margin-top: 16px;">
+      <button class="back-btn" id="closeBirthdayInnerBtn" style="background:#f1f5f9;">Đóng</button>
     </div>
   </div>
 </div>
 
 <script>
+  // Google Sheet ID và cấu hình
+  const SHEET_URL = 'https://opensheet.elk.sh/1wH_rQwpF2jRO_8s277hq_kmuN-i79JMzKqNx43XAK0Y/Sheet1';
+  
+  // Đường dẫn thư mục chứa ảnh avatar (đổi theo cấu hình server của bạn)
+  // Ví dụ: nếu ảnh để trong thư mục "avatars" thì đặt là "avatars/"
+  const AVATAR_PATH = 'avatars/';  // ⚠️ CẬP NHẬT ĐƯỜNG DẪN THỰC TẾ CỦA BẠN
+  
+  let masterData = [];        
+  let currentDept = null;     
+  
+  // DOM elements
+  const deptViewDiv = document.getElementById('deptView');
+  const staffViewDiv = document.getElementById('staffView');
+  const searchViewDiv = document.getElementById('searchView');
+  const navSection = document.getElementById('navSection');
+  const currentDeptLabel = document.getElementById('currentDeptLabel');
+  const backBtn = document.getElementById('backToDeptBtn');
+  const deptGrid = document.getElementById('deptGrid');
+  const staffGrid = document.getElementById('staffGrid');
+  const searchGrid = document.getElementById('searchGrid');
+  const deptLoadingSpan = document.getElementById('deptLoading');
+  const searchInput = document.getElementById('searchInput');
+  const searchClearBtn = document.getElementById('searchClearBtn');
+  const searchResultInfo = document.getElementById('searchResultInfo');
 
-const SHEET_URL = 'https://opensheet.elk.sh/1wH_rQwpF2jRO_8s277hq_kmuN-i79JMzKqNx43XAK0Y/Sheet1';
+  // Modal elements
+  const modal = document.getElementById('staffModal');
+  const closeModalBtn = document.getElementById('closeModalBtn');
+  const modalAvatar = document.getElementById('modalAvatar');
+  const modalName = document.getElementById('modalName');
+  const modalJob = document.getElementById('modalJob');
+  const modalUnit = document.getElementById('modalUnit');
+  const modalPhone = document.getElementById('modalPhone');
+  const modalOfficePhone = document.getElementById('modalOfficePhone');
+  const modalBirth = document.getElementById('modalBirth');
+  const modalBidv = document.getElementById('modalBidv');
+  const modalAgri = document.getElementById('modalAgri');
 
-const AVATAR_PATH = 'Avatas/';
+  const birthdayModal = document.getElementById('birthdayModal');
+  const closeBirthdayModalBtn = document.getElementById('closeBirthdayModalBtn');
+  const closeBirthdayInnerBtn = document.getElementById('closeBirthdayInnerBtn');
+  const birthdayListContainer = document.getElementById('birthdayListContainer');
+  const birthdayCountLabel = document.getElementById('birthdayCountLabel');
+  const birthdayBadgeBtn = document.getElementById('birthdayBadgeBtn');
+  const birthdayModalDateSpan = document.getElementById('birthdayModalDate');
 
-const DEFAULT_AVATAR = 'Avatas/default.png';
-
-let masterData = [];
-
-let currentDepartment = null;
-
-const departmentView = document.getElementById('departmentView');
-const staffView = document.getElementById('staffView');
-const searchInput = document.getElementById('searchInput');
-const backBtn = document.getElementById('backBtn');
-
-function normalizeText(text=''){
-  return text
-    .toLowerCase()
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g,'');
-}
-
-function getAvatar(avatar){
-
-  if(!avatar || avatar.trim()===''){
-    return DEFAULT_AVATAR;
-  }
-
-  if(avatar.startsWith('http')){
-    return avatar;
-  }
-
-  return AVATAR_PATH + avatar;
-}
-
-function isBirthdayToday(dateStr){
-
-  if(!dateStr) return false;
-
-  const parts = dateStr.split(/[\/\-\.]/);
-
-  if(parts.length < 2) return false;
-
-  const d = parseInt(parts[0]);
-  const m = parseInt(parts[1]);
-
-  const today = new Date();
-
-  return d === today.getDate() &&
-         m === today.getMonth()+1;
-}
-
-function openModal(person){
-
-  document.getElementById('modalAvatar').src = getAvatar(person.avatar);
-
-  document.getElementById('modalName').innerText = person.hoTen || '';
-
-  document.getElementById('modalJob').innerText = person.congViec || '';
-
-  document.getElementById('modalDept').innerText = person.donVi || '';
-
-  document.getElementById('modalPhone').innerHTML =
-  `<a href="tel:${person.soDienThoai}">${person.soDienThoai || '---'}</a>`;
-
-  document.getElementById('modalOffice').innerText = person.phone_cq || '';
-
-  document.getElementById('modalBirth').innerText = person.ngaySinh || '';
-
-  document.getElementById('modalBidv').innerText = person.bidv || '';
-
-  document.getElementById('modalAgri').innerText = person.agribank || '';
-
-  document.getElementById('modal').style.display='flex';
-}
-
-function createStaffCard(person){
-
-  const div = document.createElement('div');
-
-  div.className='staff-card';
-
-  if(isBirthdayToday(person.ngaySinh)){
-    div.classList.add('birthday');
-  }
-
-  div.innerHTML=`
-
-    ${isBirthdayToday(person.ngaySinh)
-      ? `<div class="birthday-icon">🎂</div>`
-      : ''
+  // Hàm xử lý avatar: nhận giá trị từ cột avatar (có thể là tên file như "nguyenvanA.jpg")
+  function getAvatarUrl(avatarValue) {
+    if (!avatarValue || avatarValue.trim() === '') {
+      return 'https://i.imgur.com/HeIi0wU.png'; // ảnh mặc định
     }
-
-    <div class="staff-top">
-
-      <img class="avatar"
-        src="${getAvatar(person.avatar)}"
-        onerror="this.src='${DEFAULT_AVATAR}'">
-
-      <div>
-
-        <div class="name">${person.hoTen || ''}</div>
-
-        <div class="job">${person.congViec || ''}</div>
-
-      </div>
-
-    </div>
-
-    <div class="info">
-
-      <div class="info-row">
-        <span>📱 Di động</span>
-
-        <b>
-          <a href="tel:${person.soDienThoai}"
-             style="text-decoration:none;color:inherit;">
-            ${person.soDienThoai || '---'}
-          </a>
-        </b>
-      </div>
-
-      <div class="info-row">
-        <span>☎️ Máy CQ</span>
-        <b>${person.phone_cq || '---'}</b>
-      </div>
-
-      <div class="tag">
-        🏢 ${person.donVi || ''}
-      </div>
-
-    </div>
-  `;
-
-  div.addEventListener('click',()=>openModal(person));
-
-  return div;
-}
-
-function renderDepartments(){
-
-  const map = new Map();
-
-  masterData.forEach(item=>{
-
-    if(item.donVi){
-
-      map.set(
-        item.donVi,
-        (map.get(item.donVi)||0)+1
-      );
+    
+    // Nếu avatar đã là URL đầy đủ (http:// hoặc https://)
+    if (avatarValue.startsWith('http://') || avatarValue.startsWith('https://')) {
+      return avatarValue;
     }
-  });
+    
+    // Nếu là tên file (vd: "nguyenvana.jpg" hoặc "nguyenvana.png")
+    // Ghép với đường dẫn thư mục avatar
+    return AVATAR_PATH + avatarValue;
+  }
 
-  departmentView.innerHTML='';
+  // Kiểm tra sinh nhật hôm nay
+  function isBirthdayToday(birthDateStr) {
+    if (!birthDateStr || birthDateStr.trim() === '') return false;
+    let day = null, month = null;
+    const str = birthDateStr.trim();
+    let parts = str.split(/[\/\-\.]/);
+    if (parts.length >= 2) {
+      day = parseInt(parts[0], 10);
+      month = parseInt(parts[1], 10);
+    }
+    if (isNaN(day) || isNaN(month)) return false;
+    const today = new Date();
+    const todayDay = today.getDate();
+    const todayMonth = today.getMonth() + 1;
+    return (day === todayDay && month === todayMonth);
+  }
 
-  [...map.keys()].sort().forEach(dept=>{
+  function getTodayBirthdayPeople() {
+    return masterData.filter(person => isBirthdayToday(person.ngaySinh));
+  }
 
-    const div = document.createElement('div');
+  function updateBirthdayUI() {
+    const birthdayPeople = getTodayBirthdayPeople();
+    const count = birthdayPeople.length;
+    birthdayCountLabel.innerText = count;
+    birthdayBadgeBtn.style.background = count > 0 ? "#ffddd3" : "#ffecd6";
+    if (staffViewDiv.style.display === 'block') highlightBirthdayCards();
+    if (searchViewDiv.style.display === 'block') highlightSearchBirthdayCards();
+  }
 
-    div.className='card';
+  function highlightBirthdayCards() {
+    if (!staffGrid) return;
+    const cards = staffGrid.querySelectorAll('.staff-card');
+    cards.forEach(card => {
+      const personId = card.getAttribute('data-person-id');
+      const person = masterData.find(p => p.id == personId);
+      if (person && isBirthdayToday(person.ngaySinh)) {
+        card.classList.add('birthday-today');
+        if (!card.querySelector('.birthday-icon-card')) {
+          const iconSpan = document.createElement('div');
+          iconSpan.className = 'birthday-icon-card';
+          iconSpan.innerHTML = '🎂';
+          iconSpan.title = 'Hôm nay là sinh nhật!';
+          card.appendChild(iconSpan);
+        }
+      } else {
+        card.classList.remove('birthday-today');
+        const existingIcon = card.querySelector('.birthday-icon-card');
+        if (existingIcon) existingIcon.remove();
+      }
+    });
+  }
 
-    div.innerHTML=`
-      <div class="dept-name">${dept}</div>
-      <div class="count">${map.get(dept)} cán bộ</div>
+  function highlightSearchBirthdayCards() {
+    if (!searchGrid) return;
+    const cards = searchGrid.querySelectorAll('.staff-card');
+    cards.forEach(card => {
+      const personId = card.getAttribute('data-person-id');
+      const person = masterData.find(p => p.id == personId);
+      if (person && isBirthdayToday(person.ngaySinh)) {
+        card.classList.add('birthday-today');
+        if (!card.querySelector('.birthday-icon-card')) {
+          const iconSpan = document.createElement('div');
+          iconSpan.className = 'birthday-icon-card';
+          iconSpan.innerHTML = '🎂';
+          card.appendChild(iconSpan);
+        }
+      } else {
+        card.classList.remove('birthday-today');
+        const existingIcon = card.querySelector('.birthday-icon-card');
+        if (existingIcon) existingIcon.remove();
+      }
+    });
+  }
+
+  function openBirthdayModal() {
+    const birthdayList = getTodayBirthdayPeople();
+    if (birthdayList.length === 0) {
+      alert("🎂 Hôm nay không có ai sinh nhật!");
+      return;
+    }
+    const today = new Date();
+    const formatted = `${today.getDate()}/${today.getMonth()+1}`;
+    birthdayModalDateSpan.innerText = `🎈 Ngày ${formatted} · Chúc mừng sinh nhật 🎈`;
+    birthdayListContainer.innerHTML = '';
+    birthdayList.forEach((person) => {
+      const itemDiv = document.createElement('div');
+      itemDiv.className = 'birthday-person-item';
+      const avatarUrl = getAvatarUrl(person.avatar);
+      itemDiv.innerHTML = `
+        <img src="${avatarUrl}" onerror="this.src='https://i.imgur.com/HeIi0wU.png'">
+        <div class="birthday-person-info">
+          <div class="birthday-person-name">🎂 ${escapeHtml(person.hoTen || '')}</div>
+          <div style="font-size:12px; color:#7b5e3b;">${escapeHtml(person.congViec || '')} · ${escapeHtml(person.donVi || '')}</div>
+          <div style="font-size:12px;">📞 ${escapeHtml(person.soDienThoai || '---')}</div>
+        </div>
+        <button class="view-profile-birthday">Xem chi tiết</button>
+      `;
+      const viewBtn = itemDiv.querySelector('.view-profile-birthday');
+      viewBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        birthdayModal.style.display = 'none';
+        openStaffModal(person);
+      });
+      birthdayListContainer.appendChild(itemDiv);
+    });
+    birthdayModal.style.display = 'flex';
+  }
+
+  // Sắp xếp theo chức vụ
+  function sortByJobTitle(employees) {
+    const getRank = (jobTitle = '') => {
+      const title = jobTitle.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+      if (title.includes('truongphong') || title.includes('trưởng phòng')) return 1;
+      if (title.includes('phophong') || title.includes('phó phòng')) return 2;
+      if (title.includes('chuyen vien chinh') || title.includes('chuyên viên chính')) return 3;
+      if (title.includes('chuyen vien') || title.includes('chuyên viên')) return 4;
+      if (title.includes('nhan vien') || title.includes('nhân viên')) return 5;
+      return 6;
+    };
+    return [...employees].sort((a, b) => {
+      const rankA = getRank(a.congViec);
+      const rankB = getRank(b.congViec);
+      if (rankA !== rankB) return rankA - rankB;
+      return (a.hoTen || '').localeCompare(b.hoTen || '', 'vi');
+    });
+  }
+
+  // Tạo card nhân sự
+  function createStaffCard(person) {
+    const card = document.createElement('div');
+    card.className = 'staff-card';
+    card.setAttribute('data-person-id', person.id);
+    const avatarUrl = getAvatarUrl(person.avatar);
+    card.innerHTML = `
+      <div class="staff-top">
+        <img class="staff-avatar" src="${avatarUrl}" alt="avatar" onerror="this.src='https://i.imgur.com/HeIi0wU.png'">
+        <div>
+          <div class="staff-name">${escapeHtml(person.hoTen || 'Chưa cập nhật')}</div>
+          <div class="staff-title">${escapeHtml(person.congViec || 'Chức danh')}</div>
+        </div>
+      </div>
+      <div class="staff-info-row"><span>📞 Di động</span><b>${escapeHtml(person.soDienThoai || '---')}</b></div>
+      <div class="staff-info-row"><span>📞 Máy CQ</span><b>${escapeHtml(person.phone_cq || '---')}</b></div>
+      <div class="staff-tag-dept">🏷️ ${escapeHtml(person.donVi || 'Chưa có phòng')}</div>
     `;
+    card.addEventListener('click', () => openStaffModal(person));
+    return card;
+  }
 
-    div.addEventListener('click',()=>{
-      currentDepartment = dept;
-      renderDepartmentStaff(dept);
-    });
-
-    departmentView.appendChild(div);
-  });
-}
-
-function renderDepartmentStaff(dept){
-
-  backBtn.style.display='inline-block';
-
-  departmentView.style.display='none';
-
-  staffView.style.display='grid';
-
-  staffView.innerHTML='';
-
-  masterData
-    .filter(x=>x.donVi===dept)
-    .forEach(person=>{
-      staffView.appendChild(createStaffCard(person));
-    });
-}
-
-function search(keyword){
-
-  keyword = normalizeText(keyword);
-
-  if(!keyword){
-
-    if(currentDepartment){
-
-      renderDepartmentStaff(currentDepartment);
-
-    }else{
-
-      staffView.style.display='none';
-      departmentView.style.display='grid';
+  // Tìm kiếm
+  function searchStaff(keyword) {
+    if (!keyword.trim()) {
+      clearSearchAndReset();
+      return;
     }
-
-    return;
+    const lowerKeyword = keyword.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+    const results = masterData.filter(person => {
+      const name = (person.hoTen || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+      return name.includes(lowerKeyword);
+    });
+    const sortedResults = sortByJobTitle(results);
+    
+    deptViewDiv.style.display = 'none';
+    staffViewDiv.style.display = 'none';
+    searchViewDiv.style.display = 'block';
+    navSection.style.display = 'flex';
+    currentDeptLabel.textContent = `Kết quả tìm kiếm: "${keyword}"`;
+    searchResultInfo.innerHTML = `🔍 Tìm thấy ${sortedResults.length} kết quả cho "${escapeHtml(keyword)}"`;
+    
+    if (sortedResults.length === 0) {
+      searchGrid.innerHTML = `<div class="empty-state">😔 Không tìm thấy cán bộ nào với tên "${escapeHtml(keyword)}"</div>`;
+      return;
+    }
+    searchGrid.innerHTML = '';
+    sortedResults.forEach(person => {
+      searchGrid.appendChild(createStaffCard(person));
+    });
+    highlightSearchBirthdayCards();
   }
 
-  const result = masterData.filter(person=>{
+  function clearSearchAndReset() {
+    searchInput.value = '';
+    searchClearBtn.style.display = 'none';
+    searchResultInfo.innerHTML = '';
+    if (currentDept) {
+      deptViewDiv.style.display = 'none';
+      staffViewDiv.style.display = 'block';
+      searchViewDiv.style.display = 'none';
+      navSection.style.display = 'flex';
+      currentDeptLabel.textContent = currentDept;
+      const filtered = masterData.filter(item => item.donVi === currentDept);
+      renderStaffList(filtered);
+    } else {
+      backToDepartments();
+    }
+  }
 
-    const name = normalizeText(person.hoTen || '');
+  function renderStaffList(staffList) {
+    if (!staffList.length) {
+      staffGrid.innerHTML = `<div class="empty-state">🏢 Phòng "${escapeHtml(currentDept)}" hiện chưa có cán bộ nào.</div>`;
+      return;
+    }
+    staffGrid.innerHTML = '';
+    staffList.forEach(person => staffGrid.appendChild(createStaffCard(person)));
+    highlightBirthdayCards();
+  }
 
-    const dept = normalizeText(person.donVi || '');
+  function openStaffByDepartment(departmentName) {
+    if (!departmentName) return;
+    currentDept = departmentName;
+    const filtered = masterData.filter(item => item.donVi === departmentName);
+    const sortedStaff = sortByJobTitle(filtered);
+    deptViewDiv.style.display = 'none';
+    staffViewDiv.style.display = 'block';
+    searchViewDiv.style.display = 'none';
+    navSection.style.display = 'flex';
+    currentDeptLabel.textContent = departmentName;
+    renderStaffList(sortedStaff);
+  }
 
-    return name.includes(keyword) ||
-           dept.includes(keyword);
-  });
+  function openStaffModal(person) {
+    const avatarUrl = getAvatarUrl(person.avatar);
+    modalAvatar.src = avatarUrl;
+    modalName.textContent = person.hoTen || '---';
+    modalJob.textContent = person.congViec || 'Chức vụ';
+    modalUnit.textContent = person.donVi || '---';
+    modalPhone.textContent = person.soDienThoai || '---';
+    modalOfficePhone.textContent = person.phone_cq || '---';
+    modalBirth.textContent = person.ngaySinh || '---';
+    modalBidv.textContent = person.bidv || '---';
+    modalAgri.textContent = person.agribank || '---';
+    modal.style.display = 'flex';
+  }
 
-  departmentView.style.display='none';
+  function renderDepartments() {
+    deptLoadingSpan.style.display = 'none';
+    if (!masterData.length) {
+      deptGrid.innerHTML = '<div class="empty-state">⚠️ Không tìm thấy dữ liệu từ Google Sheet</div>';
+      return;
+    }
+    const deptMap = new Map();
+    masterData.forEach(item => {
+      const dept = item.donVi;
+      if (dept && dept.trim() !== '') {
+        deptMap.set(dept.trim(), (deptMap.get(dept.trim()) || 0) + 1);
+      }
+    });
+    if (deptMap.size === 0) {
+      deptGrid.innerHTML = '<div class="empty-state">📭 Chưa có dữ liệu phòng ban</div>';
+      return;
+    }
+    const sortedDepts = Array.from(deptMap.keys()).sort((a,b) => a.localeCompare(b, 'vi'));
+    deptGrid.innerHTML = '';
+    for (let deptName of sortedDepts) {
+      const count = deptMap.get(deptName);
+      const card = document.createElement('div');
+      card.className = 'dept-card';
+      card.innerHTML = `<div class="dept-icon">🏛️</div><div class="dept-name">${escapeHtml(deptName)}</div><div class="dept-count">${count} cán bộ</div>`;
+      card.addEventListener('click', () => openStaffByDepartment(deptName));
+      deptGrid.appendChild(card);
+    }
+  }
 
-  staffView.style.display='grid';
-
-  staffView.innerHTML='';
-
-  result.forEach(person=>{
-    staffView.appendChild(createStaffCard(person));
-  });
-}
-
-async function loadData(){
-
-  try{
-
-    const res = await fetch(
-      SHEET_URL + '?t=' + Date.now()
-    );
-
-    const data = await res.json();
-
-    masterData = data.map(row=>({
-
-      id: row.id || '',
-
-      hoTen: row.hoTen || '',
-
-      congViec: row.congViec || '',
-
-      phone_cq: row.phone_cq || '',
-
-      soDienThoai: row.soDienThoai || '',
-
-      bidv: row.bidv || '',
-
-      agribank: row.agribank || '',
-
-      avatar: row.avatar || '',
-
-      donVi: row.donVi || '',
-
-      ngaySinh: row.ngaySinh || ''
-
-    }));
-
+  function backToDepartments() {
+    currentDept = null;
+    searchInput.value = '';
+    searchClearBtn.style.display = 'none';
+    searchResultInfo.innerHTML = '';
+    deptViewDiv.style.display = 'block';
+    staffViewDiv.style.display = 'none';
+    searchViewDiv.style.display = 'none';
+    navSection.style.display = 'none';
     renderDepartments();
-
-  }catch(err){
-
-    departmentView.innerHTML =
-    '<h3>❌ Không tải được dữ liệu</h3>';
-
-    console.error(err);
   }
-}
 
-searchInput.addEventListener('input',(e)=>{
-  search(e.target.value);
-});
-
-backBtn.addEventListener('click',()=>{
-
-  currentDepartment = null;
-
-  staffView.style.display='none';
-
-  departmentView.style.display='grid';
-
-  backBtn.style.display='none';
-
-});
-
-document.getElementById('closeModal')
-.addEventListener('click',()=>{
-
-  document.getElementById('modal').style.display='none';
-});
-
-window.addEventListener('click',(e)=>{
-
-  if(e.target.id==='modal'){
-    document.getElementById('modal').style.display='none';
+  function escapeHtml(str) {
+    if (!str) return '';
+    return str.replace(/[&<>]/g, function(m) {
+      if (m === '&') return '&amp;';
+      if (m === '<') return '&lt;';
+      if (m === '>') return '&gt;';
+      return m;
+    });
   }
-});
 
-loadData();
+  // Tải dữ liệu từ Google Sheet
+  async function loadMasterData() {
+    try {
+      deptLoadingSpan.style.display = 'block';
+      deptLoadingSpan.textContent = '🔄 Đang đồng bộ dữ liệu từ Google Sheets...';
+      const response = await fetch(SHEET_URL);
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      const rawData = await response.json();
+      
+      if (!Array.isArray(rawData) || rawData.length === 0) {
+        masterData = [];
+        renderDepartments();
+        updateBirthdayUI();
+        return;
+      }
+      
+      // Map đúng với cấu trúc cột: id, hoTen, congViec, phone_cq, soDienThoai, bidv, agribank, avatar, donVi, ngaySinh
+      masterData = rawData.map(row => ({
+        id: row.id || row['id'],
+        hoTen: row.hoTen || row['hoTen'] || '',
+        congViec: row.congViec || row['congViec'] || '',
+        phone_cq: row.phone_cq || row['phone_cq'] || '',
+        soDienThoai: row.soDienThoai || row['soDienThoai'] || '',
+        bidv: row.bidv || row['bidv'] || '',
+        agribank: row.agribank || row['agribank'] || '',
+        avatar: row.avatar || row['avatar'] || '',
+        donVi: row.donVi || row['donVi'] || '',
+        ngaySinh: row.ngaySinh || row['ngaySinh'] || ''
+      })).filter(item => item.hoTen && item.hoTen.trim() !== '');
+      
+      if (masterData.length === 0) {
+        deptLoadingSpan.textContent = '⚠️ Không tìm thấy dữ liệu nhân sự hợp lệ';
+      } else {
+        deptLoadingSpan.style.display = 'none';
+      }
+      renderDepartments();
+      updateBirthdayUI();
+    } catch (err) {
+      console.error(err);
+      deptLoadingSpan.textContent = '❌ Lỗi kết nối: ' + err.message;
+      deptGrid.innerHTML = `<div class="empty-state">Không thể tải dữ liệu. Vui lòng kiểm tra kết nối.</div>`;
+    }
+  }
 
+  // Event listeners
+  backBtn.addEventListener('click', backToDepartments);
+  closeModalBtn.addEventListener('click', () => modal.style.display = 'none');
+  window.addEventListener('click', (e) => { 
+    if (e.target === modal) modal.style.display = 'none'; 
+    if (e.target === birthdayModal) birthdayModal.style.display = 'none'; 
+  });
+  birthdayBadgeBtn.addEventListener('click', openBirthdayModal);
+  closeBirthdayModalBtn.addEventListener('click', () => birthdayModal.style.display = 'none');
+  closeBirthdayInnerBtn.addEventListener('click', () => birthdayModal.style.display = 'none');
+  
+  searchInput.addEventListener('input', (e) => {
+    const keyword = e.target.value;
+    if (keyword.trim()) {
+      searchClearBtn.style.display = 'flex';
+      searchStaff(keyword);
+    } else {
+      searchClearBtn.style.display = 'none';
+      clearSearchAndReset();
+    }
+  });
+  
+  searchClearBtn.addEventListener('click', () => {
+    searchInput.value = '';
+    searchClearBtn.style.display = 'none';
+    clearSearchAndReset();
+  });
+
+  loadMasterData();
 </script>
-
 </body>
 </html>
