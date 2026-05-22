@@ -548,12 +548,12 @@
 </div>
 
 <script>
-  // Google Sheet ID và cấu hình
+  // ===== CẤU HÌNH =====
+  // Google Sheet ID (đã được cấu hình sẵn)
   const SHEET_URL = 'https://opensheet.elk.sh/1wH_rQwpF2jRO_8s277hq_kmuN-i79JMzKqNx43XAK0Y/Sheet1';
   
-  // Đường dẫn thư mục chứa ảnh avatar (đổi theo cấu hình server của bạn)
-  // Ví dụ: nếu ảnh để trong thư mục "avatars" thì đặt là "avatars/"
-  const AVATAR_PATH = 'Avatas/';  // ⚠️ CẬP NHẬT ĐƯỜNG DẪN THỰC TẾ CỦA BẠN
+  // Đường dẫn thư mục ảnh trên GitHub (sử dụng đường dẫn RAW)
+  const AVATAR_BASE_URL = 'https://raw.githubusercontent.com/thuecoso8/thuecoso8.github.io/main/Avatas/';
   
   let masterData = [];        
   let currentDept = null;     
@@ -594,7 +594,7 @@
   const birthdayBadgeBtn = document.getElementById('birthdayBadgeBtn');
   const birthdayModalDateSpan = document.getElementById('birthdayModalDate');
 
-  // Hàm xử lý avatar: nhận giá trị từ cột avatar (có thể là tên file như "nguyenvanA.jpg")
+  // Hàm xử lý avatar: nhận giá trị từ cột avatar (ví dụ: "lamthibichhong.JPG")
   function getAvatarUrl(avatarValue) {
     if (!avatarValue || avatarValue.trim() === '') {
       return 'https://i.imgur.com/HeIi0wU.png'; // ảnh mặc định
@@ -605,9 +605,12 @@
       return avatarValue;
     }
     
-    // Nếu là tên file (vd: "nguyenvana.jpg" hoặc "nguyenvana.png")
-    // Ghép với đường dẫn thư mục avatar
-    return AVATAR_PATH + avatarValue;
+    // Nếu là tên file (vd: "lamthibichhong.JPG"), ghép với base URL
+    let cleanFileName = avatarValue.trim();
+    if (cleanFileName.startsWith('/')) {
+      cleanFileName = cleanFileName.substring(1);
+    }
+    return AVATAR_BASE_URL + cleanFileName;
   }
 
   // Kiểm tra sinh nhật hôm nay
@@ -912,7 +915,7 @@
         return;
       }
       
-      // Map đúng với cấu trúc cột: id, hoTen, congViec, phone_cq, soDienThoai, bidv, agribank, avatar, donVi, ngaySinh
+      // Map đúng với cấu trúc cột
       masterData = rawData.map(row => ({
         id: row.id || row['id'],
         hoTen: row.hoTen || row['hoTen'] || '',
