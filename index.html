@@ -435,8 +435,8 @@ header .stats-header {
 
 <script>
 // ====== CẤU HÌNH ======
-// SAU KHI DEPLOY, CẬP NHẬT URL MỚI VÀO ĐÂY
-const API = 'https://script.google.com/macros/s/YOUR_NEW_SCRIPT_ID/exec?action=all';
+// SAU KHI DEPLOY APPS SCRIPT, CẬP NHẬT URL VÀO ĐÂY
+const API = 'https://script.google.com/macros/s/AKfycbyYo7XdQMqMJx9s66v_4u3XM16vJLIf93sCITUDE5LjglRvVM9xu7TfOTHa7y0rGPIWrw/exec?action=all';
 const AVATAR = 'https://raw.githubusercontent.com/thuecoso8/thuecoso8.github.io/main/Avatas/';
 
 // ====== BIẾN TOÀN CỤC ======
@@ -516,6 +516,7 @@ function renderBirthdayForUnit(unitName, people) {
 function buildUnits() {
   const unitMap = {};
   allData.forEach(x => {
+    // === QUAN TRỌNG: DÙNG TRỰC TIẾP donVi TỪ API ===
     const unit = x.donVi || 'Khác';
     if (!unitMap[unit]) {
       unitMap[unit] = {
@@ -749,4 +750,79 @@ function goHome() {
 
 function goBack() {
   if (currentView === 'subUnit') {
-    select
+    selectUnit(currentUnit);
+  } else if (currentView === 'unit') {
+    goHome();
+  }
+}
+
+// ====== LOAD DỮ LIỆU ======
+fetch(API)
+  .then(r => {
+    if (!r.ok) throw new Error(`HTTP ${r.status}`);
+    return r.json();
+  })
+  .then(j => {
+    if (!j.success) throw new Error(j.message || 'Unknown error');
+    
+    // ====== DEBUG: Xem dữ liệu từ API ======
+    console.log('📊 Dữ liệu từ API:', j);
+    if (j.data && j.data.length > 0) {
+      console.log('📌 donVi từ API (item đầu):', j.data[0].donVi);
+      console.log('📌 _sheetName từ API (item đầu):', j.data[0]._sheetName);
+      console.log('📌 Tất cả donVi từ API:', [...new Set(j.data.map(x => x.donVi))]);
+    }
+    // ========================================
+    
+    // ====== QUAN TRỌNG: GIỮ NGUYÊN donVi TỪ API ======
+    // KHÔNG format lại, KHÔNG thêm "Thuế tỉnh" vào trước
+    allData = (j.data || []).map(x => ({
+      ...x,  // Giữ nguyên tất cả, bao gồm donVi
+      hoTen: x.hoTen || '',
+      chucVu: x.chucVu || '',
+      soDienThoai: x.soDienThoai || '',
+      email: x.email || '',
+      phong: x.phong || '',
+      thueCoSo: x.thueCoSo || '',
+      toNghiepVu: x.toNghiepVu || '',
+      ngaySinh: x.ngaySinh || '',
+      avatar: x.avatar || ''
+    }));
+
+    // ====== DEBUG: Kiểm tra sau khi map ======
+    console.log('📌 Các đơn vị sau khi map:', [...new Set(allData.map(x => x.donVi))]);
+    // ========================================
+
+    units = buildUnits();
+
+    document.getElementById('loading').style.display = 'none';
+    document.getElementById('content').style.display = 'block';
+    renderHome();
+  })
+  .catch(err => {
+    document.getElementById('loading').style.display = 'none';
+    const errorEl = document.getElementById('error');
+    errorEl.style.display = 'block';
+    errorEl.innerHTML = `❌ Lỗi tải dữ liệu: ${err.message}<br><small>Vui lòng thử lại sau hoặc liên hệ quản trị viên.</small>`;
+  });
+
+// ====== EVENT LISTENERS ======
+document.addEventListener('input', function(e) {
+  if (e.target.id === 'search' || e.target.id === 'phong' || e.target.id === 'to') {
+    if (currentSubUnit) {
+      const people = allData.filter(x => x.thueCoSo === currentSubUnit);
+      renderPeople(people, currentSubUnit);
+    }
+  }
+});
+document.addEventListener('change', function(e) {
+  if (e.target.id === 'phong' || e.target.id === 'to') {
+    if (currentSubUnit) {
+      const people = allData.filter(x => x.thueCoSo === currentSubUnit);
+      renderPeople(people, currentSubUnit);
+    }
+  }
+});
+</script>
+</body>
+</html>
