@@ -399,7 +399,6 @@ header .stats-header {
   font-size: 16px;
 }
 
-/* Responsive */
 @media (max-width: 768px) {
   header h1 { font-size: 18px; }
   .container { padding: 12px; }
@@ -450,82 +449,18 @@ header .stats-header {
 </div>
 
 <script>
+// ====== CẤU HÌNH ======
 const API = 'https://script.google.com/macros/s/AKfycbyYo7XdQMqMJx9s66v_4u3XM16vJLIf93sCITUDE5LjglRvVM9xu7TfOTHa7y0rGPIWrw/exec?action=all';
 const AVATAR = 'https://raw.githubusercontent.com/thuecoso8/thuecoso8.github.io/main/Avatas/';
 
+// ====== BIẾN TOÀN CỤC ======
 let allData = [];
 let units = [];
-let currentView = 'home';
+let currentView = 'home'; // home, unit, subUnit
 let currentUnit = null;
 let currentSubUnit = null;
 
-// Format tên đơn vị
-function prettyUnit(v) {
-  if (!v) return '';
-  if (v === 'CucThue') return 'Cục Thuế';
-  
-  const thanhPho = {
-    'HaNoi': 'Thuế TP Hà Nội',
-    'TPHCM': 'Thuế TP Hồ Chí Minh',
-    'HaiPhong': 'Thuế TP Hải Phòng',
-    'DaNang': 'Thuế TP Đà Nẵng',
-    'CanTho': 'Thuế TP Cần Thơ'
-  };
-  if (thanhPho[v]) return thanhPho[v];
-  
-  let name = v.replace(/([A-Z])/g, ' $1').trim();
-  const nameFix = {
-    'Ba Ria Vung Tau': 'Bà Rịa - Vũng Tàu',
-    'Dak Lak': 'Đắk Lắk',
-    'Dak Nong': 'Đắk Nông',
-    'Dien Bien': 'Điện Biên',
-    'Dong Nai': 'Đồng Nai',
-    'Dong Thap': 'Đồng Tháp',
-    'Gia Lai': 'Gia Lai',
-    'Ha Giang': 'Hà Giang',
-    'Ha Nam': 'Hà Nam',
-    'Ha Tinh': 'Hà Tĩnh',
-    'Hai Duong': 'Hải Dương',
-    'Hau Giang': 'Hậu Giang',
-    'Hoa Binh': 'Hòa Bình',
-    'Hung Yen': 'Hưng Yên',
-    'Khanh Hoa': 'Khánh Hòa',
-    'Kien Giang': 'Kiên Giang',
-    'Kon Tum': 'Kon Tum',
-    'Lai Chau': 'Lai Châu',
-    'Lam Dong': 'Lâm Đồng',
-    'Lang Son': 'Lạng Sơn',
-    'Lao Cai': 'Lào Cai',
-    'Long An': 'Long An',
-    'Nam Dinh': 'Nam Định',
-    'Nghe An': 'Nghệ An',
-    'Ninh Binh': 'Ninh Bình',
-    'Ninh Thuan': 'Ninh Thuận',
-    'Phu Tho': 'Phú Thọ',
-    'Phu Yen': 'Phú Yên',
-    'Quang Binh': 'Quảng Bình',
-    'Quang Nam': 'Quảng Nam',
-    'Quang Ngai': 'Quảng Ngãi',
-    'Quang Ninh': 'Quảng Ninh',
-    'Quang Tri': 'Quảng Trị',
-    'Soc Trang': 'Sóc Trăng',
-    'Son La': 'Sơn La',
-    'Tay Ninh': 'Tây Ninh',
-    'Thai Binh': 'Thái Bình',
-    'Thai Nguyen': 'Thái Nguyên',
-    'Thanh Hoa': 'Thanh Hóa',
-    'Thua Thien Hue': 'Thừa Thiên Huế',
-    'Tien Giang': 'Tiền Giang',
-    'Tra Vinh': 'Trà Vinh',
-    'Tuyen Quang': 'Tuyên Quang',
-    'Vinh Long': 'Vĩnh Long',
-    'Vinh Phuc': 'Vĩnh Phúc',
-    'Yen Bai': 'Yên Bái'
-  };
-  if (nameFix[name]) name = nameFix[name];
-  return 'Thuế tỉnh ' + name;
-}
-
+// ====== HÀM XỬ LÝ NGÀY SINH ======
 function birthdayParts(s) {
   if (!s) return null;
   let p = String(s).split('/');
@@ -543,7 +478,7 @@ function countBirthdayInMonth(people) {
   });
 }
 
-// Render sinh nhật của một đơn vị
+// ====== RENDER SINH NHẬT THEO ĐƠN VỊ ======
 function renderBirthdayForUnit(unitName, people) {
   const container = document.getElementById('birthdayContainer');
   const now = new Date();
@@ -592,7 +527,7 @@ function renderBirthdayForUnit(unitName, people) {
   container.innerHTML = html;
 }
 
-// Xây dựng danh sách đơn vị
+// ====== XÂY DỰNG DANH SÁCH ĐƠN VỊ ======
 function buildUnits() {
   const unitMap = {};
   allData.forEach(x => {
@@ -615,7 +550,7 @@ function buildUnits() {
   return Object.values(unitMap);
 }
 
-// Render trang chủ
+// ====== RENDER TRANG CHỦ ======
 function renderHome() {
   currentView = 'home';
   currentUnit = null;
@@ -658,7 +593,7 @@ function renderHome() {
   container.innerHTML = html;
 }
 
-// Chọn đơn vị
+// ====== CHỌN ĐƠN VỊ ======
 function selectUnit(unitName) {
   currentView = 'unit';
   currentUnit = unitName;
@@ -673,7 +608,6 @@ function selectUnit(unitName) {
     <span class="current">${unitName}</span>
   `;
 
-  // Lọc dữ liệu theo đơn vị
   const unitData = allData.filter(x => x.donVi === unitName);
   
   // Render sinh nhật của đơn vị này
@@ -711,7 +645,7 @@ function selectUnit(unitName) {
   container.innerHTML = html;
 }
 
-// Chọn Thuế cơ sở
+// ====== CHỌN THUẾ CƠ SỞ ======
 function selectSubUnit(subUnitName) {
   currentView = 'subUnit';
   currentSubUnit = subUnitName;
@@ -736,7 +670,7 @@ function selectSubUnit(subUnitName) {
   renderPeople(people, subUnitName);
 }
 
-// Render danh sách cán bộ
+// ====== RENDER DANH SÁCH CÁN BỘ ======
 function renderPeople(people, title) {
   const container = document.getElementById('mainContent');
   
@@ -784,6 +718,7 @@ function renderPeople(people, title) {
   container.innerHTML = html;
 }
 
+// ====== POPULATE FILTERS ======
 function populateFilters(people) {
   const phongSelect = document.getElementById('phong');
   const toSelect = document.getElementById('to');
@@ -813,6 +748,7 @@ function populateFilters(people) {
   if (currentTo && tos.includes(currentTo)) toSelect.value = currentTo;
 }
 
+// ====== RESET FILTERS ======
 function resetFilters() {
   document.getElementById('search').value = '';
   document.getElementById('phong').value = '';
@@ -823,6 +759,7 @@ function resetFilters() {
   }
 }
 
+// ====== ĐIỀU HƯỚNG ======
 function goHome() {
   renderHome();
 }
@@ -835,7 +772,7 @@ function goBack() {
   }
 }
 
-// Load data
+// ====== LOAD DỮ LIỆU ======
 fetch(API)
   .then(r => {
     if (!r.ok) throw new Error(`HTTP ${r.status}`);
@@ -844,9 +781,9 @@ fetch(API)
   .then(j => {
     if (!j.success) throw new Error(j.message || 'Unknown error');
     
+    // KHÔNG CẦN format lại donVi vì đã có từ Apps Script
     allData = (j.data || []).map(x => ({
       ...x,
-      donVi: prettyUnit(x._sheetName || x.sheetName || ''),
       hoTen: x.hoTen || '',
       chucVu: x.chucVu || '',
       soDienThoai: x.soDienThoai || '',
@@ -871,7 +808,7 @@ fetch(API)
     errorEl.innerHTML = `❌ Lỗi tải dữ liệu: ${err.message}<br><small>Vui lòng thử lại sau hoặc liên hệ quản trị viên.</small>`;
   });
 
-// Event listeners
+// ====== EVENT LISTENERS ======
 document.addEventListener('input', function(e) {
   if (e.target.id === 'search' || e.target.id === 'phong' || e.target.id === 'to') {
     if (currentSubUnit) {
