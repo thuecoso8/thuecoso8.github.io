@@ -5,40 +5,334 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Danh bạ toàn ngành Thuế</title>
 <style>
-*{box-sizing:border-box}
-body{font-family:'Segoe UI',Arial,sans-serif;margin:0;background:#f0f2f5}
-header{background:linear-gradient(135deg,#0d6efd,#0a58ca);color:#fff;padding:20px;text-align:center;font-size:28px;font-weight:bold;box-shadow:0 2px 10px rgba(0,0,0,.1)}
-.container{max-width:1400px;margin:auto;padding:20px}
-.card{background:#fff;border-radius:12px;padding:20px;margin-bottom:20px;box-shadow:0 2px 12px rgba(0,0,0,.08)}
-.card h3{margin:0 0 15px 0;color:#333;display:flex;align-items:center;gap:10px}
-.filters{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
-.filters input,.filters select{padding:12px;border:2px solid #e0e0e0;border-radius:8px;width:100%;font-size:14px;transition:all .3s}
-.filters input:focus,.filters select:focus{outline:none;border-color:#0d6efd;box-shadow:0 0 0 3px rgba(13,110,253,.1)}
-.people{display:grid;grid-template-columns:repeat(auto-fill,minmax(350px,1fr));gap:16px}
-.person{background:#fff;border-radius:12px;padding:16px;display:flex;gap:15px;box-shadow:0 2px 8px rgba(0,0,0,.06);transition:transform .2s,box-shadow .2s;cursor:pointer}
-.person:hover{transform:translateY(-3px);box-shadow:0 4px 20px rgba(0,0,0,.12)}
-.avatar{width:80px;height:80px;border-radius:50%;object-fit:cover;border:3px solid #e0e0e0;flex-shrink:0}
-.person-info{flex:1;min-width:0}
-.name{font-weight:bold;font-size:16px;color:#1a1a1a}
-.position{color:#0d6efd;font-weight:500;font-size:14px;margin:4px 0}
-.department{color:#666;font-size:13px;margin:2px 0}
-.phone{display:inline-block;margin-top:6px;padding:4px 12px;background:#e8f0fe;color:#0d6efd;border-radius:20px;text-decoration:none;font-size:13px;font-weight:500;transition:all .2s}
-.phone:hover{background:#0d6efd;color:#fff}
-.birthday-section{background:linear-gradient(135deg,#fff5f5,#fff);border-left:4px solid #ff6b6b}
-.birthday-item{padding:6px 0;border-bottom:1px solid #f0f0f0}
-.birthday-item:last-child{border-bottom:none}
-.birthday-name{font-weight:500;color:#d63031}
-.loading{text-align:center;padding:40px;color:#666}
-.loading-spinner{display:inline-block;width:40px;height:40px;border:4px solid #f3f3f3;border-top:4px solid #0d6efd;border-radius:50%;animation:spin 1s linear infinite}
-@keyframes spin{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
-.error{background:#fff5f5;color:#d63031;padding:15px;border-radius:8px;border-left:4px solid #d63031}
-.stats{display:flex;gap:20px;flex-wrap:wrap;padding:10px 0}
-.stats span{background:#f8f9fa;padding:6px 14px;border-radius:20px;font-size:13px;color:#666}
-@media (max-width:768px){
- .container{padding:10px}
- .people{grid-template-columns:1fr}
- .person{flex-direction:column;align-items:center;text-align:center}
- .filters{grid-template-columns:1fr}
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+body {
+  font-family: 'Segoe UI', Arial, sans-serif;
+  background: #f0f2f5;
+  color: #333;
+}
+header {
+  background: linear-gradient(135deg, #0d6efd, #0a58ca);
+  color: #fff;
+  padding: 20px;
+  text-align: center;
+  font-size: 28px;
+  font-weight: bold;
+  box-shadow: 0 2px 10px rgba(0,0,0,.1);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+.container {
+  max-width: 1400px;
+  margin: auto;
+  padding: 20px;
+}
+.card {
+  background: #fff;
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 12px rgba(0,0,0,.08);
+}
+.card h3 {
+  margin: 0 0 15px 0;
+  color: #333;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 20px;
+}
+.stats {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  padding: 10px 0;
+}
+.stats span {
+  background: #f8f9fa;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 14px;
+  color: #555;
+}
+.filters {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px;
+}
+.filters input,
+.filters select {
+  padding: 12px;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  width: 100%;
+  font-size: 14px;
+  transition: all .3s;
+  background: #fff;
+}
+.filters input:focus,
+.filters select:focus {
+  outline: none;
+  border-color: #0d6efd;
+  box-shadow: 0 0 0 3px rgba(13,110,253,.1);
+}
+.btn-reset {
+  padding: 12px 24px;
+  background: #6c757d;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all .3s;
+}
+.btn-reset:hover {
+  background: #5a6268;
+}
+.btn-primary {
+  padding: 10px 20px;
+  background: #0d6efd;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all .3s;
+}
+.btn-primary:hover {
+  background: #0b5ed7;
+}
+.btn-outline {
+  padding: 8px 16px;
+  background: transparent;
+  color: #0d6efd;
+  border: 2px solid #0d6efd;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all .3s;
+}
+.btn-outline:hover {
+  background: #0d6efd;
+  color: #fff;
+}
+.loading {
+  text-align: center;
+  padding: 60px;
+  color: #666;
+}
+.loading-spinner {
+  display: inline-block;
+  width: 50px;
+  height: 50px;
+  border: 5px solid #f3f3f3;
+  border-top: 5px solid #0d6efd;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+.error {
+  background: #fff5f5;
+  color: #d63031;
+  padding: 15px 20px;
+  border-radius: 8px;
+  border-left: 4px solid #d63031;
+  margin-bottom: 20px;
+}
+
+/* Birthday Section */
+.birthday-section {
+  background: linear-gradient(135deg, #fff5f5, #fff);
+  border-left: 4px solid #ff6b6b;
+}
+.birthday-month {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 10px;
+  margin-top: 10px;
+}
+.birthday-item {
+  padding: 8px 12px;
+  background: #fff;
+  border-radius: 8px;
+  border: 1px solid #f0f0f0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.birthday-item .name {
+  font-weight: 500;
+  color: #d63031;
+}
+.birthday-item .date {
+  color: #666;
+  font-size: 13px;
+  background: #f8f9fa;
+  padding: 2px 10px;
+  border-radius: 12px;
+}
+.birthday-item .unit {
+  color: #888;
+  font-size: 12px;
+}
+.no-birthday {
+  color: #999;
+  padding: 20px;
+  text-align: center;
+}
+
+/* People Grid */
+.people {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 16px;
+}
+.person {
+  background: #fff;
+  border-radius: 12px;
+  padding: 16px;
+  display: flex;
+  gap: 15px;
+  box-shadow: 0 2px 8px rgba(0,0,0,.06);
+  transition: all .3s;
+  cursor: pointer;
+  border: 1px solid transparent;
+}
+.person:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 20px rgba(0,0,0,.12);
+  border-color: #0d6efd;
+}
+.avatar {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #e0e0e0;
+  flex-shrink: 0;
+}
+.person-info {
+  flex: 1;
+  min-width: 0;
+}
+.person-info .name {
+  font-weight: bold;
+  font-size: 16px;
+  color: #1a1a1a;
+}
+.person-info .position {
+  color: #0d6efd;
+  font-weight: 500;
+  font-size: 14px;
+  margin: 4px 0;
+}
+.person-info .department {
+  color: #666;
+  font-size: 13px;
+  margin: 2px 0;
+}
+.person-info .phone {
+  display: inline-block;
+  margin-top: 6px;
+  padding: 4px 14px;
+  background: #e8f0fe;
+  color: #0d6efd;
+  border-radius: 20px;
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 500;
+  transition: all .2s;
+}
+.person-info .phone:hover {
+  background: #0d6efd;
+  color: #fff;
+}
+.person-info .email {
+  margin-top: 4px;
+  font-size: 12px;
+  color: #999;
+}
+
+/* Unit Tabs */
+.unit-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+.unit-tab {
+  padding: 8px 16px;
+  background: #f8f9fa;
+  border: 2px solid transparent;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all .3s;
+  color: #555;
+}
+.unit-tab:hover {
+  background: #e9ecef;
+}
+.unit-tab.active {
+  background: #0d6efd;
+  color: #fff;
+  border-color: #0d6efd;
+}
+.unit-tab .count {
+  background: rgba(255,255,255,0.3);
+  padding: 0 8px;
+  border-radius: 10px;
+  font-size: 12px;
+}
+.unit-tab.active .count {
+  background: rgba(255,255,255,0.2);
+}
+
+/* Unit Group */
+.unit-group {
+  margin-bottom: 30px;
+}
+.unit-group-title {
+  background: #f8f9fa;
+  padding: 12px 16px;
+  border-radius: 8px;
+  margin-bottom: 12px;
+  font-weight: 600;
+  color: #0d6efd;
+  border-left: 4px solid #0d6efd;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.unit-group-title .count {
+  background: #0d6efd;
+  color: #fff;
+  padding: 2px 12px;
+  border-radius: 12px;
+  font-size: 13px;
+}
+.unit-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 12px;
+}
+
+@media (max-width: 768px) {
+  .container { padding: 10px; }
+  .people { grid-template-columns: 1fr; }
+  .birthday-month { grid-template-columns: 1fr; }
+  .person { flex-direction: column; align-items: center; text-align: center; }
+  .filters { grid-template-columns: 1fr; }
+  .unit-tabs { flex-wrap: nowrap; overflow-x: auto; }
+  .unit-tab { white-space: nowrap; }
 }
 </style>
 </head>
@@ -56,23 +350,19 @@ header{background:linear-gradient(135deg,#0d6efd,#0a58ca);color:#fff;padding:20p
 
   <!-- Content -->
   <div id="content" style="display:none">
-    <!-- Birthday Cards -->
-    <div class="card birthday-section">
-      <h3>🎂 Sinh nhật hôm nay</h3>
-      <div id="today">Đang tải...</div>
-    </div>
-
-    <div class="card birthday-section">
-      <h3>🎉 Sinh nhật 7 ngày tới</h3>
-      <div id="upcoming">Đang tải...</div>
-    </div>
-
     <!-- Stats -->
     <div class="card">
       <div class="stats">
-        <span>👥 Tổng số: <strong id="totalCount">0</strong></span>
-        <span>📊 Đơn vị: <strong id="unitCount">0</strong></span>
+        <span>👥 Tổng cán bộ: <strong id="totalCount">0</strong></span>
+        <span>🏢 Đơn vị: <strong id="unitCount">0</strong></span>
+        <span>🎂 Sinh nhật tháng này: <strong id="birthdayCount">0</strong></span>
       </div>
+    </div>
+
+    <!-- Birthday by Month -->
+    <div class="card birthday-section">
+      <h3>🎂 Sinh nhật tháng <span id="currentMonth"></span></h3>
+      <div id="birthdayList" class="birthday-month"></div>
     </div>
 
     <!-- Filters -->
@@ -83,12 +373,22 @@ header{background:linear-gradient(135deg,#0d6efd,#0a58ca);color:#fff;padding:20p
         <select id="phong"><option value="">📁 Tất cả phòng</option></select>
         <select id="coso"><option value="">🏛️ Tất cả Thuế cơ sở</option></select>
         <select id="to"><option value="">📂 Tất cả tổ</option></select>
-        <button onclick="resetFilters()" style="padding:10px 20px;background:#6c757d;color:#fff;border:none;border-radius:8px;cursor:pointer;font-weight:500">🔄 Reset</button>
+        <button class="btn-reset" onclick="resetFilters()">🔄 Reset</button>
       </div>
     </div>
 
-    <!-- Results -->
-    <div id="people" class="people"></div>
+    <!-- Unit Tabs -->
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:15px;flex-wrap:wrap;gap:10px">
+        <h3 style="margin:0">📇 Danh bạ theo đơn vị</h3>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <button class="btn-primary" onclick="showAllUnits()">📋 Tất cả</button>
+          <button class="btn-outline" onclick="showAllPeople()">👥 Xem tất cả</button>
+        </div>
+      </div>
+      <div id="unitTabs" class="unit-tabs"></div>
+      <div id="peopleContainer"></div>
+    </div>
   </div>
 </div>
 
@@ -98,28 +398,273 @@ const AVATAR = 'https://raw.githubusercontent.com/thuecoso8/thuecoso8.github.io/
 
 let data = [];
 let filteredData = [];
+let selectedUnit = 'all';
 
+// Hàm format tên đơn vị
 function prettyUnit(v) {
   if (!v) return '';
-  const map = {
-    'CucThue': 'Cục Thuế',
+  
+  // Các trường hợp đặc biệt
+  if (v === 'CucThue') return 'Cục Thuế';
+  
+  const thanhPho = {
     'HaNoi': 'Thuế TP Hà Nội',
-    'ThaiNguyen': 'Thuế tỉnh Thái Nguyên'
+    'TPHCM': 'Thuế TP Hồ Chí Minh',
+    'HaiPhong': 'Thuế TP Hải Phòng',
+    'DaNang': 'Thuế TP Đà Nẵng',
+    'CanTho': 'Thuế TP Cần Thơ'
   };
-  return map[v] || 'Thuế tỉnh ' + v.replace(/([A-Z])/g, ' $1').trim();
+  
+  if (thanhPho[v]) return thanhPho[v];
+  
+  // Format từ camelCase
+  let name = v.replace(/([A-Z])/g, ' $1').trim();
+  
+  // Map tên chính xác
+  const nameFix = {
+    'Ba Ria Vung Tau': 'Bà Rịa - Vũng Tàu',
+    'Dak Lak': 'Đắk Lắk',
+    'Dak Nong': 'Đắk Nông',
+    'Dien Bien': 'Điện Biên',
+    'Dong Nai': 'Đồng Nai',
+    'Dong Thap': 'Đồng Tháp',
+    'Gia Lai': 'Gia Lai',
+    'Ha Giang': 'Hà Giang',
+    'Ha Nam': 'Hà Nam',
+    'Ha Tinh': 'Hà Tĩnh',
+    'Hai Duong': 'Hải Dương',
+    'Hau Giang': 'Hậu Giang',
+    'Hoa Binh': 'Hòa Bình',
+    'Hung Yen': 'Hưng Yên',
+    'Khanh Hoa': 'Khánh Hòa',
+    'Kien Giang': 'Kiên Giang',
+    'Kon Tum': 'Kon Tum',
+    'Lai Chau': 'Lai Châu',
+    'Lam Dong': 'Lâm Đồng',
+    'Lang Son': 'Lạng Sơn',
+    'Lao Cai': 'Lào Cai',
+    'Long An': 'Long An',
+    'Nam Dinh': 'Nam Định',
+    'Nghe An': 'Nghệ An',
+    'Ninh Binh': 'Ninh Bình',
+    'Ninh Thuan': 'Ninh Thuận',
+    'Phu Tho': 'Phú Thọ',
+    'Phu Yen': 'Phú Yên',
+    'Quang Binh': 'Quảng Bình',
+    'Quang Nam': 'Quảng Nam',
+    'Quang Ngai': 'Quảng Ngãi',
+    'Quang Ninh': 'Quảng Ninh',
+    'Quang Tri': 'Quảng Trị',
+    'Soc Trang': 'Sóc Trăng',
+    'Son La': 'Sơn La',
+    'Tay Ninh': 'Tây Ninh',
+    'Thai Binh': 'Thái Bình',
+    'Thai Nguyen': 'Thái Nguyên',
+    'Thanh Hoa': 'Thanh Hóa',
+    'Thua Thien Hue': 'Thừa Thiên Huế',
+    'Tien Giang': 'Tiền Giang',
+    'Tra Vinh': 'Trà Vinh',
+    'Tuyen Quang': 'Tuyên Quang',
+    'Vinh Long': 'Vĩnh Long',
+    'Vinh Phuc': 'Vĩnh Phúc',
+    'Yen Bai': 'Yên Bái'
+  };
+  
+  if (nameFix[name]) name = nameFix[name];
+  
+  return 'Thuế tỉnh ' + name;
 }
 
+// Lấy phần ngày sinh
 function birthdayParts(s) {
   if (!s) return null;
   let p = String(s).split('/');
   if (p.length < 2) return null;
-  return { d: +p[0], m: +p[1] };
+  return { d: parseInt(p[0]), m: parseInt(p[1]) };
+}
+
+// Render sinh nhật theo tháng
+function renderBirthdays() {
+  const now = new Date();
+  const currentMonth = now.getMonth() + 1;
+  const monthNames = ['Tháng 1', 'Tháng 2', 'Tháng 3', 'Tháng 4', 'Tháng 5', 'Tháng 6', 
+                      'Tháng 7', 'Tháng 8', 'Tháng 9', 'Tháng 10', 'Tháng 11', 'Tháng 12'];
+  document.getElementById('currentMonth').textContent = monthNames[currentMonth - 1];
+
+  // Lọc sinh nhật trong tháng hiện tại
+  const birthdays = data.filter(x => {
+    const b = birthdayParts(x.ngaySinh);
+    return b && b.m === currentMonth;
+  });
+
+  // Sắp xếp theo ngày
+  birthdays.sort((a, b) => {
+    const ba = birthdayParts(a.ngaySinh);
+    const bb = birthdayParts(b.ngaySinh);
+    return ba.d - bb.d;
+  });
+
+  document.getElementById('birthdayCount').textContent = birthdays.length;
+
+  if (birthdays.length === 0) {
+    document.getElementById('birthdayList').innerHTML = '<div class="no-birthday">📭 Không có ai sinh nhật trong tháng này</div>';
+    return;
+  }
+
+  document.getElementById('birthdayList').innerHTML = birthdays.map(x => {
+    const b = birthdayParts(x.ngaySinh);
+    return `
+      <div class="birthday-item">
+        <div>
+          <span class="name">${x.hoTen || ''}</span>
+          <span class="unit"> - ${x.donVi || ''}</span>
+        </div>
+        <span class="date">🎂 ${b.d}/${b.m}</span>
+      </div>
+    `;
+  }).join('');
+}
+
+// Render unit tabs
+function renderUnitTabs() {
+  const units = [...new Set(data.map(x => x.donVi).filter(Boolean))].sort();
+  const container = document.getElementById('unitTabs');
+  
+  // Đếm số lượng theo đơn vị
+  const unitCounts = {};
+  data.forEach(x => {
+    if (x.donVi) {
+      unitCounts[x.donVi] = (unitCounts[x.donVi] || 0) + 1;
+    }
+  });
+
+  let html = `<div class="unit-tab ${selectedUnit === 'all' ? 'active' : ''}" onclick="selectUnit('all')">
+    📋 Tất cả <span class="count">${data.length}</span>
+  </div>`;
+
+  units.forEach(unit => {
+    const count = unitCounts[unit] || 0;
+    const isActive = selectedUnit === unit;
+    html += `<div class="unit-tab ${isActive ? 'active' : ''}" onclick="selectUnit('${unit}')">
+      ${unit} <span class="count">${count}</span>
+    </div>`;
+  });
+
+  container.innerHTML = html;
+}
+
+// Chọn đơn vị
+function selectUnit(unit) {
+  selectedUnit = unit;
+  renderUnitTabs();
+  renderPeopleByUnit();
+}
+
+// Hiển thị tất cả đơn vị
+function showAllUnits() {
+  selectedUnit = 'all';
+  renderUnitTabs();
+  renderPeopleByUnit();
+}
+
+// Hiển thị tất cả người (không phân nhóm)
+function showAllPeople() {
+  selectedUnit = 'all';
+  renderUnitTabs();
+  renderPeopleByUnit(true);
+}
+
+// Render danh bạ theo đơn vị
+function renderPeopleByUnit(flatView = false) {
+  const q = document.getElementById('search').value.toLowerCase().trim();
+  const p = document.getElementById('phong').value;
+  const c = document.getElementById('coso').value;
+  const t = document.getElementById('to').value;
+
+  // Lọc dữ liệu
+  let filtered = data.filter(x => {
+    const txt = JSON.stringify(Object.values(x)).toLowerCase();
+    const matchSearch = !q || txt.includes(q);
+    const matchPhong = !p || x.phong === p;
+    const matchCoSo = !c || x.thueCoSo === c;
+    const matchTo = !t || x.toNghiepVu === t;
+    return matchSearch && matchPhong && matchCoSo && matchTo;
+  });
+
+  // Lọc theo đơn vị đã chọn
+  if (selectedUnit !== 'all') {
+    filtered = filtered.filter(x => x.donVi === selectedUnit);
+  }
+
+  const container = document.getElementById('peopleContainer');
+
+  if (filtered.length === 0) {
+    container.innerHTML = '<div style="text-align:center;padding:40px;color:#999">🔍 Không tìm thấy kết quả phù hợp</div>';
+    return;
+  }
+
+  // Nếu flatView = true hoặc selectedUnit !== 'all', hiển thị dạng danh sách
+  if (flatView || selectedUnit !== 'all') {
+    container.innerHTML = renderPeopleList(filtered);
+    return;
+  }
+
+  // Nhóm theo đơn vị
+  const grouped = {};
+  filtered.forEach(x => {
+    const unit = x.donVi || 'Khác';
+    if (!grouped[unit]) grouped[unit] = [];
+    grouped[unit].push(x);
+  });
+
+  let html = '';
+  const sortedUnits = Object.keys(grouped).sort();
+  sortedUnits.forEach(unit => {
+    const people = grouped[unit];
+    html += `
+      <div class="unit-group">
+        <div class="unit-group-title">
+          <span>🏢 ${unit}</span>
+          <span class="count">${people.length} người</span>
+        </div>
+        <div class="unit-grid">
+          ${renderPeopleCards(people)}
+        </div>
+      </div>
+    `;
+  });
+
+  container.innerHTML = html;
+}
+
+// Render danh sách người (dạng grid)
+function renderPeopleCards(people) {
+  return people.map(x => `
+    <div class="person" onclick="window.location.href='tel:${x.soDienThoai || ''}'">
+      <img class="avatar" src="${AVATAR}${x.avatar || ''}" 
+           onerror="this.src='https://ui-avatars.com/api/?name=${encodeURIComponent(x.hoTen || '')}&background=0d6efd&color=fff&size=80'">
+      <div class="person-info">
+        <div class="name">${x.hoTen || ''}</div>
+        <div class="position">${x.chucVu || ''}</div>
+        <div class="department">${x.donVi || ''}</div>
+        <div class="department">${x.phong || x.thueCoSo || ''}</div>
+        ${x.toNghiepVu ? `<div class="department">Tổ: ${x.toNghiepVu}</div>` : ''}
+        ${x.soDienThoai ? `<a href="tel:${x.soDienThoai}" class="phone">📞 ${x.soDienThoai}</a>` : ''}
+        ${x.email ? `<div class="email">✉️ ${x.email}</div>` : ''}
+      </div>
+    </div>
+  `).join('');
+}
+
+// Render danh sách phẳng
+function renderPeopleList(people) {
+  return `<div class="unit-grid">${renderPeopleCards(people)}</div>`;
 }
 
 function fillSelect(id, values) {
   const el = document.getElementById(id);
   const currentValue = el.value;
-  el.innerHTML = `<option value="">${el.options[0].textContent}</option>`;
+  el.innerHTML = `<option value="">${el.options[0]?.textContent || 'Tất cả'}</option>`;
   const unique = [...new Set(values.filter(Boolean))].sort();
   unique.forEach(v => {
     let o = document.createElement('option');
@@ -132,85 +677,16 @@ function fillSelect(id, values) {
   }
 }
 
-function renderBirthdays() {
-  const t = new Date();
-  const d = t.getDate();
-  const m = t.getMonth() + 1;
-  const today = [];
-  const upcoming = [];
-
-  data.forEach(x => {
-    const b = birthdayParts(x.ngaySinh);
-    if (!b) return;
-
-    // Check today
-    if (b.d === d && b.m === m) {
-      today.push(x);
-    }
-
-    // Check upcoming 7 days
-    const bd = new Date(t.getFullYear(), b.m - 1, b.d);
-    const diff = Math.ceil((bd - t) / 86400000);
-    if (diff >= 0 && diff <= 7 && !(b.d === d && b.m === m)) {
-      upcoming.push(x);
-    }
-  });
-
-  document.getElementById('today').innerHTML = today.length > 0
-    ? today.map(x => `<div class="birthday-item">🎂 <strong class="birthday-name">${x.hoTen}</strong> - ${x.chucVu || ''} (${x.donVi})</div>`).join('')
-    : 'Không có ai sinh nhật hôm nay 🌙';
-
-  document.getElementById('upcoming').innerHTML = upcoming.length > 0
-    ? upcoming.map(x => `<div class="birthday-item">🎈 <strong class="birthday-name">${x.hoTen}</strong> - ${x.ngaySinh} (${x.donVi})</div>`).join('')
-    : 'Không có ai sinh nhật trong 7 ngày tới 📅';
-}
-
-function render() {
-  const q = document.getElementById('search').value.toLowerCase().trim();
-  const u = document.getElementById('unit').value;
-  const p = document.getElementById('phong').value;
-  const c = document.getElementById('coso').value;
-  const t = document.getElementById('to').value;
-
-  filteredData = data.filter(x => {
-    const txt = JSON.stringify(Object.values(x)).toLowerCase();
-    const matchSearch = !q || txt.includes(q);
-    const matchUnit = !u || x.donVi === u;
-    const matchPhong = !p || x.phong === p;
-    const matchCoSo = !c || x.thueCoSo === c;
-    const matchTo = !t || x.toNghiepVu === t;
-    return matchSearch && matchUnit && matchPhong && matchCoSo && matchTo;
-  });
-
-  // Update stats
-  document.getElementById('totalCount').textContent = filteredData.length;
-
-  const html = filteredData.map(x => `
-    <div class="person" onclick="window.location.href='tel:${x.soDienThoai || ''}'">
-      <img class="avatar" src="${AVATAR}${x.avatar || ''}" 
-           onerror="this.src='https://ui-avatars.com/api/?name=${encodeURIComponent(x.hoTen || '')}&background=0d6efd&color=fff&size=80'">
-      <div class="person-info">
-        <div class="name">${x.hoTen || ''}</div>
-        <div class="position">${x.chucVu || ''}</div>
-        <div class="department">${x.donVi || ''}</div>
-        <div class="department">${x.phong || x.thueCoSo || ''}</div>
-        <div class="department">${x.toNghiepVu || ''}</div>
-        ${x.soDienThoai ? `<a href="tel:${x.soDienThoai}" class="phone">📞 ${x.soDienThoai}</a>` : ''}
-        ${x.email ? `<div style="margin-top:4px;font-size:12px;color:#999">✉️ ${x.email}</div>` : ''}
-      </div>
-    </div>
-  `).join('');
-
-  document.getElementById('people').innerHTML = html || '<div style="text-align:center;padding:40px;color:#999">🔍 Không tìm thấy kết quả phù hợp</div>';
-}
-
 function resetFilters() {
   document.getElementById('search').value = '';
-  document.getElementById('unit').value = '';
   document.getElementById('phong').value = '';
   document.getElementById('coso').value = '';
   document.getElementById('to').value = '';
-  render();
+  renderPeopleByUnit();
+}
+
+function render() {
+  renderPeopleByUnit();
 }
 
 // Load data
@@ -224,7 +700,7 @@ fetch(API)
     
     data = (j.data || []).map(x => ({
       ...x,
-      donVi: prettyUnit(x.sheetName),
+      donVi: prettyUnit(x._sheetName || x.sheetName || ''),
       hoTen: x.hoTen || '',
       chucVu: x.chucVu || '',
       soDienThoai: x.soDienThoai || '',
@@ -237,21 +713,22 @@ fetch(API)
     }));
 
     // Populate filters
-    fillSelect('unit', data.map(x => x.donVi));
     fillSelect('phong', data.map(x => x.phong));
     fillSelect('coso', data.map(x => x.thueCoSo));
     fillSelect('to', data.map(x => x.toNghiepVu));
 
-    // Update unit count
+    // Update stats
+    document.getElementById('totalCount').textContent = data.length;
     document.getElementById('unitCount').textContent = [...new Set(data.map(x => x.donVi).filter(Boolean))].length;
+
+    // Render
+    renderBirthdays();
+    renderUnitTabs();
+    renderPeopleByUnit();
 
     // Show content
     document.getElementById('loading').style.display = 'none';
     document.getElementById('content').style.display = 'block';
-
-    // Render
-    renderBirthdays();
-    render();
   })
   .catch(err => {
     document.getElementById('loading').style.display = 'none';
@@ -261,7 +738,7 @@ fetch(API)
   });
 
 // Event listeners
-['search', 'unit', 'phong', 'coso', 'to'].forEach(id => {
+['search', 'phong', 'coso', 'to'].forEach(id => {
   const el = document.getElementById(id);
   if (el) {
     el.addEventListener('input', render);
