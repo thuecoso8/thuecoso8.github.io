@@ -18,108 +18,46 @@ body {
 header {
   background: linear-gradient(135deg, #0d6efd, #0a58ca);
   color: #fff;
-  padding: 20px;
-  text-align: center;
-  font-size: 28px;
-  font-weight: bold;
+  padding: 16px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   box-shadow: 0 2px 10px rgba(0,0,0,.1);
   position: sticky;
   top: 0;
   z-index: 100;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+header h1 {
+  font-size: 24px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+header .back-btn {
+  background: rgba(255,255,255,0.2);
+  color: #fff;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all .3s;
+  display: none;
+}
+header .back-btn:hover {
+  background: rgba(255,255,255,0.3);
+}
+header .stats-header {
+  font-size: 14px;
+  opacity: 0.9;
 }
 .container {
   max-width: 1400px;
   margin: auto;
   padding: 20px;
-}
-.card {
-  background: #fff;
-  border-radius: 12px;
-  padding: 20px;
-  margin-bottom: 20px;
-  box-shadow: 0 2px 12px rgba(0,0,0,.08);
-}
-.card h3 {
-  margin: 0 0 15px 0;
-  color: #333;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-size: 20px;
-}
-.stats {
-  display: flex;
-  gap: 20px;
-  flex-wrap: wrap;
-  padding: 10px 0;
-}
-.stats span {
-  background: #f8f9fa;
-  padding: 8px 16px;
-  border-radius: 20px;
-  font-size: 14px;
-  color: #555;
-}
-.filters {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 12px;
-}
-.filters input,
-.filters select {
-  padding: 12px;
-  border: 2px solid #e0e0e0;
-  border-radius: 8px;
-  width: 100%;
-  font-size: 14px;
-  transition: all .3s;
-  background: #fff;
-}
-.filters input:focus,
-.filters select:focus {
-  outline: none;
-  border-color: #0d6efd;
-  box-shadow: 0 0 0 3px rgba(13,110,253,.1);
-}
-.btn-reset {
-  padding: 12px 24px;
-  background: #6c757d;
-  color: #fff;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  font-weight: 500;
-  transition: all .3s;
-}
-.btn-reset:hover {
-  background: #5a6268;
-}
-.btn-primary {
-  padding: 10px 20px;
-  background: #0d6efd;
-  color: #fff;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  font-weight: 500;
-  transition: all .3s;
-}
-.btn-primary:hover {
-  background: #0b5ed7;
-}
-.btn-outline {
-  padding: 8px 16px;
-  background: transparent;
-  color: #0d6efd;
-  border: 2px solid #0d6efd;
-  border-radius: 8px;
-  cursor: pointer;
-  font-weight: 500;
-  transition: all .3s;
-}
-.btn-outline:hover {
-  background: #0d6efd;
-  color: #fff;
 }
 .loading {
   text-align: center;
@@ -148,101 +86,184 @@ header {
   margin-bottom: 20px;
 }
 
-/* Birthday Section */
-.birthday-section {
-  background: linear-gradient(135deg, #fff5f5, #fff);
-  border-left: 4px solid #ff6b6b;
-}
-.birthday-month {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  gap: 10px;
-  margin-top: 10px;
-}
-.birthday-item {
-  padding: 8px 12px;
-  background: #fff;
-  border-radius: 8px;
-  border: 1px solid #f0f0f0;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-.birthday-item .name {
-  font-weight: 500;
-  color: #d63031;
-}
-.birthday-item .date {
+/* Breadcrumb */
+.breadcrumb {
+  padding: 10px 0 20px 0;
+  font-size: 14px;
   color: #666;
-  font-size: 13px;
-  background: #f8f9fa;
-  padding: 2px 10px;
-  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
 }
-.birthday-item .unit {
+.breadcrumb span {
+  cursor: pointer;
+  color: #0d6efd;
+  transition: all .2s;
+}
+.breadcrumb span:hover {
+  text-decoration: underline;
+}
+.breadcrumb .separator {
+  color: #ccc;
+  cursor: default;
+}
+.breadcrumb .current {
+  color: #333;
+  cursor: default;
+  font-weight: 500;
+}
+
+/* Unit Grid - Trang chủ */
+.unit-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+}
+.unit-card {
+  background: #fff;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0,0,0,.06);
+  cursor: pointer;
+  transition: all .3s;
+  border: 2px solid transparent;
+  position: relative;
+}
+.unit-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 24px rgba(0,0,0,.12);
+  border-color: #0d6efd;
+}
+.unit-card .icon {
+  font-size: 32px;
+  margin-bottom: 8px;
+}
+.unit-card .name {
+  font-size: 18px;
+  font-weight: 600;
+  color: #1a1a1a;
+}
+.unit-card .count {
+  font-size: 14px;
   color: #888;
+  margin-top: 4px;
+}
+.unit-card .badge {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: #0d6efd;
+  color: #fff;
+  padding: 2px 12px;
+  border-radius: 12px;
   font-size: 12px;
 }
-.no-birthday {
-  color: #999;
-  padding: 20px;
-  text-align: center;
+.unit-card.cuc-thue {
+  border-left: 4px solid #0d6efd;
+  background: linear-gradient(135deg, #f0f7ff, #fff);
+}
+.unit-card.thue-tinh {
+  border-left: 4px solid #20c997;
+}
+.unit-card.thue-tinh:hover {
+  border-color: #20c997;
+}
+
+/* Sub Unit Grid - Chi tiết đơn vị */
+.sub-unit-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 14px;
+}
+.sub-unit-card {
+  background: #fff;
+  border-radius: 10px;
+  padding: 16px 18px;
+  box-shadow: 0 2px 6px rgba(0,0,0,.05);
+  cursor: pointer;
+  transition: all .3s;
+  border: 2px solid transparent;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.sub-unit-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 16px rgba(0,0,0,.1);
+  border-color: #0d6efd;
+}
+.sub-unit-card .icon {
+  font-size: 24px;
+}
+.sub-unit-card .info {
+  flex: 1;
+}
+.sub-unit-card .info .name {
+  font-weight: 500;
+  font-size: 15px;
+}
+.sub-unit-card .info .count {
+  font-size: 13px;
+  color: #888;
+}
+.sub-unit-card .arrow {
+  color: #ccc;
+  font-size: 18px;
 }
 
 /* People Grid */
-.people {
+.people-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
-  gap: 16px;
+  gap: 14px;
 }
-.person {
+.person-card {
   background: #fff;
   border-radius: 12px;
   padding: 16px;
   display: flex;
   gap: 15px;
-  box-shadow: 0 2px 8px rgba(0,0,0,.06);
+  box-shadow: 0 2px 6px rgba(0,0,0,.05);
   transition: all .3s;
-  cursor: pointer;
-  border: 1px solid transparent;
+  border: 1px solid #f0f0f0;
 }
-.person:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 4px 20px rgba(0,0,0,.12);
-  border-color: #0d6efd;
+.person-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(0,0,0,.08);
 }
-.avatar {
-  width: 80px;
-  height: 80px;
+.person-card .avatar {
+  width: 72px;
+  height: 72px;
   border-radius: 50%;
   object-fit: cover;
   border: 3px solid #e0e0e0;
   flex-shrink: 0;
 }
-.person-info {
+.person-card .info {
   flex: 1;
   min-width: 0;
 }
-.person-info .name {
-  font-weight: bold;
+.person-card .info .name {
+  font-weight: 600;
   font-size: 16px;
   color: #1a1a1a;
 }
-.person-info .position {
+.person-card .info .position {
   color: #0d6efd;
   font-weight: 500;
   font-size: 14px;
-  margin: 4px 0;
-}
-.person-info .department {
-  color: #666;
-  font-size: 13px;
   margin: 2px 0;
 }
-.person-info .phone {
+.person-card .info .dept {
+  color: #666;
+  font-size: 13px;
+  margin: 1px 0;
+}
+.person-card .info .phone {
   display: inline-block;
-  margin-top: 6px;
-  padding: 4px 14px;
+  margin-top: 4px;
+  padding: 3px 14px;
   background: #e8f0fe;
   color: #0d6efd;
   border-radius: 20px;
@@ -251,93 +272,97 @@ header {
   font-weight: 500;
   transition: all .2s;
 }
-.person-info .phone:hover {
+.person-card .info .phone:hover {
   background: #0d6efd;
   color: #fff;
 }
-.person-info .email {
-  margin-top: 4px;
+.person-card .info .email {
   font-size: 12px;
   color: #999;
+  margin-top: 2px;
 }
 
-/* Unit Tabs */
-.unit-tabs {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
+/* Filters */
+.filters {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 10px;
   margin-bottom: 20px;
 }
-.unit-tab {
-  padding: 8px 16px;
-  background: #f8f9fa;
-  border: 2px solid transparent;
-  border-radius: 20px;
-  cursor: pointer;
+.filters input,
+.filters select {
+  padding: 10px 12px;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  width: 100%;
   font-size: 14px;
   transition: all .3s;
-  color: #555;
+  background: #fff;
 }
-.unit-tab:hover {
-  background: #e9ecef;
-}
-.unit-tab.active {
-  background: #0d6efd;
-  color: #fff;
+.filters input:focus,
+.filters select:focus {
+  outline: none;
   border-color: #0d6efd;
+  box-shadow: 0 0 0 3px rgba(13,110,253,.1);
 }
-.unit-tab .count {
-  background: rgba(255,255,255,0.3);
-  padding: 0 8px;
-  border-radius: 10px;
-  font-size: 12px;
-}
-.unit-tab.active .count {
-  background: rgba(255,255,255,0.2);
-}
-
-/* Unit Group */
-.unit-group {
-  margin-bottom: 30px;
-}
-.unit-group-title {
-  background: #f8f9fa;
-  padding: 12px 16px;
-  border-radius: 8px;
-  margin-bottom: 12px;
-  font-weight: 600;
-  color: #0d6efd;
-  border-left: 4px solid #0d6efd;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-.unit-group-title .count {
-  background: #0d6efd;
+.btn-reset {
+  padding: 10px 20px;
+  background: #6c757d;
   color: #fff;
-  padding: 2px 12px;
-  border-radius: 12px;
-  font-size: 13px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all .3s;
 }
-.unit-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
-  gap: 12px;
+.btn-reset:hover {
+  background: #5a6268;
 }
 
+/* Section title */
+.section-title {
+  font-size: 20px;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.section-title .count {
+  font-size: 14px;
+  font-weight: 400;
+  color: #888;
+}
+
+.no-data {
+  text-align: center;
+  padding: 40px;
+  color: #999;
+  font-size: 16px;
+}
+
+/* Responsive */
 @media (max-width: 768px) {
-  .container { padding: 10px; }
-  .people { grid-template-columns: 1fr; }
-  .birthday-month { grid-template-columns: 1fr; }
-  .person { flex-direction: column; align-items: center; text-align: center; }
+  header h1 { font-size: 18px; }
+  .container { padding: 12px; }
+  .unit-grid { grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); }
+  .people-grid { grid-template-columns: 1fr; }
+  .person-card { flex-direction: column; align-items: center; text-align: center; }
   .filters { grid-template-columns: 1fr; }
-  .unit-tabs { flex-wrap: nowrap; overflow-x: auto; }
-  .unit-tab { white-space: nowrap; }
+  .sub-unit-grid { grid-template-columns: 1fr; }
 }
 </style>
 </head>
 <body>
-<header>📋 DANH BẠ TOÀN NGÀNH THUẾ</header>
+<header>
+  <div style="display:flex;align-items:center;gap:12px">
+    <button class="back-btn" id="backBtn" onclick="goBack()">← Quay lại</button>
+    <h1>📋 DANH BẠ NGÀNH THUẾ</h1>
+  </div>
+  <div class="stats-header" id="headerStats">Đang tải...</div>
+</header>
+
 <div class="container">
   <!-- Loading -->
   <div id="loading" class="loading">
@@ -350,45 +375,23 @@ header {
 
   <!-- Content -->
   <div id="content" style="display:none">
-    <!-- Stats -->
-    <div class="card">
-      <div class="stats">
-        <span>👥 Tổng cán bộ: <strong id="totalCount">0</strong></span>
-        <span>🏢 Đơn vị: <strong id="unitCount">0</strong></span>
-        <span>🎂 Sinh nhật tháng này: <strong id="birthdayCount">0</strong></span>
-      </div>
+    <!-- Breadcrumb -->
+    <div class="breadcrumb" id="breadcrumb">
+      <span onclick="goHome()">🏠 Trang chủ</span>
     </div>
 
-    <!-- Birthday by Month -->
-    <div class="card birthday-section">
-      <h3>🎂 Sinh nhật tháng <span id="currentMonth"></span></h3>
-      <div id="birthdayList" class="birthday-month"></div>
-    </div>
-
-    <!-- Filters -->
-    <div class="card">
+    <!-- Filters (hiển thị khi ở cấp nhân sự) -->
+    <div id="filtersContainer" style="display:none">
       <div class="filters">
         <input id="search" placeholder="🔍 Tìm tên, SĐT, chức vụ...">
-        <select id="unit"><option value="">🏢 Tất cả đơn vị</option></select>
         <select id="phong"><option value="">📁 Tất cả phòng</option></select>
-        <select id="coso"><option value="">🏛️ Tất cả Thuế cơ sở</option></select>
         <select id="to"><option value="">📂 Tất cả tổ</option></select>
         <button class="btn-reset" onclick="resetFilters()">🔄 Reset</button>
       </div>
     </div>
 
-    <!-- Unit Tabs -->
-    <div class="card">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:15px;flex-wrap:wrap;gap:10px">
-        <h3 style="margin:0">📇 Danh bạ theo đơn vị</h3>
-        <div style="display:flex;gap:8px;flex-wrap:wrap">
-          <button class="btn-primary" onclick="showAllUnits()">📋 Tất cả</button>
-          <button class="btn-outline" onclick="showAllPeople()">👥 Xem tất cả</button>
-        </div>
-      </div>
-      <div id="unitTabs" class="unit-tabs"></div>
-      <div id="peopleContainer"></div>
-    </div>
+    <!-- Main content -->
+    <div id="mainContent"></div>
   </div>
 </div>
 
@@ -396,15 +399,16 @@ header {
 const API = 'https://script.google.com/macros/s/AKfycbyYo7XdQMqMJx9s66v_4u3XM16vJLIf93sCITUDE5LjglRvVM9xu7TfOTHa7y0rGPIWrw/exec?action=all';
 const AVATAR = 'https://raw.githubusercontent.com/thuecoso8/thuecoso8.github.io/main/Avatas/';
 
-let data = [];
-let filteredData = [];
-let selectedUnit = 'all';
+let allData = [];
+let units = [];
+let currentView = 'home'; // home, unit, subUnit
+let currentUnit = null;
+let currentSubUnit = null;
+let history = [];
 
-// Hàm format tên đơn vị
+// Format tên đơn vị
 function prettyUnit(v) {
   if (!v) return '';
-  
-  // Các trường hợp đặc biệt
   if (v === 'CucThue') return 'Cục Thuế';
   
   const thanhPho = {
@@ -414,13 +418,9 @@ function prettyUnit(v) {
     'DaNang': 'Thuế TP Đà Nẵng',
     'CanTho': 'Thuế TP Cần Thơ'
   };
-  
   if (thanhPho[v]) return thanhPho[v];
   
-  // Format từ camelCase
   let name = v.replace(/([A-Z])/g, ' $1').trim();
-  
-  // Map tên chính xác
   const nameFix = {
     'Ba Ria Vung Tau': 'Bà Rịa - Vũng Tàu',
     'Dak Lak': 'Đắk Lắk',
@@ -469,224 +469,263 @@ function prettyUnit(v) {
     'Vinh Phuc': 'Vĩnh Phúc',
     'Yen Bai': 'Yên Bái'
   };
-  
   if (nameFix[name]) name = nameFix[name];
-  
   return 'Thuế tỉnh ' + name;
 }
 
-// Lấy phần ngày sinh
-function birthdayParts(s) {
-  if (!s) return null;
-  let p = String(s).split('/');
-  if (p.length < 2) return null;
-  return { d: parseInt(p[0]), m: parseInt(p[1]) };
-}
-
-// Render sinh nhật theo tháng
-function renderBirthdays() {
-  const now = new Date();
-  const currentMonth = now.getMonth() + 1;
-  const monthNames = ['Tháng 1', 'Tháng 2', 'Tháng 3', 'Tháng 4', 'Tháng 5', 'Tháng 6', 
-                      'Tháng 7', 'Tháng 8', 'Tháng 9', 'Tháng 10', 'Tháng 11', 'Tháng 12'];
-  document.getElementById('currentMonth').textContent = monthNames[currentMonth - 1];
-
-  // Lọc sinh nhật trong tháng hiện tại
-  const birthdays = data.filter(x => {
-    const b = birthdayParts(x.ngaySinh);
-    return b && b.m === currentMonth;
-  });
-
-  // Sắp xếp theo ngày
-  birthdays.sort((a, b) => {
-    const ba = birthdayParts(a.ngaySinh);
-    const bb = birthdayParts(b.ngaySinh);
-    return ba.d - bb.d;
-  });
-
-  document.getElementById('birthdayCount').textContent = birthdays.length;
-
-  if (birthdays.length === 0) {
-    document.getElementById('birthdayList').innerHTML = '<div class="no-birthday">📭 Không có ai sinh nhật trong tháng này</div>';
-    return;
+// Lấy tên sheet gốc từ tên hiển thị
+function getSheetName(displayName) {
+  if (displayName === 'Cục Thuế') return 'CucThue';
+  // Tìm ngược từ prettyUnit
+  for (const key in allData) {
+    if (allData[key].donVi === displayName) {
+      return allData[key]._sheetName;
+    }
   }
-
-  document.getElementById('birthdayList').innerHTML = birthdays.map(x => {
-    const b = birthdayParts(x.ngaySinh);
-    return `
-      <div class="birthday-item">
-        <div>
-          <span class="name">${x.hoTen || ''}</span>
-          <span class="unit"> - ${x.donVi || ''}</span>
-        </div>
-        <span class="date">🎂 ${b.d}/${b.m}</span>
-      </div>
-    `;
-  }).join('');
+  return null;
 }
 
-// Render unit tabs
-function renderUnitTabs() {
-  const units = [...new Set(data.map(x => x.donVi).filter(Boolean))].sort();
-  const container = document.getElementById('unitTabs');
-  
-  // Đếm số lượng theo đơn vị
-  const unitCounts = {};
-  data.forEach(x => {
-    if (x.donVi) {
-      unitCounts[x.donVi] = (unitCounts[x.donVi] || 0) + 1;
+// Xây dựng danh sách đơn vị từ dữ liệu
+function buildUnits() {
+  const unitMap = {};
+  allData.forEach(x => {
+    const unit = x.donVi || 'Khác';
+    if (!unitMap[unit]) {
+      unitMap[unit] = {
+        name: unit,
+        sheetName: x._sheetName || x.sheetName,
+        count: 0,
+        subUnits: new Set()
+      };
+    }
+    unitMap[unit].count++;
+    if (x.thueCoSo) {
+      unitMap[unit].subUnits.add(x.thueCoSo);
     }
   });
+  return Object.values(unitMap);
+}
 
-  let html = `<div class="unit-tab ${selectedUnit === 'all' ? 'active' : ''}" onclick="selectUnit('all')">
-    📋 Tất cả <span class="count">${data.length}</span>
-  </div>`;
+// Render trang chủ - Danh sách đơn vị
+function renderHome() {
+  currentView = 'home';
+  currentUnit = null;
+  currentSubUnit = null;
+  document.getElementById('backBtn').style.display = 'none';
+  document.getElementById('filtersContainer').style.display = 'none';
+  document.getElementById('headerStats').textContent = `🏢 ${units.length} đơn vị · 👥 ${allData.length} cán bộ`;
 
-  units.forEach(unit => {
-    const count = unitCounts[unit] || 0;
-    const isActive = selectedUnit === unit;
-    html += `<div class="unit-tab ${isActive ? 'active' : ''}" onclick="selectUnit('${unit}')">
-      ${unit} <span class="count">${count}</span>
-    </div>`;
+  // Breadcrumb
+  document.getElementById('breadcrumb').innerHTML = `<span onclick="goHome()">🏠 Trang chủ</span>`;
+
+  const container = document.getElementById('mainContent');
+  
+  // Sắp xếp: Cục Thuế lên đầu, sau đó các tỉnh theo alphabet
+  const sortedUnits = [...units].sort((a, b) => {
+    if (a.name === 'Cục Thuế') return -1;
+    if (b.name === 'Cục Thuế') return 1;
+    return a.name.localeCompare(b.name);
   });
 
-  container.innerHTML = html;
-}
+  let html = `<div class="section-title">📇 Danh sách đơn vị <span class="count">(${units.length} đơn vị)</span></div>`;
+  html += `<div class="unit-grid">`;
 
-// Chọn đơn vị
-function selectUnit(unit) {
-  selectedUnit = unit;
-  renderUnitTabs();
-  renderPeopleByUnit();
-}
-
-// Hiển thị tất cả đơn vị
-function showAllUnits() {
-  selectedUnit = 'all';
-  renderUnitTabs();
-  renderPeopleByUnit();
-}
-
-// Hiển thị tất cả người (không phân nhóm)
-function showAllPeople() {
-  selectedUnit = 'all';
-  renderUnitTabs();
-  renderPeopleByUnit(true);
-}
-
-// Render danh bạ theo đơn vị
-function renderPeopleByUnit(flatView = false) {
-  const q = document.getElementById('search').value.toLowerCase().trim();
-  const p = document.getElementById('phong').value;
-  const c = document.getElementById('coso').value;
-  const t = document.getElementById('to').value;
-
-  // Lọc dữ liệu
-  let filtered = data.filter(x => {
-    const txt = JSON.stringify(Object.values(x)).toLowerCase();
-    const matchSearch = !q || txt.includes(q);
-    const matchPhong = !p || x.phong === p;
-    const matchCoSo = !c || x.thueCoSo === c;
-    const matchTo = !t || x.toNghiepVu === t;
-    return matchSearch && matchPhong && matchCoSo && matchTo;
-  });
-
-  // Lọc theo đơn vị đã chọn
-  if (selectedUnit !== 'all') {
-    filtered = filtered.filter(x => x.donVi === selectedUnit);
-  }
-
-  const container = document.getElementById('peopleContainer');
-
-  if (filtered.length === 0) {
-    container.innerHTML = '<div style="text-align:center;padding:40px;color:#999">🔍 Không tìm thấy kết quả phù hợp</div>';
-    return;
-  }
-
-  // Nếu flatView = true hoặc selectedUnit !== 'all', hiển thị dạng danh sách
-  if (flatView || selectedUnit !== 'all') {
-    container.innerHTML = renderPeopleList(filtered);
-    return;
-  }
-
-  // Nhóm theo đơn vị
-  const grouped = {};
-  filtered.forEach(x => {
-    const unit = x.donVi || 'Khác';
-    if (!grouped[unit]) grouped[unit] = [];
-    grouped[unit].push(x);
-  });
-
-  let html = '';
-  const sortedUnits = Object.keys(grouped).sort();
   sortedUnits.forEach(unit => {
-    const people = grouped[unit];
+    const isCucThue = unit.name === 'Cục Thuế';
+    const subCount = unit.subUnits.size;
     html += `
-      <div class="unit-group">
-        <div class="unit-group-title">
-          <span>🏢 ${unit}</span>
-          <span class="count">${people.length} người</span>
-        </div>
-        <div class="unit-grid">
-          ${renderPeopleCards(people)}
-        </div>
+      <div class="unit-card ${isCucThue ? 'cuc-thue' : 'thue-tinh'}" onclick="selectUnit('${unit.name}')">
+        <div class="icon">${isCucThue ? '🏛️' : '🏢'}</div>
+        <div class="name">${unit.name}</div>
+        <div class="count">👥 ${unit.count} cán bộ · 📂 ${subCount} cơ sở</div>
+        <div class="badge">${subCount}</div>
       </div>
     `;
   });
 
+  html += `</div>`;
   container.innerHTML = html;
 }
 
-// Render danh sách người (dạng grid)
-function renderPeopleCards(people) {
-  return people.map(x => `
-    <div class="person" onclick="window.location.href='tel:${x.soDienThoai || ''}'">
-      <img class="avatar" src="${AVATAR}${x.avatar || ''}" 
-           onerror="this.src='https://ui-avatars.com/api/?name=${encodeURIComponent(x.hoTen || '')}&background=0d6efd&color=fff&size=80'">
-      <div class="person-info">
-        <div class="name">${x.hoTen || ''}</div>
-        <div class="position">${x.chucVu || ''}</div>
-        <div class="department">${x.donVi || ''}</div>
-        <div class="department">${x.phong || x.thueCoSo || ''}</div>
-        ${x.toNghiepVu ? `<div class="department">Tổ: ${x.toNghiepVu}</div>` : ''}
-        ${x.soDienThoai ? `<a href="tel:${x.soDienThoai}" class="phone">📞 ${x.soDienThoai}</a>` : ''}
-        ${x.email ? `<div class="email">✉️ ${x.email}</div>` : ''}
+// Chọn đơn vị - Hiển thị các Thuế cơ sở
+function selectUnit(unitName) {
+  currentView = 'unit';
+  currentUnit = unitName;
+  currentSubUnit = null;
+  document.getElementById('backBtn').style.display = 'block';
+  document.getElementById('filtersContainer').style.display = 'none';
+  document.getElementById('headerStats').textContent = `🏢 ${unitName}`;
+
+  // Breadcrumb
+  document.getElementById('breadcrumb').innerHTML = `
+    <span onclick="goHome()">🏠 Trang chủ</span>
+    <span class="separator">›</span>
+    <span class="current">${unitName}</span>
+  `;
+
+  const container = document.getElementById('mainContent');
+  
+  // Lọc dữ liệu theo đơn vị
+  const unitData = allData.filter(x => x.donVi === unitName);
+  
+  // Lấy danh sách các Thuế cơ sở
+  const subUnits = [...new Set(unitData.map(x => x.thueCoSo).filter(Boolean))].sort();
+
+  if (subUnits.length === 0) {
+    // Nếu không có cơ sở, hiển thị danh sách nhân sự trực tiếp
+    renderPeople(unitData, unitName);
+    return;
+  }
+
+  let html = `
+    <div class="section-title">📂 Các Thuế cơ sở trực thuộc <span class="count">(${subUnits.length} cơ sở)</span></div>
+    <div class="sub-unit-grid">
+  `;
+
+  subUnits.forEach(sub => {
+    const count = unitData.filter(x => x.thueCoSo === sub).length;
+    html += `
+      <div class="sub-unit-card" onclick="selectSubUnit('${sub}')">
+        <div class="icon">🏛️</div>
+        <div class="info">
+          <div class="name">${sub}</div>
+          <div class="count">👥 ${count} cán bộ</div>
+        </div>
+        <div class="arrow">›</div>
       </div>
-    </div>
-  `).join('');
+    `;
+  });
+
+  html += `</div>`;
+  container.innerHTML = html;
 }
 
-// Render danh sách phẳng
-function renderPeopleList(people) {
-  return `<div class="unit-grid">${renderPeopleCards(people)}</div>`;
+// Chọn Thuế cơ sở - Hiển thị danh sách cán bộ
+function selectSubUnit(subUnitName) {
+  currentView = 'subUnit';
+  currentSubUnit = subUnitName;
+  document.getElementById('backBtn').style.display = 'block';
+  document.getElementById('filtersContainer').style.display = 'block';
+  document.getElementById('headerStats').textContent = `🏛️ ${subUnitName}`;
+
+  // Breadcrumb
+  document.getElementById('breadcrumb').innerHTML = `
+    <span onclick="goHome()">🏠 Trang chủ</span>
+    <span class="separator">›</span>
+    <span onclick="selectUnit('${currentUnit}')">${currentUnit}</span>
+    <span class="separator">›</span>
+    <span class="current">${subUnitName}</span>
+  `;
+
+  // Lọc dữ liệu
+  const people = allData.filter(x => x.thueCoSo === subUnitName);
+  
+  // Populate filters
+  populateFilters(people);
+  
+  renderPeople(people, subUnitName);
 }
 
-function fillSelect(id, values) {
-  const el = document.getElementById(id);
-  const currentValue = el.value;
-  el.innerHTML = `<option value="">${el.options[0]?.textContent || 'Tất cả'}</option>`;
-  const unique = [...new Set(values.filter(Boolean))].sort();
-  unique.forEach(v => {
-    let o = document.createElement('option');
+// Render danh sách cán bộ
+function renderPeople(people, title) {
+  const container = document.getElementById('mainContent');
+  
+  // Áp dụng filter nếu có
+  const q = document.getElementById('search')?.value?.toLowerCase().trim() || '';
+  const phong = document.getElementById('phong')?.value || '';
+  const to = document.getElementById('to')?.value || '';
+
+  let filtered = people.filter(x => {
+    const txt = JSON.stringify(Object.values(x)).toLowerCase();
+    const matchSearch = !q || txt.includes(q);
+    const matchPhong = !phong || x.phong === phong;
+    const matchTo = !to || x.toNghiepVu === to;
+    return matchSearch && matchPhong && matchTo;
+  });
+
+  // Sắp xếp theo tên
+  filtered.sort((a, b) => (a.hoTen || '').localeCompare(b.hoTen || ''));
+
+  let html = `
+    <div class="section-title">👥 Danh sách cán bộ <span class="count">(${filtered.length} người)</span></div>
+  `;
+
+  if (filtered.length === 0) {
+    html += `<div class="no-data">🔍 Không tìm thấy cán bộ nào</div>`;
+  } else {
+    html += `<div class="people-grid">`;
+    filtered.forEach(x => {
+      html += `
+        <div class="person-card" onclick="window.location.href='tel:${x.soDienThoai || ''}'">
+          <img class="avatar" src="${AVATAR}${x.avatar || ''}" 
+               onerror="this.src='https://ui-avatars.com/api/?name=${encodeURIComponent(x.hoTen || '')}&background=0d6efd&color=fff&size=72'">
+          <div class="info">
+            <div class="name">${x.hoTen || ''}</div>
+            <div class="position">${x.chucVu || ''}</div>
+            <div class="dept">${x.phong || x.thueCoSo || ''}</div>
+            ${x.toNghiepVu ? `<div class="dept">Tổ: ${x.toNghiepVu}</div>` : ''}
+            ${x.soDienThoai ? `<a href="tel:${x.soDienThoai}" class="phone">📞 ${x.soDienThoai}</a>` : ''}
+            ${x.email ? `<div class="email">✉️ ${x.email}</div>` : ''}
+          </div>
+        </div>
+      `;
+    });
+    html += `</div>`;
+  }
+
+  container.innerHTML = html;
+}
+
+// Populate filters
+function populateFilters(people) {
+  const phongSelect = document.getElementById('phong');
+  const toSelect = document.getElementById('to');
+  
+  const phongs = [...new Set(people.map(x => x.phong).filter(Boolean))].sort();
+  const tos = [...new Set(people.map(x => x.toNghiepVu).filter(Boolean))].sort();
+  
+  const currentPhong = phongSelect.value;
+  const currentTo = toSelect.value;
+  
+  phongSelect.innerHTML = `<option value="">📁 Tất cả phòng</option>`;
+  phongs.forEach(v => {
+    const o = document.createElement('option');
     o.value = v;
     o.textContent = v;
-    el.appendChild(o);
+    phongSelect.appendChild(o);
   });
-  if (currentValue && unique.includes(currentValue)) {
-    el.value = currentValue;
-  }
+  if (currentPhong && phongs.includes(currentPhong)) phongSelect.value = currentPhong;
+  
+  toSelect.innerHTML = `<option value="">📂 Tất cả tổ</option>`;
+  tos.forEach(v => {
+    const o = document.createElement('option');
+    o.value = v;
+    o.textContent = v;
+    toSelect.appendChild(o);
+  });
+  if (currentTo && tos.includes(currentTo)) toSelect.value = currentTo;
 }
 
 function resetFilters() {
   document.getElementById('search').value = '';
   document.getElementById('phong').value = '';
-  document.getElementById('coso').value = '';
   document.getElementById('to').value = '';
-  renderPeopleByUnit();
+  if (currentSubUnit) {
+    const people = allData.filter(x => x.thueCoSo === currentSubUnit);
+    renderPeople(people, currentSubUnit);
+  }
 }
 
-function render() {
-  renderPeopleByUnit();
+function goHome() {
+  renderHome();
+}
+
+function goBack() {
+  if (currentView === 'subUnit') {
+    selectUnit(currentUnit);
+  } else if (currentView === 'unit') {
+    goHome();
+  }
 }
 
 // Load data
@@ -698,7 +737,7 @@ fetch(API)
   .then(j => {
     if (!j.success) throw new Error(j.message || 'Unknown error');
     
-    data = (j.data || []).map(x => ({
+    allData = (j.data || []).map(x => ({
       ...x,
       donVi: prettyUnit(x._sheetName || x.sheetName || ''),
       hoTen: x.hoTen || '',
@@ -712,23 +751,13 @@ fetch(API)
       avatar: x.avatar || ''
     }));
 
-    // Populate filters
-    fillSelect('phong', data.map(x => x.phong));
-    fillSelect('coso', data.map(x => x.thueCoSo));
-    fillSelect('to', data.map(x => x.toNghiepVu));
-
-    // Update stats
-    document.getElementById('totalCount').textContent = data.length;
-    document.getElementById('unitCount').textContent = [...new Set(data.map(x => x.donVi).filter(Boolean))].length;
+    // Build units
+    units = buildUnits();
 
     // Render
-    renderBirthdays();
-    renderUnitTabs();
-    renderPeopleByUnit();
-
-    // Show content
     document.getElementById('loading').style.display = 'none';
     document.getElementById('content').style.display = 'block';
+    renderHome();
   })
   .catch(err => {
     document.getElementById('loading').style.display = 'none';
@@ -737,12 +766,21 @@ fetch(API)
     errorEl.innerHTML = `❌ Lỗi tải dữ liệu: ${err.message}<br><small>Vui lòng thử lại sau hoặc liên hệ quản trị viên.</small>`;
   });
 
-// Event listeners
-['search', 'phong', 'coso', 'to'].forEach(id => {
-  const el = document.getElementById(id);
-  if (el) {
-    el.addEventListener('input', render);
-    el.addEventListener('change', render);
+// Event listeners cho filters
+document.addEventListener('input', function(e) {
+  if (e.target.id === 'search' || e.target.id === 'phong' || e.target.id === 'to') {
+    if (currentSubUnit) {
+      const people = allData.filter(x => x.thueCoSo === currentSubUnit);
+      renderPeople(people, currentSubUnit);
+    }
+  }
+});
+document.addEventListener('change', function(e) {
+  if (e.target.id === 'phong' || e.target.id === 'to') {
+    if (currentSubUnit) {
+      const people = allData.filter(x => x.thueCoSo === currentSubUnit);
+      renderPeople(people, currentSubUnit);
+    }
   }
 });
 </script>
