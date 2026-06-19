@@ -85,19 +85,6 @@ header .stats-header {
   border-left: 4px solid #d63031;
   margin-bottom: 20px;
 }
-.debug-box {
-  background: #f8f9fa;
-  border: 1px solid #dee2e6;
-  border-radius: 8px;
-  padding: 15px;
-  margin: 20px 0;
-  font-family: monospace;
-  font-size: 13px;
-  white-space: pre-wrap;
-  max-height: 400px;
-  overflow: auto;
-  display: none;
-}
 .breadcrumb {
   padding: 10px 0 20px 0;
   font-size: 14px;
@@ -377,20 +364,6 @@ header .stats-header {
 .btn-reset:hover {
   background: #5a6268;
 }
-.btn-debug {
-  padding: 10px 20px;
-  background: #ffc107;
-  color: #333;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  font-weight: 500;
-  transition: all .3s;
-  margin-right: 10px;
-}
-.btn-debug:hover {
-  background: #e0a800;
-}
 .section-title {
   font-size: 20px;
   font-weight: 600;
@@ -440,13 +413,6 @@ header .stats-header {
 
   <div id="error" class="error" style="display:none"></div>
 
-  <!-- Debug Button -->
-  <div style="margin-bottom:15px;display:flex;gap:10px;flex-wrap:wrap">
-    <button class="btn-debug" onclick="toggleDebug()">🔍 Bật/Tắt Debug</button>
-    <button class="btn-debug" onclick="testAPI()">📡 Test API</button>
-  </div>
-  <div id="debugBox" class="debug-box"></div>
-
   <div id="content" style="display:none">
     <div class="breadcrumb" id="breadcrumb">
       <span onclick="goHome()">🏠 Trang chủ</span>
@@ -469,7 +435,7 @@ header .stats-header {
 
 <script>
 // ====== CẤU HÌNH ======
-// CẬP NHẬT URL SAU KHI DEPLOY
+// SAU KHI DEPLOY APPS SCRIPT, CẬP NHẬT URL VÀO ĐÂY
 const API = 'https://script.google.com/macros/s/AKfycbyYo7XdQMqMJx9s66v_4u3XM16vJLIf93sCITUDE5LjglRvVM9xu7TfOTHa7y0rGPIWrw/exec?action=all';
 const AVATAR = 'https://raw.githubusercontent.com/thuecoso8/thuecoso8.github.io/main/Avatas/';
 
@@ -479,63 +445,6 @@ let units = [];
 let currentView = 'home';
 let currentUnit = null;
 let currentSubUnit = null;
-let debugVisible = false;
-
-// ====== DEBUG ======
-function logDebug(msg) {
-  const box = document.getElementById('debugBox');
-  if (debugVisible) {
-    box.textContent += msg + '\n';
-    box.scrollTop = box.scrollHeight;
-  }
-  console.log(msg);
-}
-
-function toggleDebug() {
-  debugVisible = !debugVisible;
-  const box = document.getElementById('debugBox');
-  box.style.display = debugVisible ? 'block' : 'none';
-  if (debugVisible) {
-    box.textContent = '=== DEBUG LOG ===\n';
-    box.textContent += `API URL: ${API}\n`;
-    box.textContent += `Thời gian: ${new Date().toLocaleString()}\n`;
-    box.textContent += '━'.repeat(50) + '\n';
-  }
-}
-
-function testAPI() {
-  const box = document.getElementById('debugBox');
-  box.style.display = 'block';
-  debugVisible = true;
-  box.textContent = '📡 Đang test API...\n';
-  
-  fetch(API)
-    .then(r => {
-      box.textContent += `✅ HTTP Status: ${r.status} ${r.statusText}\n`;
-      return r.text();
-    })
-    .then(text => {
-      box.textContent += `📄 Response length: ${text.length} characters\n`;
-      box.textContent += `📄 Response preview: ${text.substring(0, 500)}...\n`;
-      try {
-        const json = JSON.parse(text);
-        box.textContent += `✅ JSON parse thành công\n`;
-        box.textContent += `📊 success: ${json.success}\n`;
-        box.textContent += `📊 total: ${json.total || json.data?.length || 0}\n`;
-        if (json.data && json.data.length > 0) {
-          box.textContent += `📌 donVi (item đầu): ${json.data[0].donVi}\n`;
-          box.textContent += `📌 _sheetName (item đầu): ${json.data[0]._sheetName}\n`;
-          box.textContent += `📌 Các đơn vị: ${[...new Set(json.data.map(x => x.donVi))].join(', ')}\n`;
-        }
-        box.textContent += `✅ Test thành công!\n`;
-      } catch (e) {
-        box.textContent += `❌ Lỗi parse JSON: ${e.message}\n`;
-      }
-    })
-    .catch(err => {
-      box.textContent += `❌ Lỗi fetch: ${err.message}\n`;
-    });
-}
 
 // ====== HÀM XỬ LÝ NGÀY SINH ======
 function birthdayParts(s) {
@@ -607,6 +516,7 @@ function renderBirthdayForUnit(unitName, people) {
 function buildUnits() {
   const unitMap = {};
   allData.forEach(x => {
+    // === QUAN TRỌNG: DÙNG TRỰC TIẾP donVi TỪ API ===
     const unit = x.donVi || 'Khác';
     if (!unitMap[unit]) {
       unitMap[unit] = {
@@ -847,35 +757,27 @@ function goBack() {
 }
 
 // ====== LOAD DỮ LIỆU ======
-logDebug('🚀 Bắt đầu tải dữ liệu...');
-logDebug(`📡 API URL: ${API}`);
-
 fetch(API)
   .then(r => {
-    logDebug(`✅ HTTP Status: ${r.status} ${r.statusText}`);
-    if (!r.ok) throw new Error(`HTTP ${r.status}: ${r.statusText}`);
+    if (!r.ok) throw new Error(`HTTP ${r.status}`);
     return r.json();
   })
   .then(j => {
-    logDebug('✅ Parse JSON thành công');
-    logDebug(`📊 success: ${j.success}`);
-    logDebug(`📊 total: ${j.total || j.data?.length || 0}`);
+    if (!j.success) throw new Error(j.message || 'Unknown error');
     
-    if (!j.success) {
-      throw new Error(j.message || 'API trả về success=false');
+    // ====== DEBUG: Xem dữ liệu từ API ======
+    console.log('📊 Dữ liệu từ API:', j);
+    if (j.data && j.data.length > 0) {
+      console.log('📌 donVi từ API (item đầu):', j.data[0].donVi);
+      console.log('📌 _sheetName từ API (item đầu):', j.data[0]._sheetName);
+      console.log('📌 Tất cả donVi từ API:', [...new Set(j.data.map(x => x.donVi))]);
     }
-    
-    if (!j.data || j.data.length === 0) {
-      throw new Error('Không có dữ liệu từ API');
-    }
-    
-    logDebug(`📌 donVi (item đầu): ${j.data[0].donVi}`);
-    logDebug(`📌 _sheetName (item đầu): ${j.data[0]._sheetName}`);
-    logDebug(`📌 Các đơn vị: ${[...new Set(j.data.map(x => x.donVi))].join(', ')}`);
+    // ========================================
     
     // ====== QUAN TRỌNG: GIỮ NGUYÊN donVi TỪ API ======
+    // KHÔNG format lại, KHÔNG thêm "Thuế tỉnh" vào trước
     allData = (j.data || []).map(x => ({
-      ...x,
+      ...x,  // Giữ nguyên tất cả, bao gồm donVi
       hoTen: x.hoTen || '',
       chucVu: x.chucVu || '',
       soDienThoai: x.soDienThoai || '',
@@ -887,32 +789,21 @@ fetch(API)
       avatar: x.avatar || ''
     }));
 
-    logDebug(`✅ Đã map ${allData.length} bản ghi`);
-    logDebug(`📌 Các đơn vị sau map: ${[...new Set(allData.map(x => x.donVi))].join(', ')}`);
+    // ====== DEBUG: Kiểm tra sau khi map ======
+    console.log('📌 Các đơn vị sau khi map:', [...new Set(allData.map(x => x.donVi))]);
+    // ========================================
 
     units = buildUnits();
-    logDebug(`✅ Đã xây dựng ${units.length} đơn vị`);
 
     document.getElementById('loading').style.display = 'none';
     document.getElementById('content').style.display = 'block';
-    document.getElementById('headerStats').textContent = `🏢 ${units.length} đơn vị · 👥 ${allData.length} cán bộ`;
-    
     renderHome();
-    logDebug('✅ Render thành công!');
   })
   .catch(err => {
-    logDebug(`❌ LỖI: ${err.message}`);
     document.getElementById('loading').style.display = 'none';
     const errorEl = document.getElementById('error');
     errorEl.style.display = 'block';
-    errorEl.innerHTML = `
-      <strong>❌ Lỗi tải dữ liệu</strong><br>
-      ${err.message}<br>
-      <small>Vui lòng kiểm tra:<br>
-      - URL API đã đúng chưa?<br>
-      - Apps Script đã deploy chưa?<br>
-      - Click "Test API" để kiểm tra chi tiết</small>
-    `;
+    errorEl.innerHTML = `❌ Lỗi tải dữ liệu: ${err.message}<br><small>Vui lòng thử lại sau hoặc liên hệ quản trị viên.</small>`;
   });
 
 // ====== EVENT LISTENERS ======
@@ -931,3 +822,7 @@ document.addEventListener('change', function(e) {
       renderPeople(people, currentSubUnit);
     }
   }
+});
+</script>
+</body>
+</html>
