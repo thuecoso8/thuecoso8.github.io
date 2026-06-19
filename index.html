@@ -456,7 +456,7 @@ const AVATAR = 'https://raw.githubusercontent.com/thuecoso8/thuecoso8.github.io/
 // ====== BIẾN TOÀN CỤC ======
 let allData = [];
 let units = [];
-let currentView = 'home'; // home, unit, subUnit
+let currentView = 'home';
 let currentUnit = null;
 let currentSubUnit = null;
 
@@ -468,7 +468,6 @@ function birthdayParts(s) {
   return { d: parseInt(p[0]), m: parseInt(p[1]) };
 }
 
-// Đếm sinh nhật trong tháng hiện tại
 function countBirthdayInMonth(people) {
   const now = new Date();
   const currentMonth = now.getMonth() + 1;
@@ -478,7 +477,7 @@ function countBirthdayInMonth(people) {
   });
 }
 
-// ====== RENDER SINH NHẬT THEO ĐƠN VỊ ======
+// ====== RENDER SINH NHẬT ======
 function renderBirthdayForUnit(unitName, people) {
   const container = document.getElementById('birthdayContainer');
   const now = new Date();
@@ -531,6 +530,7 @@ function renderBirthdayForUnit(unitName, people) {
 function buildUnits() {
   const unitMap = {};
   allData.forEach(x => {
+    // Dùng donVi đã được format từ Apps Script
     const unit = x.donVi || 'Khác';
     if (!unitMap[unit]) {
       unitMap[unit] = {
@@ -610,7 +610,6 @@ function selectUnit(unitName) {
 
   const unitData = allData.filter(x => x.donVi === unitName);
   
-  // Render sinh nhật của đơn vị này
   renderBirthdayForUnit(unitName, unitData);
 
   const container = document.getElementById('mainContent');
@@ -663,7 +662,6 @@ function selectSubUnit(subUnitName) {
 
   const people = allData.filter(x => x.thueCoSo === subUnitName);
   
-  // Render sinh nhật của cơ sở này
   renderBirthdayForUnit(subUnitName, people);
   
   populateFilters(people);
@@ -781,9 +779,9 @@ fetch(API)
   .then(j => {
     if (!j.success) throw new Error(j.message || 'Unknown error');
     
-    // KHÔNG CẦN format lại donVi vì đã có từ Apps Script
+    // LẤY donVi TỪ API - ĐÃ ĐƯỢC FORMAT TỪ APPS SCRIPT
     allData = (j.data || []).map(x => ({
-      ...x,
+      ...x,  // Giữ nguyên donVi từ Apps Script
       hoTen: x.hoTen || '',
       chucVu: x.chucVu || '',
       soDienThoai: x.soDienThoai || '',
@@ -794,6 +792,9 @@ fetch(API)
       ngaySinh: x.ngaySinh || '',
       avatar: x.avatar || ''
     }));
+
+    // DEBUG: Kiểm tra donVi
+    console.log('📌 Các đơn vị từ API:', [...new Set(allData.map(x => x.donVi))]);
 
     units = buildUnits();
 
