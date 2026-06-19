@@ -114,7 +114,55 @@ header .stats-header {
   font-weight: 500;
 }
 
-/* Unit Grid - Trang chủ */
+/* Birthday Card */
+.birthday-card {
+  background: linear-gradient(135deg, #fff5f5, #fff);
+  border-left: 4px solid #ff6b6b;
+  margin-bottom: 20px;
+  padding: 16px 20px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,.06);
+}
+.birthday-card h3 {
+  font-size: 18px;
+  color: #d63031;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.birthday-card .birthday-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 8px;
+}
+.birthday-card .birthday-item {
+  background: #fff;
+  padding: 8px 14px;
+  border-radius: 8px;
+  border: 1px solid #f0f0f0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.birthday-card .birthday-item .name {
+  font-weight: 500;
+  color: #d63031;
+}
+.birthday-card .birthday-item .date {
+  background: #fff0f0;
+  padding: 2px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+  color: #d63031;
+}
+.birthday-card .no-birthday {
+  color: #999;
+  padding: 10px 0;
+  text-align: center;
+}
+
+/* Unit Grid */
 .unit-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -159,6 +207,16 @@ header .stats-header {
   border-radius: 12px;
   font-size: 12px;
 }
+.unit-card .birthday-badge {
+  position: absolute;
+  bottom: 12px;
+  right: 12px;
+  background: #ff6b6b;
+  color: #fff;
+  padding: 2px 12px;
+  border-radius: 12px;
+  font-size: 12px;
+}
 .unit-card.cuc-thue {
   border-left: 4px solid #0d6efd;
   background: linear-gradient(135deg, #f0f7ff, #fff);
@@ -170,7 +228,7 @@ header .stats-header {
   border-color: #20c997;
 }
 
-/* Sub Unit Grid - Chi tiết đơn vị */
+/* Sub Unit Grid */
 .sub-unit-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
@@ -319,7 +377,6 @@ header .stats-header {
   background: #5a6268;
 }
 
-/* Section title */
 .section-title {
   font-size: 20px;
   font-weight: 600;
@@ -351,6 +408,7 @@ header .stats-header {
   .person-card { flex-direction: column; align-items: center; text-align: center; }
   .filters { grid-template-columns: 1fr; }
   .sub-unit-grid { grid-template-columns: 1fr; }
+  .birthday-card .birthday-list { grid-template-columns: 1fr; }
 }
 </style>
 </head>
@@ -364,23 +422,20 @@ header .stats-header {
 </header>
 
 <div class="container">
-  <!-- Loading -->
   <div id="loading" class="loading">
     <div class="loading-spinner"></div>
     <p>Đang tải dữ liệu...</p>
   </div>
 
-  <!-- Error -->
   <div id="error" class="error" style="display:none"></div>
 
-  <!-- Content -->
   <div id="content" style="display:none">
-    <!-- Breadcrumb -->
     <div class="breadcrumb" id="breadcrumb">
       <span onclick="goHome()">🏠 Trang chủ</span>
     </div>
 
-    <!-- Filters (hiển thị khi ở cấp nhân sự) -->
+    <div id="birthdayContainer"></div>
+
     <div id="filtersContainer" style="display:none">
       <div class="filters">
         <input id="search" placeholder="🔍 Tìm tên, SĐT, chức vụ...">
@@ -390,7 +445,6 @@ header .stats-header {
       </div>
     </div>
 
-    <!-- Main content -->
     <div id="mainContent"></div>
   </div>
 </div>
@@ -401,10 +455,9 @@ const AVATAR = 'https://raw.githubusercontent.com/thuecoso8/thuecoso8.github.io/
 
 let allData = [];
 let units = [];
-let currentView = 'home'; // home, unit, subUnit
+let currentView = 'home';
 let currentUnit = null;
 let currentSubUnit = null;
-let history = [];
 
 // Format tên đơn vị
 function prettyUnit(v) {
@@ -473,19 +526,73 @@ function prettyUnit(v) {
   return 'Thuế tỉnh ' + name;
 }
 
-// Lấy tên sheet gốc từ tên hiển thị
-function getSheetName(displayName) {
-  if (displayName === 'Cục Thuế') return 'CucThue';
-  // Tìm ngược từ prettyUnit
-  for (const key in allData) {
-    if (allData[key].donVi === displayName) {
-      return allData[key]._sheetName;
-    }
-  }
-  return null;
+function birthdayParts(s) {
+  if (!s) return null;
+  let p = String(s).split('/');
+  if (p.length < 2) return null;
+  return { d: parseInt(p[0]), m: parseInt(p[1]) };
 }
 
-// Xây dựng danh sách đơn vị từ dữ liệu
+// Đếm sinh nhật trong tháng hiện tại
+function countBirthdayInMonth(people) {
+  const now = new Date();
+  const currentMonth = now.getMonth() + 1;
+  return people.filter(x => {
+    const b = birthdayParts(x.ngaySinh);
+    return b && b.m === currentMonth;
+  });
+}
+
+// Render sinh nhật của một đơn vị
+function renderBirthdayForUnit(unitName, people) {
+  const container = document.getElementById('birthdayContainer');
+  const now = new Date();
+  const currentMonth = now.getMonth() + 1;
+  const monthNames = ['Tháng 1', 'Tháng 2', 'Tháng 3', 'Tháng 4', 'Tháng 5', 'Tháng 6', 
+                      'Tháng 7', 'Tháng 8', 'Tháng 9', 'Tháng 10', 'Tháng 11', 'Tháng 12'];
+
+  const birthdays = people.filter(x => {
+    const b = birthdayParts(x.ngaySinh);
+    return b && b.m === currentMonth;
+  });
+
+  birthdays.sort((a, b) => {
+    const ba = birthdayParts(a.ngaySinh);
+    const bb = birthdayParts(b.ngaySinh);
+    return ba.d - bb.d;
+  });
+
+  if (birthdays.length === 0) {
+    container.innerHTML = `
+      <div class="birthday-card">
+        <h3>🎂 Sinh nhật tháng ${monthNames[currentMonth - 1]}</h3>
+        <div class="no-birthday">📭 Không có ai sinh nhật trong tháng này tại ${unitName}</div>
+      </div>
+    `;
+    return;
+  }
+
+  let html = `
+    <div class="birthday-card">
+      <h3>🎂 Sinh nhật tháng ${monthNames[currentMonth - 1]} - ${unitName} <span style="font-size:14px;color:#888;font-weight:400">(${birthdays.length} người)</span></h3>
+      <div class="birthday-list">
+  `;
+
+  birthdays.forEach(x => {
+    const b = birthdayParts(x.ngaySinh);
+    html += `
+      <div class="birthday-item">
+        <span class="name">${x.hoTen || ''}</span>
+        <span class="date">🎂 ${b.d}/${b.m}</span>
+      </div>
+    `;
+  });
+
+  html += `</div></div>`;
+  container.innerHTML = html;
+}
+
+// Xây dựng danh sách đơn vị
 function buildUnits() {
   const unitMap = {};
   allData.forEach(x => {
@@ -495,10 +602,12 @@ function buildUnits() {
         name: unit,
         sheetName: x._sheetName || x.sheetName,
         count: 0,
-        subUnits: new Set()
+        subUnits: new Set(),
+        people: []
       };
     }
     unitMap[unit].count++;
+    unitMap[unit].people.push(x);
     if (x.thueCoSo) {
       unitMap[unit].subUnits.add(x.thueCoSo);
     }
@@ -506,7 +615,7 @@ function buildUnits() {
   return Object.values(unitMap);
 }
 
-// Render trang chủ - Danh sách đơn vị
+// Render trang chủ
 function renderHome() {
   currentView = 'home';
   currentUnit = null;
@@ -515,12 +624,11 @@ function renderHome() {
   document.getElementById('filtersContainer').style.display = 'none';
   document.getElementById('headerStats').textContent = `🏢 ${units.length} đơn vị · 👥 ${allData.length} cán bộ`;
 
-  // Breadcrumb
   document.getElementById('breadcrumb').innerHTML = `<span onclick="goHome()">🏠 Trang chủ</span>`;
+  document.getElementById('birthdayContainer').innerHTML = '';
 
   const container = document.getElementById('mainContent');
   
-  // Sắp xếp: Cục Thuế lên đầu, sau đó các tỉnh theo alphabet
   const sortedUnits = [...units].sort((a, b) => {
     if (a.name === 'Cục Thuế') return -1;
     if (b.name === 'Cục Thuế') return 1;
@@ -533,12 +641,15 @@ function renderHome() {
   sortedUnits.forEach(unit => {
     const isCucThue = unit.name === 'Cục Thuế';
     const subCount = unit.subUnits.size;
+    const birthdayCount = countBirthdayInMonth(unit.people).length;
+    
     html += `
       <div class="unit-card ${isCucThue ? 'cuc-thue' : 'thue-tinh'}" onclick="selectUnit('${unit.name}')">
         <div class="icon">${isCucThue ? '🏛️' : '🏢'}</div>
         <div class="name">${unit.name}</div>
         <div class="count">👥 ${unit.count} cán bộ · 📂 ${subCount} cơ sở</div>
         <div class="badge">${subCount}</div>
+        ${birthdayCount > 0 ? `<div class="birthday-badge">🎂 ${birthdayCount}</div>` : ''}
       </div>
     `;
   });
@@ -547,7 +658,7 @@ function renderHome() {
   container.innerHTML = html;
 }
 
-// Chọn đơn vị - Hiển thị các Thuế cơ sở
+// Chọn đơn vị
 function selectUnit(unitName) {
   currentView = 'unit';
   currentUnit = unitName;
@@ -556,23 +667,23 @@ function selectUnit(unitName) {
   document.getElementById('filtersContainer').style.display = 'none';
   document.getElementById('headerStats').textContent = `🏢 ${unitName}`;
 
-  // Breadcrumb
   document.getElementById('breadcrumb').innerHTML = `
     <span onclick="goHome()">🏠 Trang chủ</span>
     <span class="separator">›</span>
     <span class="current">${unitName}</span>
   `;
 
-  const container = document.getElementById('mainContent');
-  
   // Lọc dữ liệu theo đơn vị
   const unitData = allData.filter(x => x.donVi === unitName);
   
-  // Lấy danh sách các Thuế cơ sở
+  // Render sinh nhật của đơn vị này
+  renderBirthdayForUnit(unitName, unitData);
+
+  const container = document.getElementById('mainContent');
+  
   const subUnits = [...new Set(unitData.map(x => x.thueCoSo).filter(Boolean))].sort();
 
   if (subUnits.length === 0) {
-    // Nếu không có cơ sở, hiển thị danh sách nhân sự trực tiếp
     renderPeople(unitData, unitName);
     return;
   }
@@ -600,7 +711,7 @@ function selectUnit(unitName) {
   container.innerHTML = html;
 }
 
-// Chọn Thuế cơ sở - Hiển thị danh sách cán bộ
+// Chọn Thuế cơ sở
 function selectSubUnit(subUnitName) {
   currentView = 'subUnit';
   currentSubUnit = subUnitName;
@@ -608,7 +719,6 @@ function selectSubUnit(subUnitName) {
   document.getElementById('filtersContainer').style.display = 'block';
   document.getElementById('headerStats').textContent = `🏛️ ${subUnitName}`;
 
-  // Breadcrumb
   document.getElementById('breadcrumb').innerHTML = `
     <span onclick="goHome()">🏠 Trang chủ</span>
     <span class="separator">›</span>
@@ -617,12 +727,12 @@ function selectSubUnit(subUnitName) {
     <span class="current">${subUnitName}</span>
   `;
 
-  // Lọc dữ liệu
   const people = allData.filter(x => x.thueCoSo === subUnitName);
   
-  // Populate filters
-  populateFilters(people);
+  // Render sinh nhật của cơ sở này
+  renderBirthdayForUnit(subUnitName, people);
   
+  populateFilters(people);
   renderPeople(people, subUnitName);
 }
 
@@ -630,7 +740,6 @@ function selectSubUnit(subUnitName) {
 function renderPeople(people, title) {
   const container = document.getElementById('mainContent');
   
-  // Áp dụng filter nếu có
   const q = document.getElementById('search')?.value?.toLowerCase().trim() || '';
   const phong = document.getElementById('phong')?.value || '';
   const to = document.getElementById('to')?.value || '';
@@ -643,7 +752,6 @@ function renderPeople(people, title) {
     return matchSearch && matchPhong && matchTo;
   });
 
-  // Sắp xếp theo tên
   filtered.sort((a, b) => (a.hoTen || '').localeCompare(b.hoTen || ''));
 
   let html = `
@@ -676,7 +784,6 @@ function renderPeople(people, title) {
   container.innerHTML = html;
 }
 
-// Populate filters
 function populateFilters(people) {
   const phongSelect = document.getElementById('phong');
   const toSelect = document.getElementById('to');
@@ -751,10 +858,8 @@ fetch(API)
       avatar: x.avatar || ''
     }));
 
-    // Build units
     units = buildUnits();
 
-    // Render
     document.getElementById('loading').style.display = 'none';
     document.getElementById('content').style.display = 'block';
     renderHome();
@@ -766,7 +871,7 @@ fetch(API)
     errorEl.innerHTML = `❌ Lỗi tải dữ liệu: ${err.message}<br><small>Vui lòng thử lại sau hoặc liên hệ quản trị viên.</small>`;
   });
 
-// Event listeners cho filters
+// Event listeners
 document.addEventListener('input', function(e) {
   if (e.target.id === 'search' || e.target.id === 'phong' || e.target.id === 'to') {
     if (currentSubUnit) {
