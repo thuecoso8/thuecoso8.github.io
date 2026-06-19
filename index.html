@@ -450,6 +450,7 @@ header .stats-header {
 
 <script>
 // ====== CẤU HÌNH ======
+// CẬP NHẬT URL SAU KHI DEPLOY
 const API = 'https://script.google.com/macros/s/AKfycbyYo7XdQMqMJx9s66v_4u3XM16vJLIf93sCITUDE5LjglRvVM9xu7TfOTHa7y0rGPIWrw/exec?action=all';
 const AVATAR = 'https://raw.githubusercontent.com/thuecoso8/thuecoso8.github.io/main/Avatas/';
 
@@ -530,7 +531,7 @@ function renderBirthdayForUnit(unitName, people) {
 function buildUnits() {
   const unitMap = {};
   allData.forEach(x => {
-    // Dùng donVi đã được format từ Apps Script
+    // DÙNG donVi TỪ API (ĐÃ ĐƯỢC FORMAT TỪ APPS SCRIPT)
     const unit = x.donVi || 'Khác';
     if (!unitMap[unit]) {
       unitMap[unit] = {
@@ -779,9 +780,18 @@ fetch(API)
   .then(j => {
     if (!j.success) throw new Error(j.message || 'Unknown error');
     
-    // LẤY donVi TỪ API - ĐÃ ĐƯỢC FORMAT TỪ APPS SCRIPT
+    // ====== DEBUG: Kiểm tra dữ liệu từ API ======
+    console.log('📊 Dữ liệu từ API:', j);
+    if (j.data && j.data.length > 0) {
+      console.log('📌 donVi từ API:', j.data[0].donVi);
+      console.log('📌 _sheetName từ API:', j.data[0]._sheetName);
+      console.log('📌 Tất cả donVi:', [...new Set(j.data.map(x => x.donVi))]);
+    }
+    // =============================================
+    
+    // ====== QUAN TRỌNG: GIỮ NGUYÊN donVi TỪ API ======
     allData = (j.data || []).map(x => ({
-      ...x,  // Giữ nguyên donVi từ Apps Script
+      ...x,  // GIỮ NGUYÊN donVi TỪ APPS SCRIPT
       hoTen: x.hoTen || '',
       chucVu: x.chucVu || '',
       soDienThoai: x.soDienThoai || '',
@@ -793,8 +803,9 @@ fetch(API)
       avatar: x.avatar || ''
     }));
 
-    // DEBUG: Kiểm tra donVi
-    console.log('📌 Các đơn vị từ API:', [...new Set(allData.map(x => x.donVi))]);
+    // ====== DEBUG: Kiểm tra sau khi map ======
+    console.log('📌 Các đơn vị sau khi map:', [...new Set(allData.map(x => x.donVi))]);
+    // =======================================
 
     units = buildUnits();
 
