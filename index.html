@@ -85,8 +85,6 @@ header .stats-header {
   border-left: 4px solid #d63031;
   margin-bottom: 20px;
 }
-
-/* Breadcrumb */
 .breadcrumb {
   padding: 10px 0 20px 0;
   font-size: 14px;
@@ -113,8 +111,6 @@ header .stats-header {
   cursor: default;
   font-weight: 500;
 }
-
-/* Birthday Card */
 .birthday-card {
   background: linear-gradient(135deg, #fff5f5, #fff);
   border-left: 4px solid #ff6b6b;
@@ -161,8 +157,6 @@ header .stats-header {
   padding: 10px 0;
   text-align: center;
 }
-
-/* Unit Grid */
 .unit-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -227,8 +221,6 @@ header .stats-header {
 .unit-card.thue-tinh:hover {
   border-color: #20c997;
 }
-
-/* Sub Unit Grid */
 .sub-unit-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
@@ -269,8 +261,6 @@ header .stats-header {
   color: #ccc;
   font-size: 18px;
 }
-
-/* People Grid */
 .people-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
@@ -339,8 +329,6 @@ header .stats-header {
   color: #999;
   margin-top: 2px;
 }
-
-/* Filters */
 .filters {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
@@ -376,7 +364,6 @@ header .stats-header {
 .btn-reset:hover {
   background: #5a6268;
 }
-
 .section-title {
   font-size: 20px;
   font-weight: 600;
@@ -391,14 +378,12 @@ header .stats-header {
   font-weight: 400;
   color: #888;
 }
-
 .no-data {
   text-align: center;
   padding: 40px;
   color: #999;
   font-size: 16px;
 }
-
 @media (max-width: 768px) {
   header h1 { font-size: 18px; }
   .container { padding: 12px; }
@@ -450,8 +435,8 @@ header .stats-header {
 
 <script>
 // ====== CẤU HÌNH ======
-// CẬP NHẬT URL SAU KHI DEPLOY
-const API = 'https://script.google.com/macros/s/AKfycbyYo7XdQMqMJx9s66v_4u3XM16vJLIf93sCITUDE5LjglRvVM9xu7TfOTHa7y0rGPIWrw/exec?action=all';
+// SAU KHI DEPLOY, CẬP NHẬT URL MỚI VÀO ĐÂY
+const API = 'https://script.google.com/macros/s/YOUR_NEW_SCRIPT_ID/exec?action=all';
 const AVATAR = 'https://raw.githubusercontent.com/thuecoso8/thuecoso8.github.io/main/Avatas/';
 
 // ====== BIẾN TOÀN CỤC ======
@@ -531,7 +516,6 @@ function renderBirthdayForUnit(unitName, people) {
 function buildUnits() {
   const unitMap = {};
   allData.forEach(x => {
-    // DÙNG donVi TỪ API (ĐÃ ĐƯỢC FORMAT TỪ APPS SCRIPT)
     const unit = x.donVi || 'Khác';
     if (!unitMap[unit]) {
       unitMap[unit] = {
@@ -765,78 +749,4 @@ function goHome() {
 
 function goBack() {
   if (currentView === 'subUnit') {
-    selectUnit(currentUnit);
-  } else if (currentView === 'unit') {
-    goHome();
-  }
-}
-
-// ====== LOAD DỮ LIỆU ======
-fetch(API)
-  .then(r => {
-    if (!r.ok) throw new Error(`HTTP ${r.status}`);
-    return r.json();
-  })
-  .then(j => {
-    if (!j.success) throw new Error(j.message || 'Unknown error');
-    
-    // ====== DEBUG: Kiểm tra dữ liệu từ API ======
-    console.log('📊 Dữ liệu từ API:', j);
-    if (j.data && j.data.length > 0) {
-      console.log('📌 donVi từ API:', j.data[0].donVi);
-      console.log('📌 _sheetName từ API:', j.data[0]._sheetName);
-      console.log('📌 Tất cả donVi:', [...new Set(j.data.map(x => x.donVi))]);
-    }
-    // =============================================
-    
-    // ====== QUAN TRỌNG: GIỮ NGUYÊN donVi TỪ API ======
-    allData = (j.data || []).map(x => ({
-      ...x,  // GIỮ NGUYÊN donVi TỪ APPS SCRIPT
-      hoTen: x.hoTen || '',
-      chucVu: x.chucVu || '',
-      soDienThoai: x.soDienThoai || '',
-      email: x.email || '',
-      phong: x.phong || '',
-      thueCoSo: x.thueCoSo || '',
-      toNghiepVu: x.toNghiepVu || '',
-      ngaySinh: x.ngaySinh || '',
-      avatar: x.avatar || ''
-    }));
-
-    // ====== DEBUG: Kiểm tra sau khi map ======
-    console.log('📌 Các đơn vị sau khi map:', [...new Set(allData.map(x => x.donVi))]);
-    // =======================================
-
-    units = buildUnits();
-
-    document.getElementById('loading').style.display = 'none';
-    document.getElementById('content').style.display = 'block';
-    renderHome();
-  })
-  .catch(err => {
-    document.getElementById('loading').style.display = 'none';
-    const errorEl = document.getElementById('error');
-    errorEl.style.display = 'block';
-    errorEl.innerHTML = `❌ Lỗi tải dữ liệu: ${err.message}<br><small>Vui lòng thử lại sau hoặc liên hệ quản trị viên.</small>`;
-  });
-
-// ====== EVENT LISTENERS ======
-document.addEventListener('input', function(e) {
-  if (e.target.id === 'search' || e.target.id === 'phong' || e.target.id === 'to') {
-    if (currentSubUnit) {
-      const people = allData.filter(x => x.thueCoSo === currentSubUnit);
-      renderPeople(people, currentSubUnit);
-    }
-  }
-});
-document.addEventListener('change', function(e) {
-  if (e.target.id === 'phong' || e.target.id === 'to') {
-    if (currentSubUnit) {
-      const people = allData.filter(x => x.thueCoSo === currentSubUnit);
-      renderPeople(people, currentSubUnit);
-    }
-  }
-});
-</script>
-</body>
-</html>
+    select
