@@ -1,828 +1,708 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Danh bạ toàn ngành Thuế</title>
-<style>
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
-body {
-  font-family: 'Segoe UI', Arial, sans-serif;
-  background: #f0f2f5;
-  color: #333;
-}
-header {
-  background: linear-gradient(135deg, #0d6efd, #0a58ca);
-  color: #fff;
-  padding: 16px 20px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  box-shadow: 0 2px 10px rgba(0,0,0,.1);
-  position: sticky;
-  top: 0;
-  z-index: 100;
-  flex-wrap: wrap;
-  gap: 10px;
-}
-header h1 {
-  font-size: 24px;
-  font-weight: bold;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-header .back-btn {
-  background: rgba(255,255,255,0.2);
-  color: #fff;
-  border: none;
-  padding: 8px 16px;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 14px;
-  transition: all .3s;
-  display: none;
-}
-header .back-btn:hover {
-  background: rgba(255,255,255,0.3);
-}
-header .stats-header {
-  font-size: 14px;
-  opacity: 0.9;
-}
-.container {
-  max-width: 1400px;
-  margin: auto;
-  padding: 20px;
-}
-.loading {
-  text-align: center;
-  padding: 60px;
-  color: #666;
-}
-.loading-spinner {
-  display: inline-block;
-  width: 50px;
-  height: 50px;
-  border: 5px solid #f3f3f3;
-  border-top: 5px solid #0d6efd;
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-}
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-.error {
-  background: #fff5f5;
-  color: #d63031;
-  padding: 15px 20px;
-  border-radius: 8px;
-  border-left: 4px solid #d63031;
-  margin-bottom: 20px;
-}
-.breadcrumb {
-  padding: 10px 0 20px 0;
-  font-size: 14px;
-  color: #666;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-.breadcrumb span {
-  cursor: pointer;
-  color: #0d6efd;
-  transition: all .2s;
-}
-.breadcrumb span:hover {
-  text-decoration: underline;
-}
-.breadcrumb .separator {
-  color: #ccc;
-  cursor: default;
-}
-.breadcrumb .current {
-  color: #333;
-  cursor: default;
-  font-weight: 500;
-}
-.birthday-card {
-  background: linear-gradient(135deg, #fff5f5, #fff);
-  border-left: 4px solid #ff6b6b;
-  margin-bottom: 20px;
-  padding: 16px 20px;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0,0,0,.06);
-}
-.birthday-card h3 {
-  font-size: 18px;
-  color: #d63031;
-  margin-bottom: 12px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-.birthday-card .birthday-list {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  gap: 8px;
-}
-.birthday-card .birthday-item {
-  background: #fff;
-  padding: 8px 14px;
-  border-radius: 8px;
-  border: 1px solid #f0f0f0;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-.birthday-card .birthday-item .name {
-  font-weight: 500;
-  color: #d63031;
-}
-.birthday-card .birthday-item .date {
-  background: #fff0f0;
-  padding: 2px 10px;
-  border-radius: 12px;
-  font-size: 12px;
-  color: #d63031;
-}
-.birthday-card .no-birthday {
-  color: #999;
-  padding: 10px 0;
-  text-align: center;
-}
-.unit-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 16px;
-}
-.unit-card {
-  background: #fff;
-  border-radius: 12px;
-  padding: 20px;
-  box-shadow: 0 2px 8px rgba(0,0,0,.06);
-  cursor: pointer;
-  transition: all .3s;
-  border: 2px solid transparent;
-  position: relative;
-}
-.unit-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 6px 24px rgba(0,0,0,.12);
-  border-color: #0d6efd;
-}
-.unit-card .icon {
-  font-size: 32px;
-  margin-bottom: 8px;
-}
-.unit-card .name {
-  font-size: 18px;
-  font-weight: 600;
-  color: #1a1a1a;
-}
-.unit-card .count {
-  font-size: 14px;
-  color: #888;
-  margin-top: 4px;
-}
-.unit-card .badge {
-  position: absolute;
-  top: 12px;
-  right: 12px;
-  background: #0d6efd;
-  color: #fff;
-  padding: 2px 12px;
-  border-radius: 12px;
-  font-size: 12px;
-}
-.unit-card .birthday-badge {
-  position: absolute;
-  bottom: 12px;
-  right: 12px;
-  background: #ff6b6b;
-  color: #fff;
-  padding: 2px 12px;
-  border-radius: 12px;
-  font-size: 12px;
-}
-.unit-card.cuc-thue {
-  border-left: 4px solid #0d6efd;
-  background: linear-gradient(135deg, #f0f7ff, #fff);
-}
-.unit-card.thue-tinh {
-  border-left: 4px solid #20c997;
-}
-.unit-card.thue-tinh:hover {
-  border-color: #20c997;
-}
-.sub-unit-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  gap: 14px;
-}
-.sub-unit-card {
-  background: #fff;
-  border-radius: 10px;
-  padding: 16px 18px;
-  box-shadow: 0 2px 6px rgba(0,0,0,.05);
-  cursor: pointer;
-  transition: all .3s;
-  border: 2px solid transparent;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-.sub-unit-card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 4px 16px rgba(0,0,0,.1);
-  border-color: #0d6efd;
-}
-.sub-unit-card .icon {
-  font-size: 24px;
-}
-.sub-unit-card .info {
-  flex: 1;
-}
-.sub-unit-card .info .name {
-  font-weight: 500;
-  font-size: 15px;
-}
-.sub-unit-card .info .count {
-  font-size: 13px;
-  color: #888;
-}
-.sub-unit-card .arrow {
-  color: #ccc;
-  font-size: 18px;
-}
-.people-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
-  gap: 14px;
-}
-.person-card {
-  background: #fff;
-  border-radius: 12px;
-  padding: 16px;
-  display: flex;
-  gap: 15px;
-  box-shadow: 0 2px 6px rgba(0,0,0,.05);
-  transition: all .3s;
-  border: 1px solid #f0f0f0;
-}
-.person-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 16px rgba(0,0,0,.08);
-}
-.person-card .avatar {
-  width: 72px;
-  height: 72px;
-  border-radius: 50%;
-  object-fit: cover;
-  border: 3px solid #e0e0e0;
-  flex-shrink: 0;
-}
-.person-card .info {
-  flex: 1;
-  min-width: 0;
-}
-.person-card .info .name {
-  font-weight: 600;
-  font-size: 16px;
-  color: #1a1a1a;
-}
-.person-card .info .position {
-  color: #0d6efd;
-  font-weight: 500;
-  font-size: 14px;
-  margin: 2px 0;
-}
-.person-card .info .dept {
-  color: #666;
-  font-size: 13px;
-  margin: 1px 0;
-}
-.person-card .info .phone {
-  display: inline-block;
-  margin-top: 4px;
-  padding: 3px 14px;
-  background: #e8f0fe;
-  color: #0d6efd;
-  border-radius: 20px;
-  text-decoration: none;
-  font-size: 13px;
-  font-weight: 500;
-  transition: all .2s;
-}
-.person-card .info .phone:hover {
-  background: #0d6efd;
-  color: #fff;
-}
-.person-card .info .email {
-  font-size: 12px;
-  color: #999;
-  margin-top: 2px;
-}
-.filters {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-  gap: 10px;
-  margin-bottom: 20px;
-}
-.filters input,
-.filters select {
-  padding: 10px 12px;
-  border: 2px solid #e0e0e0;
-  border-radius: 8px;
-  width: 100%;
-  font-size: 14px;
-  transition: all .3s;
-  background: #fff;
-}
-.filters input:focus,
-.filters select:focus {
-  outline: none;
-  border-color: #0d6efd;
-  box-shadow: 0 0 0 3px rgba(13,110,253,.1);
-}
-.btn-reset {
-  padding: 10px 20px;
-  background: #6c757d;
-  color: #fff;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  font-weight: 500;
-  transition: all .3s;
-}
-.btn-reset:hover {
-  background: #5a6268;
-}
-.section-title {
-  font-size: 20px;
-  font-weight: 600;
-  color: #1a1a1a;
-  margin-bottom: 16px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-.section-title .count {
-  font-size: 14px;
-  font-weight: 400;
-  color: #888;
-}
-.no-data {
-  text-align: center;
-  padding: 40px;
-  color: #999;
-  font-size: 16px;
-}
-@media (max-width: 768px) {
-  header h1 { font-size: 18px; }
-  .container { padding: 12px; }
-  .unit-grid { grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); }
-  .people-grid { grid-template-columns: 1fr; }
-  .person-card { flex-direction: column; align-items: center; text-align: center; }
-  .filters { grid-template-columns: 1fr; }
-  .sub-unit-grid { grid-template-columns: 1fr; }
-  .birthday-card .birthday-list { grid-template-columns: 1fr; }
-}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>📋 Danh bạ toàn ngành Thuế</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-<header>
-  <div style="display:flex;align-items:center;gap:12px">
-    <button class="back-btn" id="backBtn" onclick="goBack()">← Quay lại</button>
-    <h1>📋 DANH BẠ NGÀNH THUẾ</h1>
-  </div>
-  <div class="stats-header" id="headerStats">Đang tải...</div>
-</header>
+  <!-- ===== HEADER ===== -->
+  <header>
+    <div class="header-left">
+      <button class="back-btn" id="backBtn" onclick="goBack()">
+        <i class="fas fa-arrow-left"></i> Quay lại
+      </button>
+      <h1>
+        <i class="fas fa-address-book"></i>
+        DANH BẠ NGÀNH THUẾ
+      </h1>
+    </div>
+    <div class="header-right">
+      <div class="stats-header" id="headerStats">
+        <i class="fas fa-spinner fa-spin"></i> Đang tải...
+      </div>
+      <button class="btn-export" onclick="exportToExcel()" title="Xuất Excel">
+        <i class="fas fa-file-excel"></i>
+      </button>
+      <button class="btn-print" onclick="window.print()" title="In danh sách">
+        <i class="fas fa-print"></i>
+      </button>
+    </div>
+  </header>
 
-<div class="container">
-  <div id="loading" class="loading">
-    <div class="loading-spinner"></div>
-    <p>Đang tải dữ liệu...</p>
-  </div>
-
-  <div id="error" class="error" style="display:none"></div>
-
-  <div id="content" style="display:none">
-    <div class="breadcrumb" id="breadcrumb">
-      <span onclick="goHome()">🏠 Trang chủ</span>
+  <!-- ===== MAIN CONTENT ===== -->
+  <div class="container">
+    <!-- Loading -->
+    <div id="loading" class="loading">
+      <div class="loading-spinner"></div>
+      <p><i class="fas fa-sync fa-spin"></i> Đang tải dữ liệu...</p>
     </div>
 
-    <div id="birthdayContainer"></div>
-
-    <div id="filtersContainer" style="display:none">
-      <div class="filters">
-        <input id="search" placeholder="🔍 Tìm tên, SĐT, chức vụ...">
-        <select id="phong"><option value="">📁 Tất cả phòng</option></select>
-        <select id="to"><option value="">📂 Tất cả tổ</option></select>
-        <button class="btn-reset" onclick="resetFilters()">🔄 Reset</button>
-      </div>
+    <!-- Error -->
+    <div id="error" class="error" style="display:none">
+      <i class="fas fa-exclamation-circle"></i>
+      <span id="errorMessage"></span>
     </div>
 
-    <div id="mainContent"></div>
-  </div>
-</div>
+    <!-- Content -->
+    <div id="content" style="display:none">
+      <!-- Breadcrumb -->
+      <nav class="breadcrumb" id="breadcrumb">
+        <span onclick="goHome()"><i class="fas fa-home"></i> Trang chủ</span>
+      </nav>
 
-<script>
-// ====== CẤU HÌNH ======
-// SAU KHI DEPLOY APPS SCRIPT, CẬP NHẬT URL VÀO ĐÂY
-const API = 'https://script.google.com/macros/s/AKfycbyYo7XdQMqMJx9s66v_4u3XM16vJLIf93sCITUDE5LjglRvVM9xu7TfOTHa7y0rGPIWrw/exec?action=all';
-const AVATAR = 'https://raw.githubusercontent.com/thuecoso8/thuecoso8.github.io/main/Avatas/';
+      <!-- Birthday -->
+      <div id="birthdayContainer"></div>
 
-// ====== BIẾN TOÀN CỤC ======
-let allData = [];
-let units = [];
-let currentView = 'home';
-let currentUnit = null;
-let currentSubUnit = null;
+      <!-- Quick Stats -->
+      <div id="statsContainer"></div>
 
-// ====== HÀM XỬ LÝ NGÀY SINH ======
-function birthdayParts(s) {
-  if (!s) return null;
-  let p = String(s).split('/');
-  if (p.length < 2) return null;
-  return { d: parseInt(p[0]), m: parseInt(p[1]) };
-}
-
-function countBirthdayInMonth(people) {
-  const now = new Date();
-  const currentMonth = now.getMonth() + 1;
-  return people.filter(x => {
-    const b = birthdayParts(x.ngaySinh);
-    return b && b.m === currentMonth;
-  });
-}
-
-// ====== RENDER SINH NHẬT ======
-function renderBirthdayForUnit(unitName, people) {
-  const container = document.getElementById('birthdayContainer');
-  const now = new Date();
-  const currentMonth = now.getMonth() + 1;
-  const monthNames = ['Tháng 1', 'Tháng 2', 'Tháng 3', 'Tháng 4', 'Tháng 5', 'Tháng 6', 
-                      'Tháng 7', 'Tháng 8', 'Tháng 9', 'Tháng 10', 'Tháng 11', 'Tháng 12'];
-
-  const birthdays = people.filter(x => {
-    const b = birthdayParts(x.ngaySinh);
-    return b && b.m === currentMonth;
-  });
-
-  birthdays.sort((a, b) => {
-    const ba = birthdayParts(a.ngaySinh);
-    const bb = birthdayParts(b.ngaySinh);
-    return ba.d - bb.d;
-  });
-
-  if (birthdays.length === 0) {
-    container.innerHTML = `
-      <div class="birthday-card">
-        <h3>🎂 Sinh nhật tháng ${monthNames[currentMonth - 1]}</h3>
-        <div class="no-birthday">📭 Không có ai sinh nhật trong tháng này tại ${unitName}</div>
-      </div>
-    `;
-    return;
-  }
-
-  let html = `
-    <div class="birthday-card">
-      <h3>🎂 Sinh nhật tháng ${monthNames[currentMonth - 1]} - ${unitName} <span style="font-size:14px;color:#888;font-weight:400">(${birthdays.length} người)</span></h3>
-      <div class="birthday-list">
-  `;
-
-  birthdays.forEach(x => {
-    const b = birthdayParts(x.ngaySinh);
-    html += `
-      <div class="birthday-item">
-        <span class="name">${x.hoTen || ''}</span>
-        <span class="date">🎂 ${b.d}/${b.m}</span>
-      </div>
-    `;
-  });
-
-  html += `</div></div>`;
-  container.innerHTML = html;
-}
-
-// ====== XÂY DỰNG DANH SÁCH ĐƠN VỊ ======
-function buildUnits() {
-  const unitMap = {};
-  allData.forEach(x => {
-    // === QUAN TRỌNG: DÙNG TRỰC TIẾP donVi TỪ API ===
-    const unit = x.donVi || 'Khác';
-    if (!unitMap[unit]) {
-      unitMap[unit] = {
-        name: unit,
-        sheetName: x._sheetName || x.sheetName,
-        count: 0,
-        subUnits: new Set(),
-        people: []
-      };
-    }
-    unitMap[unit].count++;
-    unitMap[unit].people.push(x);
-    if (x.thueCoSo) {
-      unitMap[unit].subUnits.add(x.thueCoSo);
-    }
-  });
-  return Object.values(unitMap);
-}
-
-// ====== RENDER TRANG CHỦ ======
-function renderHome() {
-  currentView = 'home';
-  currentUnit = null;
-  currentSubUnit = null;
-  document.getElementById('backBtn').style.display = 'none';
-  document.getElementById('filtersContainer').style.display = 'none';
-  document.getElementById('headerStats').textContent = `🏢 ${units.length} đơn vị · 👥 ${allData.length} cán bộ`;
-
-  document.getElementById('breadcrumb').innerHTML = `<span onclick="goHome()">🏠 Trang chủ</span>`;
-  document.getElementById('birthdayContainer').innerHTML = '';
-
-  const container = document.getElementById('mainContent');
-  
-  const sortedUnits = [...units].sort((a, b) => {
-    if (a.name === 'Cục Thuế') return -1;
-    if (b.name === 'Cục Thuế') return 1;
-    return a.name.localeCompare(b.name);
-  });
-
-  let html = `<div class="section-title">📇 Danh sách đơn vị <span class="count">(${units.length} đơn vị)</span></div>`;
-  html += `<div class="unit-grid">`;
-
-  sortedUnits.forEach(unit => {
-    const isCucThue = unit.name === 'Cục Thuế';
-    const subCount = unit.subUnits.size;
-    const birthdayCount = countBirthdayInMonth(unit.people).length;
-    
-    html += `
-      <div class="unit-card ${isCucThue ? 'cuc-thue' : 'thue-tinh'}" onclick="selectUnit('${unit.name}')">
-        <div class="icon">${isCucThue ? '🏛️' : '🏢'}</div>
-        <div class="name">${unit.name}</div>
-        <div class="count">👥 ${unit.count} cán bộ · 📂 ${subCount} cơ sở</div>
-        <div class="badge">${subCount}</div>
-        ${birthdayCount > 0 ? `<div class="birthday-badge">🎂 ${birthdayCount}</div>` : ''}
-      </div>
-    `;
-  });
-
-  html += `</div>`;
-  container.innerHTML = html;
-}
-
-// ====== CHỌN ĐƠN VỊ ======
-function selectUnit(unitName) {
-  currentView = 'unit';
-  currentUnit = unitName;
-  currentSubUnit = null;
-  document.getElementById('backBtn').style.display = 'block';
-  document.getElementById('filtersContainer').style.display = 'none';
-  document.getElementById('headerStats').textContent = `🏢 ${unitName}`;
-
-  document.getElementById('breadcrumb').innerHTML = `
-    <span onclick="goHome()">🏠 Trang chủ</span>
-    <span class="separator">›</span>
-    <span class="current">${unitName}</span>
-  `;
-
-  const unitData = allData.filter(x => x.donVi === unitName);
-  
-  renderBirthdayForUnit(unitName, unitData);
-
-  const container = document.getElementById('mainContent');
-  
-  const subUnits = [...new Set(unitData.map(x => x.thueCoSo).filter(Boolean))].sort();
-
-  if (subUnits.length === 0) {
-    renderPeople(unitData, unitName);
-    return;
-  }
-
-  let html = `
-    <div class="section-title">📂 Các Thuế cơ sở trực thuộc <span class="count">(${subUnits.length} cơ sở)</span></div>
-    <div class="sub-unit-grid">
-  `;
-
-  subUnits.forEach(sub => {
-    const count = unitData.filter(x => x.thueCoSo === sub).length;
-    html += `
-      <div class="sub-unit-card" onclick="selectSubUnit('${sub}')">
-        <div class="icon">🏛️</div>
-        <div class="info">
-          <div class="name">${sub}</div>
-          <div class="count">👥 ${count} cán bộ</div>
+      <!-- Filters -->
+      <div id="filtersContainer" style="display:none">
+        <div class="filters">
+          <div class="filter-group">
+            <i class="fas fa-search"></i>
+            <input id="search" placeholder="Tìm tên, SĐT, chức vụ...">
+          </div>
+          <div class="filter-group">
+            <i class="fas fa-building"></i>
+            <select id="phong"><option value="">Tất cả phòng</option></select>
+          </div>
+          <div class="filter-group">
+            <i class="fas fa-layer-group"></i>
+            <select id="to"><option value="">Tất cả tổ</option></select>
+          </div>
+          <div class="filter-group">
+            <i class="fas fa-user-tie"></i>
+            <select id="chucVu"><option value="">Tất cả chức vụ</option></select>
+          </div>
+          <button class="btn-reset" onclick="resetFilters()">
+            <i class="fas fa-undo"></i> Reset
+          </button>
         </div>
-        <div class="arrow">›</div>
       </div>
-    `;
-  });
 
-  html += `</div>`;
-  container.innerHTML = html;
-}
+      <!-- Main Content -->
+      <div id="mainContent"></div>
+    </div>
+  </div>
 
-// ====== CHỌN THUẾ CƠ SỞ ======
-function selectSubUnit(subUnitName) {
-  currentView = 'subUnit';
-  currentSubUnit = subUnitName;
-  document.getElementById('backBtn').style.display = 'block';
-  document.getElementById('filtersContainer').style.display = 'block';
-  document.getElementById('headerStats').textContent = `🏛️ ${subUnitName}`;
+  <!-- ===== JAVASCRIPT ===== -->
+  <script>
+    // ====== CẤU HÌNH ======
+    const API = 'https://script.google.com/macros/s/AKfycbyYo7XdQMqMJx9s66v_4u3XM16vJLIf93sCITUDE5LjglRvVM9xu7TfOTHa7y0rGPIWrw/exec?action=all';
+    const AVATAR = 'https://raw.githubusercontent.com/thuecoso8/thuecoso8.github.io/main/Avatas/';
 
-  document.getElementById('breadcrumb').innerHTML = `
-    <span onclick="goHome()">🏠 Trang chủ</span>
-    <span class="separator">›</span>
-    <span onclick="selectUnit('${currentUnit}')">${currentUnit}</span>
-    <span class="separator">›</span>
-    <span class="current">${subUnitName}</span>
-  `;
+    // ====== BIẾN TOÀN CỤC ======
+    let allData = [];
+    let units = [];
+    let currentView = 'home';
+    let currentUnit = null;
+    let currentSubUnit = null;
+    let currentPage = 1;
+    const itemsPerPage = 20;
 
-  const people = allData.filter(x => x.thueCoSo === subUnitName);
-  
-  renderBirthdayForUnit(subUnitName, people);
-  
-  populateFilters(people);
-  renderPeople(people, subUnitName);
-}
+    // ====== HÀM TIỆN ÍCH ======
+    function showToast(message, type = 'success') {
+      const toast = document.createElement('div');
+      toast.className = `toast ${type}`;
+      toast.innerHTML = `<i class="fas ${type === 'success' ? 'fa-check-circle' : type === 'error' ? 'fa-exclamation-circle' : 'fa-info-circle'}"></i> ${message}`;
+      document.body.appendChild(toast);
+      setTimeout(() => {
+        toast.style.opacity = '0';
+        setTimeout(() => toast.remove(), 300);
+      }, 3000);
+    }
 
-// ====== RENDER DANH SÁCH CÁN BỘ ======
-function renderPeople(people, title) {
-  const container = document.getElementById('mainContent');
-  
-  const q = document.getElementById('search')?.value?.toLowerCase().trim() || '';
-  const phong = document.getElementById('phong')?.value || '';
-  const to = document.getElementById('to')?.value || '';
+    function birthdayParts(s) {
+      if (!s) return null;
+      let p = String(s).split('/');
+      if (p.length < 2) return null;
+      return { d: parseInt(p[0]), m: parseInt(p[1]) };
+    }
 
-  let filtered = people.filter(x => {
-    const txt = JSON.stringify(Object.values(x)).toLowerCase();
-    const matchSearch = !q || txt.includes(q);
-    const matchPhong = !phong || x.phong === phong;
-    const matchTo = !to || x.toNghiepVu === to;
-    return matchSearch && matchPhong && matchTo;
-  });
+    function countBirthdayInMonth(people) {
+      const now = new Date();
+      const currentMonth = now.getMonth() + 1;
+      return people.filter(x => {
+        const b = birthdayParts(x.ngaySinh);
+        return b && b.m === currentMonth;
+      });
+    }
 
-  filtered.sort((a, b) => (a.hoTen || '').localeCompare(b.hoTen || ''));
+    // ====== EXPORT EXCEL ======
+    function exportToExcel() {
+      const people = getCurrentPeople();
+      if (people.length === 0) {
+        showToast('Không có dữ liệu để xuất!', 'error');
+        return;
+      }
 
-  let html = `
-    <div class="section-title">👥 Danh sách cán bộ <span class="count">(${filtered.length} người)</span></div>
-  `;
+      const headers = ['Họ tên', 'Chức vụ', 'Đơn vị', 'Phòng', 'Tổ', 'SĐT', 'Email', 'Ngày sinh'];
+      const csvContent = [
+        headers.join(','),
+        ...people.map(x => [
+          `"${x.hoTen || ''}"`,
+          `"${x.chucVu || ''}"`,
+          `"${x.donVi || ''}"`,
+          `"${x.phong || ''}"`,
+          `"${x.toNghiepVu || ''}"`,
+          `"${x.soDienThoai || ''}"`,
+          `"${x.email || ''}"`,
+          `"${x.ngaySinh || ''}"`
+        ].join(','))
+      ].join('\n');
 
-  if (filtered.length === 0) {
-    html += `<div class="no-data">🔍 Không tìm thấy cán bộ nào</div>`;
-  } else {
-    html += `<div class="people-grid">`;
-    filtered.forEach(x => {
-      html += `
-        <div class="person-card" onclick="window.location.href='tel:${x.soDienThoai || ''}'">
-          <img class="avatar" src="${AVATAR}${x.avatar || ''}" 
-               onerror="this.src='https://ui-avatars.com/api/?name=${encodeURIComponent(x.hoTen || '')}&background=0d6efd&color=fff&size=72'">
-          <div class="info">
-            <div class="name">${x.hoTen || ''}</div>
-            <div class="position">${x.chucVu || ''}</div>
-            <div class="dept">${x.phong || x.thueCoSo || ''}</div>
-            ${x.toNghiepVu ? `<div class="dept">Tổ: ${x.toNghiepVu}</div>` : ''}
-            ${x.soDienThoai ? `<a href="tel:${x.soDienThoai}" class="phone">📞 ${x.soDienThoai}</a>` : ''}
-            ${x.email ? `<div class="email">✉️ ${x.email}</div>` : ''}
+      const blob = new Blob(['\uFEFF' + csvContent], { type: 'text/csv;charset=utf-8;' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = `danh_bach_thue_${new Date().toISOString().slice(0,10)}.csv`;
+      link.click();
+      showToast('Xuất Excel thành công!', 'success');
+    }
+
+    // ====== LẤY DANH SÁCH HIỆN TẠI ======
+    function getCurrentPeople() {
+      if (currentSubUnit) {
+        return allData.filter(x => x.thueCoSo === currentSubUnit);
+      } else if (currentUnit) {
+        return allData.filter(x => x.donVi === currentUnit);
+      }
+      return allData;
+    }
+
+    // ====== RENDER SINH NHẬT ======
+    function renderBirthdayForUnit(unitName, people) {
+      const container = document.getElementById('birthdayContainer');
+      const now = new Date();
+      const currentMonth = now.getMonth() + 1;
+      const monthNames = ['Tháng 1', 'Tháng 2', 'Tháng 3', 'Tháng 4', 'Tháng 5', 'Tháng 6', 
+                          'Tháng 7', 'Tháng 8', 'Tháng 9', 'Tháng 10', 'Tháng 11', 'Tháng 12'];
+
+      const birthdays = people.filter(x => {
+        const b = birthdayParts(x.ngaySinh);
+        return b && b.m === currentMonth;
+      });
+
+      birthdays.sort((a, b) => {
+        const ba = birthdayParts(a.ngaySinh);
+        const bb = birthdayParts(b.ngaySinh);
+        return ba.d - bb.d;
+      });
+
+      if (birthdays.length === 0) {
+        container.innerHTML = `
+          <div class="birthday-card">
+            <h3><i class="fas fa-birthday-cake"></i> Sinh nhật tháng ${monthNames[currentMonth - 1]}</h3>
+            <div class="no-birthday">
+              <i class="fas fa-inbox"></i> Không có ai sinh nhật trong tháng này tại ${unitName}
+            </div>
+          </div>
+        `;
+        return;
+      }
+
+      let html = `
+        <div class="birthday-card">
+          <h3>
+            <i class="fas fa-birthday-cake"></i> 
+            Sinh nhật tháng ${monthNames[currentMonth - 1]} - ${unitName}
+            <span class="badge-count">${birthdays.length} người</span>
+          </h3>
+          <div class="birthday-list">
+      `;
+
+      birthdays.forEach(x => {
+        const b = birthdayParts(x.ngaySinh);
+        html += `
+          <div class="birthday-item">
+            <span class="name"><i class="fas fa-user"></i> ${x.hoTen || ''}</span>
+            <span class="date"><i class="fas fa-calendar-alt"></i> ${b.d}/${b.m}</span>
+          </div>
+        `;
+      });
+
+      html += `</div></div>`;
+      container.innerHTML = html;
+    }
+
+    // ====== RENDER THỐNG KÊ ======
+    function renderQuickStats(people) {
+      if (!people || people.length === 0) return '';
+      
+      const stats = {
+        total: people.length,
+        departments: [...new Set(people.map(x => x.phong).filter(Boolean))].length,
+        teams: [...new Set(people.map(x => x.toNghiepVu).filter(Boolean))].length,
+        positions: [...new Set(people.map(x => x.chucVu).filter(Boolean))].length
+      };
+
+      return `
+        <div class="stats-grid">
+          <div class="stat-card purple">
+            <div class="number">${stats.total}</div>
+            <div class="label"><i class="fas fa-users"></i> Tổng cán bộ</div>
+          </div>
+          <div class="stat-card pink">
+            <div class="number">${stats.departments}</div>
+            <div class="label"><i class="fas fa-building"></i> Phòng/Ban</div>
+          </div>
+          <div class="stat-card blue">
+            <div class="number">${stats.teams}</div>
+            <div class="label"><i class="fas fa-layer-group"></i> Tổ</div>
+          </div>
+          <div class="stat-card green">
+            <div class="number">${stats.positions}</div>
+            <div class="label"><i class="fas fa-user-tie"></i> Chức vụ</div>
           </div>
         </div>
       `;
+    }
+
+    // ====== XÂY DỰNG DANH SÁCH ĐƠN VỊ ======
+    function buildUnits() {
+      const unitMap = {};
+      allData.forEach(x => {
+        const unit = x.donVi || 'Khác';
+        if (!unitMap[unit]) {
+          unitMap[unit] = {
+            name: unit,
+            sheetName: x._sheetName || x.sheetName,
+            count: 0,
+            subUnits: new Set(),
+            people: []
+          };
+        }
+        unitMap[unit].count++;
+        unitMap[unit].people.push(x);
+        if (x.thueCoSo) {
+          unitMap[unit].subUnits.add(x.thueCoSo);
+        }
+      });
+      return Object.values(unitMap);
+    }
+
+    // ====== RENDER TRANG CHỦ ======
+    function renderHome() {
+      currentView = 'home';
+      currentUnit = null;
+      currentSubUnit = null;
+      currentPage = 1;
+      document.getElementById('backBtn').style.display = 'none';
+      document.getElementById('filtersContainer').style.display = 'none';
+      document.getElementById('headerStats').innerHTML = `
+        <i class="fas fa-building"></i> ${units.length} đơn vị · 
+        <i class="fas fa-users"></i> ${allData.length} cán bộ
+      `;
+
+      document.getElementById('breadcrumb').innerHTML = `
+        <span onclick="goHome()"><i class="fas fa-home"></i> Trang chủ</span>
+      `;
+      document.getElementById('birthdayContainer').innerHTML = '';
+      document.getElementById('statsContainer').innerHTML = '';
+
+      const container = document.getElementById('mainContent');
+      
+      const sortedUnits = [...units].sort((a, b) => {
+        if (a.name === 'Cục Thuế') return -1;
+        if (b.name === 'Cục Thuế') return 1;
+        return a.name.localeCompare(b.name);
+      });
+
+      let html = `
+        <div class="section-title">
+          <i class="fas fa-address-book"></i> Danh sách đơn vị
+          <span class="count">(${units.length} đơn vị)</span>
+        </div>
+        <div class="unit-grid">
+      `;
+
+      sortedUnits.forEach(unit => {
+        const isCucThue = unit.name === 'Cục Thuế';
+        const subCount = unit.subUnits.size;
+        const birthdayCount = countBirthdayInMonth(unit.people).length;
+        
+        html += `
+          <div class="unit-card ${isCucThue ? 'cuc-thue' : 'thue-tinh'}" onclick="selectUnit('${unit.name}')">
+            <div class="icon">${isCucThue ? '🏛️' : '🏢'}</div>
+            <div class="name">${unit.name}</div>
+            <div class="count">
+              <i class="fas fa-users"></i> ${unit.count} cán bộ · 
+              <i class="fas fa-sitemap"></i> ${subCount} cơ sở
+            </div>
+            <div class="badge">${subCount}</div>
+            ${birthdayCount > 0 ? `<div class="birthday-badge"><i class="fas fa-birthday-cake"></i> ${birthdayCount}</div>` : ''}
+          </div>
+        `;
+      });
+
+      html += `</div>`;
+      container.innerHTML = html;
+    }
+
+    // ====== CHỌN ĐƠN VỊ ======
+    function selectUnit(unitName) {
+      currentView = 'unit';
+      currentUnit = unitName;
+      currentSubUnit = null;
+      currentPage = 1;
+      document.getElementById('backBtn').style.display = 'flex';
+      document.getElementById('filtersContainer').style.display = 'none';
+      document.getElementById('headerStats').innerHTML = `
+        <i class="fas fa-building"></i> ${unitName}
+      `;
+
+      document.getElementById('breadcrumb').innerHTML = `
+        <span onclick="goHome()"><i class="fas fa-home"></i> Trang chủ</span>
+        <span class="separator">›</span>
+        <span class="current">${unitName}</span>
+      `;
+
+      const unitData = allData.filter(x => x.donVi === unitName);
+      
+      renderBirthdayForUnit(unitName, unitData);
+      document.getElementById('statsContainer').innerHTML = renderQuickStats(unitData);
+
+      const container = document.getElementById('mainContent');
+      
+      const subUnits = [...new Set(unitData.map(x => x.thueCoSo).filter(Boolean))].sort();
+
+      if (subUnits.length === 0) {
+        renderPeople(unitData, unitName);
+        return;
+      }
+
+      let html = `
+        <div class="section-title">
+          <i class="fas fa-sitemap"></i> Các Thuế cơ sở trực thuộc
+          <span class="count">(${subUnits.length} cơ sở)</span>
+        </div>
+        <div class="sub-unit-grid">
+      `;
+
+      subUnits.forEach(sub => {
+        const count = unitData.filter(x => x.thueCoSo === sub).length;
+        html += `
+          <div class="sub-unit-card" onclick="selectSubUnit('${sub}')">
+            <div class="icon">🏛️</div>
+            <div class="info">
+              <div class="name">${sub}</div>
+              <div class="count"><i class="fas fa-users"></i> ${count} cán bộ</div>
+            </div>
+            <div class="arrow"><i class="fas fa-chevron-right"></i></div>
+          </div>
+        `;
+      });
+
+      html += `</div>`;
+      container.innerHTML = html;
+    }
+
+    // ====== CHỌN THUẾ CƠ SỞ ======
+    function selectSubUnit(subUnitName) {
+      currentView = 'subUnit';
+      currentSubUnit = subUnitName;
+      currentPage = 1;
+      document.getElementById('backBtn').style.display = 'flex';
+      document.getElementById('filtersContainer').style.display = 'block';
+      document.getElementById('headerStats').innerHTML = `
+        <i class="fas fa-building"></i> ${subUnitName}
+      `;
+
+      document.getElementById('breadcrumb').innerHTML = `
+        <span onclick="goHome()"><i class="fas fa-home"></i> Trang chủ</span>
+        <span class="separator">›</span>
+        <span onclick="selectUnit('${currentUnit}')">${currentUnit}</span>
+        <span class="separator">›</span>
+        <span class="current">${subUnitName}</span>
+      `;
+
+      const people = allData.filter(x => x.thueCoSo === subUnitName);
+      
+      renderBirthdayForUnit(subUnitName, people);
+      document.getElementById('statsContainer').innerHTML = renderQuickStats(people);
+      
+      populateFilters(people);
+      renderPeople(people, subUnitName);
+    }
+
+    // ====== RENDER DANH SÁCH CÁN BỘ ======
+    function renderPeople(people, title) {
+      const container = document.getElementById('mainContent');
+      
+      const q = document.getElementById('search')?.value?.toLowerCase().trim() || '';
+      const phong = document.getElementById('phong')?.value || '';
+      const to = document.getElementById('to')?.value || '';
+      const chucVu = document.getElementById('chucVu')?.value || '';
+
+      let filtered = people.filter(x => {
+        const txt = JSON.stringify(Object.values(x)).toLowerCase();
+        const matchSearch = !q || txt.includes(q);
+        const matchPhong = !phong || x.phong === phong;
+        const matchTo = !to || x.toNghiepVu === to;
+        const matchChucVu = !chucVu || x.chucVu === chucVu;
+        return matchSearch && matchPhong && matchTo && matchChucVu;
+      });
+
+      filtered.sort((a, b) => (a.hoTen || '').localeCompare(b.hoTen || ''));
+
+      // Phân trang
+      const totalPages = Math.ceil(filtered.length / itemsPerPage);
+      const start = (currentPage - 1) * itemsPerPage;
+      const end = Math.min(start + itemsPerPage, filtered.length);
+      const pageItems = filtered.slice(start, end);
+
+      let html = `
+        <div class="section-title">
+          <i class="fas fa-users"></i> Danh sách cán bộ
+          <span class="count">(${filtered.length} người)</span>
+          ${filtered.length > itemsPerPage ? `<span class="count">· Trang ${currentPage}/${totalPages}</span>` : ''}
+        </div>
+      `;
+
+      if (filtered.length === 0) {
+        html += `<div class="no-data"><i class="fas fa-search"></i> Không tìm thấy cán bộ nào</div>`;
+      } else {
+        html += `<div class="people-grid">`;
+        pageItems.forEach(x => {
+          html += `
+            <div class="person-card" onclick="showPersonDetail('${x.hoTen}')">
+              <img class="avatar" src="${AVATAR}${x.avatar || ''}" 
+                   onerror="this.src='https://ui-avatars.com/api/?name=${encodeURIComponent(x.hoTen || '')}&background=0d6efd&color=fff&size=72'">
+              <div class="info">
+                <div class="name">${x.hoTen || ''}</div>
+                <div class="position">${x.chucVu || ''}</div>
+                <div class="dept"><i class="fas fa-building"></i> ${x.phong || x.thueCoSo || ''}</div>
+                ${x.toNghiepVu ? `<div class="dept"><i class="fas fa-layer-group"></i> Tổ: ${x.toNghiepVu}</div>` : ''}
+                ${x.soDienThoai ? `<a href="tel:${x.soDienThoai}" class="phone"><i class="fas fa-phone"></i> ${x.soDienThoai}</a>` : ''}
+                ${x.email ? `<div class="email"><i class="fas fa-envelope"></i> ${x.email}</div>` : ''}
+              </div>
+            </div>
+          `;
+        });
+        html += `</div>`;
+
+        // Phân trang
+        if (totalPages > 1) {
+          html += `
+            <div class="pagination">
+              <button onclick="changePage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''}>
+                <i class="fas fa-chevron-left"></i> Trước
+              </button>
+              <span class="page-info">Trang ${currentPage}/${totalPages}</span>
+              <button onclick="changePage(${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''}>
+                Sau <i class="fas fa-chevron-right"></i>
+              </button>
+            </div>
+          `;
+        }
+      }
+
+      container.innerHTML = html;
+    }
+
+    // ====== PHÂN TRANG ======
+    function changePage(page) {
+      currentPage = page;
+      if (currentSubUnit) {
+        const people = allData.filter(x => x.thueCoSo === currentSubUnit);
+        renderPeople(people, currentSubUnit);
+      } else if (currentUnit) {
+        const people = allData.filter(x => x.donVi === currentUnit);
+        renderPeople(people, currentUnit);
+      }
+    }
+
+    // ====== HIỂN THỊ CHI TIẾT ======
+    function showPersonDetail(name) {
+      const people = getCurrentPeople();
+      const person = people.find(x => x.hoTen === name);
+      if (!person) return;
+
+      const modal = document.createElement('div');
+      modal.className = 'modal-overlay';
+      modal.innerHTML = `
+        <div class="modal-content">
+          <button class="modal-close" onclick="this.closest('.modal-overlay').remove()">
+            <i class="fas fa-times"></i>
+          </button>
+          <div class="modal-body">
+            <img src="${AVATAR}${person.avatar || ''}" 
+                 onerror="this.src='https://ui-avatars.com/api/?name=${encodeURIComponent(person.hoTen || '')}&background=0d6efd&color=fff&size=120'"
+                 class="modal-avatar">
+            <h2>${person.hoTen || ''}</h2>
+            <div class="modal-info">
+              <div><i class="fas fa-user-tie"></i> <strong>Chức vụ:</strong> ${person.chucVu || ''}</div>
+              <div><i class="fas fa-building"></i> <strong>Đơn vị:</strong> ${person.donVi || ''}</div>
+              <div><i class="fas fa-building"></i> <strong>Phòng:</strong> ${person.phong || ''}</div>
+              <div><i class="fas fa-layer-group"></i> <strong>Tổ:</strong> ${person.toNghiepVu || ''}</div>
+              <div><i class="fas fa-phone"></i> <strong>SĐT:</strong> ${person.soDienThoai || ''}</div>
+              <div><i class="fas fa-envelope"></i> <strong>Email:</strong> ${person.email || ''}</div>
+              <div><i class="fas fa-calendar-alt"></i> <strong>Ngày sinh:</strong> ${person.ngaySinh || ''}</div>
+            </div>
+            ${person.soDienThoai ? `
+              <button onclick="window.location.href='tel:${person.soDienThoai}'" class="btn-call">
+                <i class="fas fa-phone"></i> Gọi điện
+              </button>
+            ` : ''}
+          </div>
+        </div>
+      `;
+      document.body.appendChild(modal);
+
+      // Click outside để đóng
+      modal.addEventListener('click', function(e) {
+        if (e.target === this) this.remove();
+      });
+    }
+
+    // ====== POPULATE FILTERS ======
+    function populateFilters(people) {
+      const phongSelect = document.getElementById('phong');
+      const toSelect = document.getElementById('to');
+      const chucVuSelect = document.getElementById('chucVu');
+      
+      const phongs = [...new Set(people.map(x => x.phong).filter(Boolean))].sort();
+      const tos = [...new Set(people.map(x => x.toNghiepVu).filter(Boolean))].sort();
+      const chucVus = [...new Set(people.map(x => x.chucVu).filter(Boolean))].sort();
+      
+      const currentPhong = phongSelect.value;
+      const currentTo = toSelect.value;
+      const currentChucVu = chucVuSelect.value;
+      
+      phongSelect.innerHTML = `<option value=""><i class="fas fa-building"></i> Tất cả phòng</option>`;
+      phongs.forEach(v => {
+        const o = document.createElement('option');
+        o.value = v;
+        o.textContent = v;
+        phongSelect.appendChild(o);
+      });
+      if (currentPhong && phongs.includes(currentPhong)) phongSelect.value = currentPhong;
+      
+      toSelect.innerHTML = `<option value=""><i class="fas fa-layer-group"></i> Tất cả tổ</option>`;
+      tos.forEach(v => {
+        const o = document.createElement('option');
+        o.value = v;
+        o.textContent = v;
+        toSelect.appendChild(o);
+      });
+      if (currentTo && tos.includes(currentTo)) toSelect.value = currentTo;
+
+      chucVuSelect.innerHTML = `<option value=""><i class="fas fa-user-tie"></i> Tất cả chức vụ</option>`;
+      chucVus.forEach(v => {
+        const o = document.createElement('option');
+        o.value = v;
+        o.textContent = v;
+        chucVuSelect.appendChild(o);
+      });
+      if (currentChucVu && chucVus.includes(currentChucVu)) chucVuSelect.value = currentChucVu;
+    }
+
+    // ====== RESET FILTERS ======
+    function resetFilters() {
+      document.getElementById('search').value = '';
+      document.getElementById('phong').value = '';
+      document.getElementById('to').value = '';
+      document.getElementById('chucVu').value = '';
+      currentPage = 1;
+      if (currentSubUnit) {
+        const people = allData.filter(x => x.thueCoSo === currentSubUnit);
+        renderPeople(people, currentSubUnit);
+      } else if (currentUnit) {
+        const people = allData.filter(x => x.donVi === currentUnit);
+        renderPeople(people, currentUnit);
+      }
+      showToast('Đã reset bộ lọc', 'info');
+    }
+
+    // ====== ĐIỀU HƯỚNG ======
+    function goHome() {
+      renderHome();
+    }
+
+    function goBack() {
+      if (currentView === 'subUnit') {
+        selectUnit(currentUnit);
+      } else if (currentView === 'unit') {
+        goHome();
+      }
+    }
+
+    // ====== SHORTCUT BÀN PHÍM ======
+    document.addEventListener('keydown', function(e) {
+      // Ctrl+F để focus vào tìm kiếm
+      if (e.ctrlKey && e.key === 'f') {
+        e.preventDefault();
+        const search = document.getElementById('search');
+        if (search) search.focus();
+      }
+      // Escape để đóng modal
+      if (e.key === 'Escape') {
+        const modal = document.querySelector('.modal-overlay');
+        if (modal) modal.remove();
+      }
+      // Ctrl+Home để về trang chủ
+      if (e.ctrlKey && e.key === 'Home') {
+        e.preventDefault();
+        goHome();
+      }
     });
-    html += `</div>`;
-  }
 
-  container.innerHTML = html;
-}
+    // ====== LOAD DỮ LIỆU ======
+    fetch(API)
+      .then(r => {
+        if (!r.ok) throw new Error(`HTTP ${r.status}`);
+        return r.json();
+      })
+      .then(j => {
+        if (!j.success) throw new Error(j.message || 'Unknown error');
+        
+        console.log('📊 Dữ liệu từ API:', j);
+        
+        allData = (j.data || []).map(x => ({
+          ...x,
+          hoTen: x.hoTen || '',
+          chucVu: x.chucVu || '',
+          soDienThoai: x.soDienThoai || '',
+          email: x.email || '',
+          phong: x.phong || '',
+          thueCoSo: x.thueCoSo || '',
+          toNghiepVu: x.toNghiepVu || '',
+          ngaySinh: x.ngaySinh || '',
+          avatar: x.avatar || ''
+        }));
 
-// ====== POPULATE FILTERS ======
-function populateFilters(people) {
-  const phongSelect = document.getElementById('phong');
-  const toSelect = document.getElementById('to');
-  
-  const phongs = [...new Set(people.map(x => x.phong).filter(Boolean))].sort();
-  const tos = [...new Set(people.map(x => x.toNghiepVu).filter(Boolean))].sort();
-  
-  const currentPhong = phongSelect.value;
-  const currentTo = toSelect.value;
-  
-  phongSelect.innerHTML = `<option value="">📁 Tất cả phòng</option>`;
-  phongs.forEach(v => {
-    const o = document.createElement('option');
-    o.value = v;
-    o.textContent = v;
-    phongSelect.appendChild(o);
-  });
-  if (currentPhong && phongs.includes(currentPhong)) phongSelect.value = currentPhong;
-  
-  toSelect.innerHTML = `<option value="">📂 Tất cả tổ</option>`;
-  tos.forEach(v => {
-    const o = document.createElement('option');
-    o.value = v;
-    o.textContent = v;
-    toSelect.appendChild(o);
-  });
-  if (currentTo && tos.includes(currentTo)) toSelect.value = currentTo;
-}
+        units = buildUnits();
 
-// ====== RESET FILTERS ======
-function resetFilters() {
-  document.getElementById('search').value = '';
-  document.getElementById('phong').value = '';
-  document.getElementById('to').value = '';
-  if (currentSubUnit) {
-    const people = allData.filter(x => x.thueCoSo === currentSubUnit);
-    renderPeople(people, currentSubUnit);
-  }
-}
+        document.getElementById('loading').style.display = 'none';
+        document.getElementById('content').style.display = 'block';
+        renderHome();
+        showToast(`Đã tải ${allData.length} cán bộ từ ${units.length} đơn vị`, 'success');
+      })
+      .catch(err => {
+        document.getElementById('loading').style.display = 'none';
+        const errorEl = document.getElementById('error');
+        errorEl.style.display = 'block';
+        document.getElementById('errorMessage').textContent = `Lỗi tải dữ liệu: ${err.message}`;
+        showToast('Lỗi tải dữ liệu!', 'error');
+      });
 
-// ====== ĐIỀU HƯỚNG ======
-function goHome() {
-  renderHome();
-}
-
-function goBack() {
-  if (currentView === 'subUnit') {
-    selectUnit(currentUnit);
-  } else if (currentView === 'unit') {
-    goHome();
-  }
-}
-
-// ====== LOAD DỮ LIỆU ======
-fetch(API)
-  .then(r => {
-    if (!r.ok) throw new Error(`HTTP ${r.status}`);
-    return r.json();
-  })
-  .then(j => {
-    if (!j.success) throw new Error(j.message || 'Unknown error');
-    
-    // ====== DEBUG: Xem dữ liệu từ API ======
-    console.log('📊 Dữ liệu từ API:', j);
-    if (j.data && j.data.length > 0) {
-      console.log('📌 donVi từ API (item đầu):', j.data[0].donVi);
-      console.log('📌 _sheetName từ API (item đầu):', j.data[0]._sheetName);
-      console.log('📌 Tất cả donVi từ API:', [...new Set(j.data.map(x => x.donVi))]);
-    }
-    // ========================================
-    
-    // ====== QUAN TRỌNG: GIỮ NGUYÊN donVi TỪ API ======
-    // KHÔNG format lại, KHÔNG thêm "Thuế tỉnh" vào trước
-    allData = (j.data || []).map(x => ({
-      ...x,  // Giữ nguyên tất cả, bao gồm donVi
-      hoTen: x.hoTen || '',
-      chucVu: x.chucVu || '',
-      soDienThoai: x.soDienThoai || '',
-      email: x.email || '',
-      phong: x.phong || '',
-      thueCoSo: x.thueCoSo || '',
-      toNghiepVu: x.toNghiepVu || '',
-      ngaySinh: x.ngaySinh || '',
-      avatar: x.avatar || ''
-    }));
-
-    // ====== DEBUG: Kiểm tra sau khi map ======
-    console.log('📌 Các đơn vị sau khi map:', [...new Set(allData.map(x => x.donVi))]);
-    // ========================================
-
-    units = buildUnits();
-
-    document.getElementById('loading').style.display = 'none';
-    document.getElementById('content').style.display = 'block';
-    renderHome();
-  })
-  .catch(err => {
-    document.getElementById('loading').style.display = 'none';
-    const errorEl = document.getElementById('error');
-    errorEl.style.display = 'block';
-    errorEl.innerHTML = `❌ Lỗi tải dữ liệu: ${err.message}<br><small>Vui lòng thử lại sau hoặc liên hệ quản trị viên.</small>`;
-  });
-
-// ====== EVENT LISTENERS ======
-document.addEventListener('input', function(e) {
-  if (e.target.id === 'search' || e.target.id === 'phong' || e.target.id === 'to') {
-    if (currentSubUnit) {
-      const people = allData.filter(x => x.thueCoSo === currentSubUnit);
-      renderPeople(people, currentSubUnit);
-    }
-  }
-});
-document.addEventListener('change', function(e) {
-  if (e.target.id === 'phong' || e.target.id === 'to') {
-    if (currentSubUnit) {
-      const people = allData.filter(x => x.thueCoSo === currentSubUnit);
-      renderPeople(people, currentSubUnit);
-    }
-  }
-});
-</script>
+    // ====== EVENT LISTENERS ======
+    document.addEventListener('input', function(e) {
+      if (e.target.id === 'search' || e.target.id === 'phong' || 
+          e.target.id === 'to' || e.target.id === 'chucVu') {
+        currentPage = 1;
+        if (currentSubUnit) {
+          const people = allData.filter(x => x.thueCoSo === currentSubUnit);
+          renderPeople(people, currentSubUnit);
+        } else if (currentUnit) {
+          const people = allData.filter(x => x.donVi === currentUnit);
+          renderPeople(people, currentUnit);
+        }
+      }
+    });
+  </script>
 </body>
 </html>
