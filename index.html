@@ -6,6 +6,124 @@
   <title>📋 Danh bạ toàn ngành Thuế</title>
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    /* ====== THÊM CSS CHO FILTER BUTTON ====== */
+    .filter-tabs {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+      background: #fff;
+      padding: 12px 16px;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,.06);
+    }
+    .filter-tabs .btn-filter {
+      padding: 8px 20px;
+      border: 2px solid #e0e0e0;
+      border-radius: 8px;
+      background: #fff;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 500;
+      transition: all .3s;
+      color: #666;
+    }
+    .filter-tabs .btn-filter:hover {
+      border-color: #0d6efd;
+      color: #0d6efd;
+    }
+    .filter-tabs .btn-filter.active {
+      background: #0d6efd;
+      color: #fff;
+      border-color: #0d6efd;
+    }
+    .filter-tabs .btn-filter .badge {
+      background: rgba(255,255,255,0.2);
+      padding: 1px 8px;
+      border-radius: 12px;
+      font-size: 12px;
+      margin-left: 4px;
+    }
+    .filter-tabs .btn-filter.active .badge {
+      background: rgba(255,255,255,0.3);
+    }
+    .filter-tabs .btn-filter i {
+      margin-right: 6px;
+    }
+
+    /* ====== PHÒNG CARD ====== */
+    .phong-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 14px;
+      margin-bottom: 24px;
+    }
+    .phong-card {
+      background: #fff;
+      border-radius: 10px;
+      padding: 16px 18px;
+      box-shadow: 0 2px 6px rgba(0,0,0,.05);
+      cursor: pointer;
+      transition: all .3s;
+      border: 2px solid transparent;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .phong-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 4px 16px rgba(0,0,0,.1);
+      border-color: #0d6efd;
+    }
+    .phong-card .icon {
+      font-size: 24px;
+      width: 40px;
+      height: 40px;
+      background: #e8f0fe;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .phong-card .info {
+      flex: 1;
+    }
+    .phong-card .info .name {
+      font-weight: 500;
+      font-size: 15px;
+    }
+    .phong-card .info .count {
+      font-size: 13px;
+      color: #888;
+    }
+    .phong-card .arrow {
+      color: #ccc;
+      font-size: 18px;
+    }
+
+    /* ====== SECTION TITLE ====== */
+    .section-title {
+      font-size: 20px;
+      font-weight: 600;
+      color: #1a1a1a;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .section-title .count {
+      font-size: 14px;
+      font-weight: 400;
+      color: #888;
+    }
+    .section-title .sub-title {
+      font-size: 14px;
+      font-weight: 400;
+      color: #0d6efd;
+      margin-left: auto;
+    }
+  </style>
 </head>
 <body>
   <!-- ===== HEADER ===== -->
@@ -101,6 +219,7 @@
     let currentView = 'home';
     let currentUnit = null;
     let currentSubUnit = null;
+    let currentPhong = null;
     let currentPage = 1;
     const itemsPerPage = 20;
 
@@ -132,6 +251,17 @@
       });
     }
 
+    function getCurrentPeople() {
+      if (currentPhong) {
+        return allData.filter(x => x.phong === currentPhong && x.donVi === currentUnit);
+      } else if (currentSubUnit) {
+        return allData.filter(x => x.thueCoSo === currentSubUnit);
+      } else if (currentUnit) {
+        return allData.filter(x => x.donVi === currentUnit);
+      }
+      return allData;
+    }
+
     // ====== EXPORT EXCEL ======
     function exportToExcel() {
       const people = getCurrentPeople();
@@ -161,16 +291,6 @@
       link.download = `danh_bach_thue_${new Date().toISOString().slice(0,10)}.csv`;
       link.click();
       showToast('Xuất Excel thành công!', 'success');
-    }
-
-    // ====== LẤY DANH SÁCH HIỆN TẠI ======
-    function getCurrentPeople() {
-      if (currentSubUnit) {
-        return allData.filter(x => x.thueCoSo === currentSubUnit);
-      } else if (currentUnit) {
-        return allData.filter(x => x.donVi === currentUnit);
-      }
-      return allData;
     }
 
     // ====== RENDER SINH NHẬT ======
@@ -269,16 +389,19 @@
         if (!unitMap[unit]) {
           unitMap[unit] = {
             name: unit,
-            sheetName: x._sheetName || x.sheetName,
             count: 0,
-            subUnits: new Set(),
+            phongs: new Set(),
+            coSos: new Set(),
             people: []
           };
         }
         unitMap[unit].count++;
         unitMap[unit].people.push(x);
+        if (x.phong) {
+          unitMap[unit].phongs.add(x.phong);
+        }
         if (x.thueCoSo) {
-          unitMap[unit].subUnits.add(x.thueCoSo);
+          unitMap[unit].coSos.add(x.thueCoSo);
         }
       });
       return Object.values(unitMap);
@@ -289,6 +412,7 @@
       currentView = 'home';
       currentUnit = null;
       currentSubUnit = null;
+      currentPhong = null;
       currentPage = 1;
       document.getElementById('backBtn').style.display = 'none';
       document.getElementById('filtersContainer').style.display = 'none';
@@ -321,7 +445,8 @@
 
       sortedUnits.forEach(unit => {
         const isCucThue = unit.name === 'Cục Thuế';
-        const subCount = unit.subUnits.size;
+        const phongCount = unit.phongs.size;
+        const coSoCount = unit.coSos.size;
         const birthdayCount = countBirthdayInMonth(unit.people).length;
         
         html += `
@@ -330,9 +455,10 @@
             <div class="name">${unit.name}</div>
             <div class="count">
               <i class="fas fa-users"></i> ${unit.count} cán bộ · 
-              <i class="fas fa-sitemap"></i> ${subCount} cơ sở
+              <i class="fas fa-building"></i> ${phongCount} phòng · 
+              <i class="fas fa-sitemap"></i> ${coSoCount} cơ sở
             </div>
-            <div class="badge">${subCount}</div>
+            <div class="badge">${unit.count}</div>
             ${birthdayCount > 0 ? `<div class="birthday-badge"><i class="fas fa-birthday-cake"></i> ${birthdayCount}</div>` : ''}
           </div>
         `;
@@ -347,6 +473,7 @@
       currentView = 'unit';
       currentUnit = unitName;
       currentSubUnit = null;
+      currentPhong = null;
       currentPage = 1;
       document.getElementById('backBtn').style.display = 'flex';
       document.getElementById('filtersContainer').style.display = 'none';
@@ -367,43 +494,142 @@
 
       const container = document.getElementById('mainContent');
       
-      const subUnits = [...new Set(unitData.map(x => x.thueCoSo).filter(Boolean))].sort();
+      // Lấy danh sách phòng và cơ sở
+      const phongs = [...new Set(unitData.map(x => x.phong).filter(Boolean))].sort();
+      const coSos = [...new Set(unitData.map(x => x.thueCoSo).filter(Boolean))].sort();
 
-      if (subUnits.length === 0) {
-        renderPeople(unitData, unitName);
-        return;
-      }
+      let html = '';
 
-      let html = `
-        <div class="section-title">
-          <i class="fas fa-sitemap"></i> Các Thuế cơ sở trực thuộc
-          <span class="count">(${subUnits.length} cơ sở)</span>
+      // Tab filter: Tất cả | Phòng | Cơ sở
+      html += `
+        <div class="filter-tabs">
+          <button class="btn-filter active" onclick="filterUnitView('all')">
+            <i class="fas fa-list"></i> Tất cả <span class="badge">${unitData.length}</span>
+          </button>
+          ${phongs.length > 0 ? `<button class="btn-filter" onclick="filterUnitView('phong')">
+            <i class="fas fa-building"></i> Phòng <span class="badge">${phongs.length}</span>
+          </button>` : ''}
+          ${coSos.length > 0 ? `<button class="btn-filter" onclick="filterUnitView('coso')">
+            <i class="fas fa-sitemap"></i> Cơ sở <span class="badge">${coSos.length}</span>
+          </button>` : ''}
         </div>
-        <div class="sub-unit-grid">
       `;
 
-      subUnits.forEach(sub => {
-        const count = unitData.filter(x => x.thueCoSo === sub).length;
+      // Hiển thị danh sách phòng
+      if (phongs.length > 0) {
         html += `
-          <div class="sub-unit-card" onclick="selectSubUnit('${sub}')">
-            <div class="icon">🏛️</div>
-            <div class="info">
-              <div class="name">${sub}</div>
-              <div class="count"><i class="fas fa-users"></i> ${count} cán bộ</div>
-            </div>
-            <div class="arrow"><i class="fas fa-chevron-right"></i></div>
+          <div class="section-title" style="font-size:18px;margin-top:8px;">
+            <i class="fas fa-building"></i> Phòng chức năng
+            <span class="count">(${phongs.length} phòng)</span>
+            <span class="sub-title">👆 Click để xem danh sách</span>
           </div>
+          <div class="phong-grid">
         `;
-      });
+        phongs.forEach(phong => {
+          const count = unitData.filter(x => x.phong === phong).length;
+          html += `
+            <div class="phong-card" onclick="selectPhong('${phong}')">
+              <div class="icon"><i class="fas fa-door-open"></i></div>
+              <div class="info">
+                <div class="name">${phong}</div>
+                <div class="count"><i class="fas fa-users"></i> ${count} cán bộ</div>
+              </div>
+              <div class="arrow"><i class="fas fa-chevron-right"></i></div>
+            </div>
+          `;
+        });
+        html += `</div>`;
+      }
 
-      html += `</div>`;
+      // Hiển thị danh sách cơ sở
+      if (coSos.length > 0) {
+        html += `
+          <div class="section-title" style="font-size:18px;margin-top:24px;">
+            <i class="fas fa-sitemap"></i> Các Thuế cơ sở trực thuộc
+            <span class="count">(${coSos.length} cơ sở)</span>
+            <span class="sub-title">👆 Click để xem danh sách</span>
+          </div>
+          <div class="sub-unit-grid">
+        `;
+        coSos.forEach(sub => {
+          const count = unitData.filter(x => x.thueCoSo === sub).length;
+          html += `
+            <div class="sub-unit-card" onclick="selectSubUnit('${sub}')">
+              <div class="icon">🏛️</div>
+              <div class="info">
+                <div class="name">${sub}</div>
+                <div class="count"><i class="fas fa-users"></i> ${count} cán bộ</div>
+              </div>
+              <div class="arrow"><i class="fas fa-chevron-right"></i></div>
+            </div>
+          `;
+        });
+        html += `</div>`;
+      }
+
       container.innerHTML = html;
+    }
+
+    // ====== FILTER UNIT VIEW ======
+    let unitFilter = 'all';
+    function filterUnitView(type) {
+      unitFilter = type;
+      // Cập nhật active tab
+      document.querySelectorAll('.filter-tabs .btn-filter').forEach(btn => {
+        btn.classList.remove('active');
+      });
+      event.target.closest('.btn-filter').classList.add('active');
+      
+      // Lọc hiển thị
+      const phongSection = document.querySelector('.phong-grid')?.closest('.section-title');
+      const coSoSection = document.querySelector('.sub-unit-grid')?.closest('.section-title');
+      
+      if (type === 'phong') {
+        if (phongSection) phongSection.style.display = 'block';
+        if (coSoSection) coSoSection.style.display = 'none';
+      } else if (type === 'coso') {
+        if (phongSection) phongSection.style.display = 'none';
+        if (coSoSection) coSoSection.style.display = 'block';
+      } else {
+        if (phongSection) phongSection.style.display = 'block';
+        if (coSoSection) coSoSection.style.display = 'block';
+      }
+    }
+
+    // ====== CHỌN PHÒNG ======
+    function selectPhong(phongName) {
+      currentView = 'phong';
+      currentPhong = phongName;
+      currentSubUnit = null;
+      currentPage = 1;
+      document.getElementById('backBtn').style.display = 'flex';
+      document.getElementById('filtersContainer').style.display = 'block';
+      document.getElementById('headerStats').innerHTML = `
+        <i class="fas fa-door-open"></i> ${phongName}
+      `;
+
+      document.getElementById('breadcrumb').innerHTML = `
+        <span onclick="goHome()"><i class="fas fa-home"></i> Trang chủ</span>
+        <span class="separator">›</span>
+        <span onclick="selectUnit('${currentUnit}')">${currentUnit}</span>
+        <span class="separator">›</span>
+        <span class="current">${phongName}</span>
+      `;
+
+      const people = allData.filter(x => x.phong === phongName && x.donVi === currentUnit);
+      
+      renderBirthdayForUnit(phongName, people);
+      document.getElementById('statsContainer').innerHTML = renderQuickStats(people);
+      
+      populateFilters(people);
+      renderPeople(people, phongName);
     }
 
     // ====== CHỌN THUẾ CƠ SỞ ======
     function selectSubUnit(subUnitName) {
       currentView = 'subUnit';
       currentSubUnit = subUnitName;
+      currentPhong = null;
       currentPage = 1;
       document.getElementById('backBtn').style.display = 'flex';
       document.getElementById('filtersContainer').style.display = 'block';
@@ -506,7 +732,10 @@
     // ====== PHÂN TRANG ======
     function changePage(page) {
       currentPage = page;
-      if (currentSubUnit) {
+      if (currentPhong) {
+        const people = allData.filter(x => x.phong === currentPhong && x.donVi === currentUnit);
+        renderPeople(people, currentPhong);
+      } else if (currentSubUnit) {
         const people = allData.filter(x => x.thueCoSo === currentSubUnit);
         renderPeople(people, currentSubUnit);
       } else if (currentUnit) {
@@ -552,7 +781,6 @@
       `;
       document.body.appendChild(modal);
 
-      // Click outside để đóng
       modal.addEventListener('click', function(e) {
         if (e.target === this) this.remove();
       });
@@ -607,7 +835,10 @@
       document.getElementById('to').value = '';
       document.getElementById('chucVu').value = '';
       currentPage = 1;
-      if (currentSubUnit) {
+      if (currentPhong) {
+        const people = allData.filter(x => x.phong === currentPhong && x.donVi === currentUnit);
+        renderPeople(people, currentPhong);
+      } else if (currentSubUnit) {
         const people = allData.filter(x => x.thueCoSo === currentSubUnit);
         renderPeople(people, currentSubUnit);
       } else if (currentUnit) {
@@ -623,7 +854,9 @@
     }
 
     function goBack() {
-      if (currentView === 'subUnit') {
+      if (currentView === 'phong') {
+        selectUnit(currentUnit);
+      } else if (currentView === 'subUnit') {
         selectUnit(currentUnit);
       } else if (currentView === 'unit') {
         goHome();
@@ -632,18 +865,15 @@
 
     // ====== SHORTCUT BÀN PHÍM ======
     document.addEventListener('keydown', function(e) {
-      // Ctrl+F để focus vào tìm kiếm
       if (e.ctrlKey && e.key === 'f') {
         e.preventDefault();
         const search = document.getElementById('search');
         if (search) search.focus();
       }
-      // Escape để đóng modal
       if (e.key === 'Escape') {
         const modal = document.querySelector('.modal-overlay');
         if (modal) modal.remove();
       }
-      // Ctrl+Home để về trang chủ
       if (e.ctrlKey && e.key === 'Home') {
         e.preventDefault();
         goHome();
@@ -694,7 +924,10 @@
       if (e.target.id === 'search' || e.target.id === 'phong' || 
           e.target.id === 'to' || e.target.id === 'chucVu') {
         currentPage = 1;
-        if (currentSubUnit) {
+        if (currentPhong) {
+          const people = allData.filter(x => x.phong === currentPhong && x.donVi === currentUnit);
+          renderPeople(people, currentPhong);
+        } else if (currentSubUnit) {
           const people = allData.filter(x => x.thueCoSo === currentSubUnit);
           renderPeople(people, currentSubUnit);
         } else if (currentUnit) {
