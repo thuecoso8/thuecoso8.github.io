@@ -7,121 +7,133 @@
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
-    /* ====== THÊM CSS CHO FILTER BUTTON ====== */
-    .filter-tabs {
-      display: flex;
-      gap: 10px;
-      margin-bottom: 20px;
-      flex-wrap: wrap;
-      background: #fff;
-      padding: 12px 16px;
-      border-radius: 12px;
-      box-shadow: 0 2px 8px rgba(0,0,0,.06);
-    }
-    .filter-tabs .btn-filter {
-      padding: 8px 20px;
-      border: 2px solid #e0e0e0;
-      border-radius: 8px;
-      background: #fff;
-      cursor: pointer;
-      font-size: 14px;
-      font-weight: 500;
-      transition: all .3s;
-      color: #666;
-    }
-    .filter-tabs .btn-filter:hover {
-      border-color: #0d6efd;
-      color: #0d6efd;
-    }
-    .filter-tabs .btn-filter.active {
-      background: #0d6efd;
-      color: #fff;
-      border-color: #0d6efd;
-    }
-    .filter-tabs .btn-filter .badge {
-      background: rgba(255,255,255,0.2);
-      padding: 1px 8px;
-      border-radius: 12px;
-      font-size: 12px;
-      margin-left: 4px;
-    }
-    .filter-tabs .btn-filter.active .badge {
-      background: rgba(255,255,255,0.3);
-    }
-    .filter-tabs .btn-filter i {
-      margin-right: 6px;
-    }
-
-    /* ====== PHÒNG CARD ====== */
-    .phong-grid {
+    /* ====== THÊM CSS CHO PHÒNG/CƠ SỞ ====== */
+    .org-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-      gap: 14px;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 16px;
       margin-bottom: 24px;
     }
-    .phong-card {
+    .org-card {
       background: #fff;
-      border-radius: 10px;
-      padding: 16px 18px;
-      box-shadow: 0 2px 6px rgba(0,0,0,.05);
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,.06);
       cursor: pointer;
       transition: all .3s;
       border: 2px solid transparent;
+      position: relative;
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 16px;
     }
-    .phong-card:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 4px 16px rgba(0,0,0,.1);
+    .org-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 6px 24px rgba(0,0,0,.12);
       border-color: #0d6efd;
     }
-    .phong-card .icon {
-      font-size: 24px;
-      width: 40px;
-      height: 40px;
+    .org-card .icon {
+      width: 48px;
+      height: 48px;
       background: #e8f0fe;
-      border-radius: 10px;
+      border-radius: 12px;
       display: flex;
       align-items: center;
       justify-content: center;
+      font-size: 24px;
+      flex-shrink: 0;
     }
-    .phong-card .info {
+    .org-card .icon.phong-icon { background: #e3f2fd; color: #0d6efd; }
+    .org-card .icon.cosu-icon { background: #e8f5e9; color: #2e7d32; }
+    
+    .org-card .info {
       flex: 1;
     }
-    .phong-card .info .name {
-      font-weight: 500;
-      font-size: 15px;
-    }
-    .phong-card .info .count {
-      font-size: 13px;
-      color: #888;
-    }
-    .phong-card .arrow {
-      color: #ccc;
-      font-size: 18px;
-    }
-
-    /* ====== SECTION TITLE ====== */
-    .section-title {
-      font-size: 20px;
+    .org-card .info .name {
+      font-size: 16px;
       font-weight: 600;
       color: #1a1a1a;
-      margin-bottom: 16px;
+    }
+    .org-card .info .count {
+      font-size: 14px;
+      color: #888;
+      margin-top: 2px;
+    }
+    .org-card .info .type-badge {
+      display: inline-block;
+      font-size: 11px;
+      padding: 2px 10px;
+      border-radius: 12px;
+      margin-top: 4px;
+      font-weight: 500;
+    }
+    .org-card .info .type-badge.phong {
+      background: #e3f2fd;
+      color: #0d6efd;
+    }
+    .org-card .info .type-badge.cosu {
+      background: #e8f5e9;
+      color: #2e7d32;
+    }
+    .org-card .arrow {
+      color: #ccc;
+      font-size: 20px;
+      transition: all .3s;
+    }
+    .org-card:hover .arrow {
+      color: #0d6efd;
+      transform: translateX(4px);
+    }
+
+    /* ====== SECTION HEADER ====== */
+    .section-header {
       display: flex;
       align-items: center;
-      gap: 10px;
+      justify-content: space-between;
+      margin-bottom: 16px;
+      padding-bottom: 8px;
+      border-bottom: 2px solid #f0f0f0;
     }
-    .section-title .count {
+    .section-header .title {
+      font-size: 18px;
+      font-weight: 600;
+      color: #1a1a1a;
+    }
+    .section-header .title i {
+      margin-right: 10px;
+    }
+    .section-header .count {
       font-size: 14px;
       font-weight: 400;
       color: #888;
     }
-    .section-title .sub-title {
-      font-size: 14px;
-      font-weight: 400;
-      color: #0d6efd;
-      margin-left: auto;
+    .section-header .count i {
+      margin-right: 4px;
+    }
+
+    /* ====== EMPTY STATE ====== */
+    .empty-state {
+      text-align: center;
+      padding: 40px 20px;
+      color: #999;
+    }
+    .empty-state i {
+      font-size: 48px;
+      margin-bottom: 12px;
+      opacity: 0.5;
+    }
+    .empty-state p {
+      font-size: 16px;
+    }
+
+    /* ====== BADGE ====== */
+    .badge-count {
+      background: #0d6efd;
+      color: #fff;
+      padding: 1px 10px;
+      border-radius: 12px;
+      font-size: 12px;
+      margin-left: 8px;
     }
   </style>
 </head>
@@ -152,32 +164,24 @@
 
   <!-- ===== MAIN CONTENT ===== -->
   <div class="container">
-    <!-- Loading -->
     <div id="loading" class="loading">
       <div class="loading-spinner"></div>
       <p><i class="fas fa-sync fa-spin"></i> Đang tải dữ liệu...</p>
     </div>
 
-    <!-- Error -->
     <div id="error" class="error" style="display:none">
       <i class="fas fa-exclamation-circle"></i>
       <span id="errorMessage"></span>
     </div>
 
-    <!-- Content -->
     <div id="content" style="display:none">
-      <!-- Breadcrumb -->
       <nav class="breadcrumb" id="breadcrumb">
         <span onclick="goHome()"><i class="fas fa-home"></i> Trang chủ</span>
       </nav>
 
-      <!-- Birthday -->
       <div id="birthdayContainer"></div>
-
-      <!-- Quick Stats -->
       <div id="statsContainer"></div>
 
-      <!-- Filters -->
       <div id="filtersContainer" style="display:none">
         <div class="filters">
           <div class="filter-group">
@@ -202,7 +206,6 @@
         </div>
       </div>
 
-      <!-- Main Content -->
       <div id="mainContent"></div>
     </div>
   </div>
@@ -218,8 +221,8 @@
     let units = [];
     let currentView = 'home';
     let currentUnit = null;
-    let currentSubUnit = null;
-    let currentPhong = null;
+    let currentOrg = null; // Tên phòng hoặc cơ sở đang chọn
+    let currentOrgType = null; // 'phong' hoặc 'coso'
     let currentPage = 1;
     const itemsPerPage = 20;
 
@@ -252,14 +255,19 @@
     }
 
     function getCurrentPeople() {
-      if (currentPhong) {
-        return allData.filter(x => x.phong === currentPhong && x.donVi === currentUnit);
-      } else if (currentSubUnit) {
-        return allData.filter(x => x.thueCoSo === currentSubUnit);
+      if (currentOrg && currentOrgType === 'phong') {
+        return allData.filter(x => x.phong === currentOrg && x.donVi === currentUnit);
+      } else if (currentOrg && currentOrgType === 'coso') {
+        return allData.filter(x => x.thueCoSo === currentOrg && x.donVi === currentUnit);
       } else if (currentUnit) {
         return allData.filter(x => x.donVi === currentUnit);
       }
       return allData;
+    }
+
+    function getOrgName(org, type) {
+      if (type === 'phong') return org;
+      return org;
     }
 
     // ====== EXPORT EXCEL ======
@@ -411,8 +419,8 @@
     function renderHome() {
       currentView = 'home';
       currentUnit = null;
-      currentSubUnit = null;
-      currentPhong = null;
+      currentOrg = null;
+      currentOrgType = null;
       currentPage = 1;
       document.getElementById('backBtn').style.display = 'none';
       document.getElementById('filtersContainer').style.display = 'none';
@@ -472,8 +480,8 @@
     function selectUnit(unitName) {
       currentView = 'unit';
       currentUnit = unitName;
-      currentSubUnit = null;
-      currentPhong = null;
+      currentOrg = null;
+      currentOrgType = null;
       currentPage = 1;
       document.getElementById('backBtn').style.display = 'flex';
       document.getElementById('filtersContainer').style.display = 'none';
@@ -500,39 +508,24 @@
 
       let html = '';
 
-      // Tab filter: Tất cả | Phòng | Cơ sở
-      html += `
-        <div class="filter-tabs">
-          <button class="btn-filter active" onclick="filterUnitView('all')">
-            <i class="fas fa-list"></i> Tất cả <span class="badge">${unitData.length}</span>
-          </button>
-          ${phongs.length > 0 ? `<button class="btn-filter" onclick="filterUnitView('phong')">
-            <i class="fas fa-building"></i> Phòng <span class="badge">${phongs.length}</span>
-          </button>` : ''}
-          ${coSos.length > 0 ? `<button class="btn-filter" onclick="filterUnitView('coso')">
-            <i class="fas fa-sitemap"></i> Cơ sở <span class="badge">${coSos.length}</span>
-          </button>` : ''}
-        </div>
-      `;
-
       // Hiển thị danh sách phòng
       if (phongs.length > 0) {
         html += `
-          <div class="section-title" style="font-size:18px;margin-top:8px;">
-            <i class="fas fa-building"></i> Phòng chức năng
-            <span class="count">(${phongs.length} phòng)</span>
-            <span class="sub-title">👆 Click để xem danh sách</span>
+          <div class="section-header">
+            <div class="title"><i class="fas fa-door-open" style="color:#0d6efd;"></i> Phòng chức năng</div>
+            <div class="count"><i class="fas fa-users"></i> ${phongs.length} phòng</div>
           </div>
-          <div class="phong-grid">
+          <div class="org-grid">
         `;
         phongs.forEach(phong => {
           const count = unitData.filter(x => x.phong === phong).length;
           html += `
-            <div class="phong-card" onclick="selectPhong('${phong}')">
-              <div class="icon"><i class="fas fa-door-open"></i></div>
+            <div class="org-card" onclick="selectOrg('${phong}', 'phong')">
+              <div class="icon phong-icon"><i class="fas fa-door-open"></i></div>
               <div class="info">
                 <div class="name">${phong}</div>
                 <div class="count"><i class="fas fa-users"></i> ${count} cán bộ</div>
+                <span class="type-badge phong"><i class="fas fa-tag"></i> Phòng</span>
               </div>
               <div class="arrow"><i class="fas fa-chevron-right"></i></div>
             </div>
@@ -544,21 +537,21 @@
       // Hiển thị danh sách cơ sở
       if (coSos.length > 0) {
         html += `
-          <div class="section-title" style="font-size:18px;margin-top:24px;">
-            <i class="fas fa-sitemap"></i> Các Thuế cơ sở trực thuộc
-            <span class="count">(${coSos.length} cơ sở)</span>
-            <span class="sub-title">👆 Click để xem danh sách</span>
+          <div class="section-header" style="margin-top:24px;">
+            <div class="title"><i class="fas fa-sitemap" style="color:#2e7d32;"></i> Thuế cơ sở trực thuộc</div>
+            <div class="count"><i class="fas fa-users"></i> ${coSos.length} cơ sở</div>
           </div>
-          <div class="sub-unit-grid">
+          <div class="org-grid">
         `;
-        coSos.forEach(sub => {
-          const count = unitData.filter(x => x.thueCoSo === sub).length;
+        coSos.forEach(coSo => {
+          const count = unitData.filter(x => x.thueCoSo === coSo).length;
           html += `
-            <div class="sub-unit-card" onclick="selectSubUnit('${sub}')">
-              <div class="icon">🏛️</div>
+            <div class="org-card" onclick="selectOrg('${coSo}', 'coso')">
+              <div class="icon cosu-icon"><i class="fas fa-building"></i></div>
               <div class="info">
-                <div class="name">${sub}</div>
+                <div class="name">${coSo}</div>
                 <div class="count"><i class="fas fa-users"></i> ${count} cán bộ</div>
+                <span class="type-badge cosu"><i class="fas fa-tag"></i> Cơ sở</span>
               </div>
               <div class="arrow"><i class="fas fa-chevron-right"></i></div>
             </div>
@@ -567,91 +560,53 @@
         html += `</div>`;
       }
 
+      if (phongs.length === 0 && coSos.length === 0) {
+        html += `
+          <div class="empty-state">
+            <i class="fas fa-inbox"></i>
+            <p>Chưa có dữ liệu phòng hoặc cơ sở</p>
+          </div>
+        `;
+      }
+
       container.innerHTML = html;
     }
 
-    // ====== FILTER UNIT VIEW ======
-    let unitFilter = 'all';
-    function filterUnitView(type) {
-      unitFilter = type;
-      // Cập nhật active tab
-      document.querySelectorAll('.filter-tabs .btn-filter').forEach(btn => {
-        btn.classList.remove('active');
-      });
-      event.target.closest('.btn-filter').classList.add('active');
+    // ====== CHỌN PHÒNG HOẶC CƠ SỞ ======
+    function selectOrg(orgName, type) {
+      currentView = 'org';
+      currentOrg = orgName;
+      currentOrgType = type;
+      currentPage = 1;
+      document.getElementById('backBtn').style.display = 'flex';
+      document.getElementById('filtersContainer').style.display = 'block';
       
-      // Lọc hiển thị
-      const phongSection = document.querySelector('.phong-grid')?.closest('.section-title');
-      const coSoSection = document.querySelector('.sub-unit-grid')?.closest('.section-title');
-      
+      const typeLabel = type === 'phong' ? 'Phòng' : 'Cơ sở';
+      document.getElementById('headerStats').innerHTML = `
+        <i class="fas ${type === 'phong' ? 'fa-door-open' : 'fa-building'}"></i> ${orgName}
+      `;
+
+      document.getElementById('breadcrumb').innerHTML = `
+        <span onclick="goHome()"><i class="fas fa-home"></i> Trang chủ</span>
+        <span class="separator">›</span>
+        <span onclick="selectUnit('${currentUnit}')">${currentUnit}</span>
+        <span class="separator">›</span>
+        <span class="current">${orgName}</span>
+      `;
+
+      // Lọc dữ liệu theo loại
+      let people = [];
       if (type === 'phong') {
-        if (phongSection) phongSection.style.display = 'block';
-        if (coSoSection) coSoSection.style.display = 'none';
-      } else if (type === 'coso') {
-        if (phongSection) phongSection.style.display = 'none';
-        if (coSoSection) coSoSection.style.display = 'block';
+        people = allData.filter(x => x.phong === orgName && x.donVi === currentUnit);
       } else {
-        if (phongSection) phongSection.style.display = 'block';
-        if (coSoSection) coSoSection.style.display = 'block';
+        people = allData.filter(x => x.thueCoSo === orgName && x.donVi === currentUnit);
       }
-    }
-
-    // ====== CHỌN PHÒNG ======
-    function selectPhong(phongName) {
-      currentView = 'phong';
-      currentPhong = phongName;
-      currentSubUnit = null;
-      currentPage = 1;
-      document.getElementById('backBtn').style.display = 'flex';
-      document.getElementById('filtersContainer').style.display = 'block';
-      document.getElementById('headerStats').innerHTML = `
-        <i class="fas fa-door-open"></i> ${phongName}
-      `;
-
-      document.getElementById('breadcrumb').innerHTML = `
-        <span onclick="goHome()"><i class="fas fa-home"></i> Trang chủ</span>
-        <span class="separator">›</span>
-        <span onclick="selectUnit('${currentUnit}')">${currentUnit}</span>
-        <span class="separator">›</span>
-        <span class="current">${phongName}</span>
-      `;
-
-      const people = allData.filter(x => x.phong === phongName && x.donVi === currentUnit);
       
-      renderBirthdayForUnit(phongName, people);
+      renderBirthdayForUnit(orgName, people);
       document.getElementById('statsContainer').innerHTML = renderQuickStats(people);
       
       populateFilters(people);
-      renderPeople(people, phongName);
-    }
-
-    // ====== CHỌN THUẾ CƠ SỞ ======
-    function selectSubUnit(subUnitName) {
-      currentView = 'subUnit';
-      currentSubUnit = subUnitName;
-      currentPhong = null;
-      currentPage = 1;
-      document.getElementById('backBtn').style.display = 'flex';
-      document.getElementById('filtersContainer').style.display = 'block';
-      document.getElementById('headerStats').innerHTML = `
-        <i class="fas fa-building"></i> ${subUnitName}
-      `;
-
-      document.getElementById('breadcrumb').innerHTML = `
-        <span onclick="goHome()"><i class="fas fa-home"></i> Trang chủ</span>
-        <span class="separator">›</span>
-        <span onclick="selectUnit('${currentUnit}')">${currentUnit}</span>
-        <span class="separator">›</span>
-        <span class="current">${subUnitName}</span>
-      `;
-
-      const people = allData.filter(x => x.thueCoSo === subUnitName);
-      
-      renderBirthdayForUnit(subUnitName, people);
-      document.getElementById('statsContainer').innerHTML = renderQuickStats(people);
-      
-      populateFilters(people);
-      renderPeople(people, subUnitName);
+      renderPeople(people, orgName);
     }
 
     // ====== RENDER DANH SÁCH CÁN BỘ ======
@@ -674,7 +629,6 @@
 
       filtered.sort((a, b) => (a.hoTen || '').localeCompare(b.hoTen || ''));
 
-      // Phân trang
       const totalPages = Math.ceil(filtered.length / itemsPerPage);
       const start = (currentPage - 1) * itemsPerPage;
       const end = Math.min(start + itemsPerPage, filtered.length);
@@ -710,7 +664,6 @@
         });
         html += `</div>`;
 
-        // Phân trang
         if (totalPages > 1) {
           html += `
             <div class="pagination">
@@ -732,15 +685,14 @@
     // ====== PHÂN TRANG ======
     function changePage(page) {
       currentPage = page;
-      if (currentPhong) {
-        const people = allData.filter(x => x.phong === currentPhong && x.donVi === currentUnit);
-        renderPeople(people, currentPhong);
-      } else if (currentSubUnit) {
-        const people = allData.filter(x => x.thueCoSo === currentSubUnit);
-        renderPeople(people, currentSubUnit);
-      } else if (currentUnit) {
-        const people = allData.filter(x => x.donVi === currentUnit);
-        renderPeople(people, currentUnit);
+      if (currentOrg && currentOrgType) {
+        let people = [];
+        if (currentOrgType === 'phong') {
+          people = allData.filter(x => x.phong === currentOrg && x.donVi === currentUnit);
+        } else {
+          people = allData.filter(x => x.thueCoSo === currentOrg && x.donVi === currentUnit);
+        }
+        renderPeople(people, currentOrg);
       }
     }
 
@@ -835,15 +787,14 @@
       document.getElementById('to').value = '';
       document.getElementById('chucVu').value = '';
       currentPage = 1;
-      if (currentPhong) {
-        const people = allData.filter(x => x.phong === currentPhong && x.donVi === currentUnit);
-        renderPeople(people, currentPhong);
-      } else if (currentSubUnit) {
-        const people = allData.filter(x => x.thueCoSo === currentSubUnit);
-        renderPeople(people, currentSubUnit);
-      } else if (currentUnit) {
-        const people = allData.filter(x => x.donVi === currentUnit);
-        renderPeople(people, currentUnit);
+      if (currentOrg && currentOrgType) {
+        let people = [];
+        if (currentOrgType === 'phong') {
+          people = allData.filter(x => x.phong === currentOrg && x.donVi === currentUnit);
+        } else {
+          people = allData.filter(x => x.thueCoSo === currentOrg && x.donVi === currentUnit);
+        }
+        renderPeople(people, currentOrg);
       }
       showToast('Đã reset bộ lọc', 'info');
     }
@@ -854,9 +805,7 @@
     }
 
     function goBack() {
-      if (currentView === 'phong') {
-        selectUnit(currentUnit);
-      } else if (currentView === 'subUnit') {
+      if (currentView === 'org') {
         selectUnit(currentUnit);
       } else if (currentView === 'unit') {
         goHome();
@@ -924,15 +873,14 @@
       if (e.target.id === 'search' || e.target.id === 'phong' || 
           e.target.id === 'to' || e.target.id === 'chucVu') {
         currentPage = 1;
-        if (currentPhong) {
-          const people = allData.filter(x => x.phong === currentPhong && x.donVi === currentUnit);
-          renderPeople(people, currentPhong);
-        } else if (currentSubUnit) {
-          const people = allData.filter(x => x.thueCoSo === currentSubUnit);
-          renderPeople(people, currentSubUnit);
-        } else if (currentUnit) {
-          const people = allData.filter(x => x.donVi === currentUnit);
-          renderPeople(people, currentUnit);
+        if (currentOrg && currentOrgType) {
+          let people = [];
+          if (currentOrgType === 'phong') {
+            people = allData.filter(x => x.phong === currentOrg && x.donVi === currentUnit);
+          } else {
+            people = allData.filter(x => x.thueCoSo === currentOrg && x.donVi === currentUnit);
+          }
+          renderPeople(people, currentOrg);
         }
       }
     });
