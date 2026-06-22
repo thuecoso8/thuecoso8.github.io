@@ -7,7 +7,7 @@
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
-    /* ====== THÊM CSS CHO PHÒNG/CƠ SỞ ====== */
+    /* ====== CSS CHO PHÒNG/CƠ SỞ ====== */
     .org-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -22,7 +22,6 @@
       cursor: pointer;
       transition: all .3s;
       border: 2px solid transparent;
-      position: relative;
       display: flex;
       align-items: center;
       gap: 16px;
@@ -35,7 +34,6 @@
     .org-card .icon {
       width: 48px;
       height: 48px;
-      background: #e8f0fe;
       border-radius: 12px;
       display: flex;
       align-items: center;
@@ -46,19 +44,9 @@
     .org-card .icon.phong-icon { background: #e3f2fd; color: #0d6efd; }
     .org-card .icon.cosu-icon { background: #e8f5e9; color: #2e7d32; }
     
-    .org-card .info {
-      flex: 1;
-    }
-    .org-card .info .name {
-      font-size: 16px;
-      font-weight: 600;
-      color: #1a1a1a;
-    }
-    .org-card .info .count {
-      font-size: 14px;
-      color: #888;
-      margin-top: 2px;
-    }
+    .org-card .info { flex: 1; }
+    .org-card .info .name { font-size: 16px; font-weight: 600; color: #1a1a1a; }
+    .org-card .info .count { font-size: 14px; color: #888; margin-top: 2px; }
     .org-card .info .type-badge {
       display: inline-block;
       font-size: 11px;
@@ -67,25 +55,11 @@
       margin-top: 4px;
       font-weight: 500;
     }
-    .org-card .info .type-badge.phong {
-      background: #e3f2fd;
-      color: #0d6efd;
-    }
-    .org-card .info .type-badge.cosu {
-      background: #e8f5e9;
-      color: #2e7d32;
-    }
-    .org-card .arrow {
-      color: #ccc;
-      font-size: 20px;
-      transition: all .3s;
-    }
-    .org-card:hover .arrow {
-      color: #0d6efd;
-      transform: translateX(4px);
-    }
+    .org-card .info .type-badge.phong { background: #e3f2fd; color: #0d6efd; }
+    .org-card .info .type-badge.cosu { background: #e8f5e9; color: #2e7d32; }
+    .org-card .arrow { color: #ccc; font-size: 20px; transition: all .3s; }
+    .org-card:hover .arrow { color: #0d6efd; transform: translateX(4px); }
 
-    /* ====== SECTION HEADER ====== */
     .section-header {
       display: flex;
       align-items: center;
@@ -94,39 +68,18 @@
       padding-bottom: 8px;
       border-bottom: 2px solid #f0f0f0;
     }
-    .section-header .title {
-      font-size: 18px;
-      font-weight: 600;
-      color: #1a1a1a;
-    }
-    .section-header .title i {
-      margin-right: 10px;
-    }
-    .section-header .count {
-      font-size: 14px;
-      font-weight: 400;
-      color: #888;
-    }
-    .section-header .count i {
-      margin-right: 4px;
-    }
+    .section-header .title { font-size: 18px; font-weight: 600; color: #1a1a1a; }
+    .section-header .title i { margin-right: 10px; }
+    .section-header .count { font-size: 14px; font-weight: 400; color: #888; }
 
-    /* ====== EMPTY STATE ====== */
     .empty-state {
       text-align: center;
       padding: 40px 20px;
       color: #999;
     }
-    .empty-state i {
-      font-size: 48px;
-      margin-bottom: 12px;
-      opacity: 0.5;
-    }
-    .empty-state p {
-      font-size: 16px;
-    }
+    .empty-state i { font-size: 48px; margin-bottom: 12px; opacity: 0.5; }
+    .empty-state p { font-size: 16px; }
 
-    /* ====== BADGE ====== */
     .badge-count {
       background: #0d6efd;
       color: #fff;
@@ -135,6 +88,18 @@
       font-size: 12px;
       margin-left: 8px;
     }
+
+    /* Debug info */
+    .debug-info {
+      background: #fff3cd;
+      border: 1px solid #ffc107;
+      border-radius: 8px;
+      padding: 12px 16px;
+      margin-bottom: 16px;
+      font-size: 13px;
+      color: #856404;
+    }
+    .debug-info strong { color: #d39e00; }
   </style>
 </head>
 <body>
@@ -181,6 +146,7 @@
 
       <div id="birthdayContainer"></div>
       <div id="statsContainer"></div>
+      <div id="debugContainer"></div>
 
       <div id="filtersContainer" style="display:none">
         <div class="filters">
@@ -221,8 +187,8 @@
     let units = [];
     let currentView = 'home';
     let currentUnit = null;
-    let currentOrg = null; // Tên phòng hoặc cơ sở đang chọn
-    let currentOrgType = null; // 'phong' hoặc 'coso'
+    let currentOrg = null;
+    let currentOrgType = null;
     let currentPage = 1;
     const itemsPerPage = 20;
 
@@ -265,11 +231,6 @@
       return allData;
     }
 
-    function getOrgName(org, type) {
-      if (type === 'phong') return org;
-      return org;
-    }
-
     // ====== EXPORT EXCEL ======
     function exportToExcel() {
       const people = getCurrentPeople();
@@ -278,7 +239,7 @@
         return;
       }
 
-      const headers = ['Họ tên', 'Chức vụ', 'Đơn vị', 'Phòng', 'Tổ', 'SĐT', 'Email', 'Ngày sinh'];
+      const headers = ['Họ tên', 'Chức vụ', 'Đơn vị', 'Phòng', 'Tổ', 'SĐT', 'Ngày sinh'];
       const csvContent = [
         headers.join(','),
         ...people.map(x => [
@@ -288,7 +249,6 @@
           `"${x.phong || ''}"`,
           `"${x.toNghiepVu || ''}"`,
           `"${x.soDienThoai || ''}"`,
-          `"${x.email || ''}"`,
           `"${x.ngaySinh || ''}"`
         ].join(','))
       ].join('\n');
@@ -434,6 +394,7 @@
       `;
       document.getElementById('birthdayContainer').innerHTML = '';
       document.getElementById('statsContainer').innerHTML = '';
+      document.getElementById('debugContainer').innerHTML = '';
 
       const container = document.getElementById('mainContent');
       
@@ -500,11 +461,25 @@
       renderBirthdayForUnit(unitName, unitData);
       document.getElementById('statsContainer').innerHTML = renderQuickStats(unitData);
 
+      // Debug: Hiển thị thông tin dữ liệu
+      const phongList = [...new Set(unitData.map(x => x.phong).filter(Boolean))];
+      const coSoList = [...new Set(unitData.map(x => x.thueCoSo).filter(Boolean))];
+      document.getElementById('debugContainer').innerHTML = `
+        <div class="debug-info">
+          <strong>📊 Debug:</strong> 
+          Tổng: ${unitData.length} cán bộ · 
+          Phòng: ${phongList.length} · 
+          Cơ sở: ${coSoList.length}
+          ${phongList.length > 0 ? `· Phòng: ${phongList.join(', ')}` : ''}
+          ${coSoList.length > 0 ? `· Cơ sở: ${coSoList.join(', ')}` : ''}
+        </div>
+      `;
+
       const container = document.getElementById('mainContent');
       
       // Lấy danh sách phòng và cơ sở
-      const phongs = [...new Set(unitData.map(x => x.phong).filter(Boolean))].sort();
-      const coSos = [...new Set(unitData.map(x => x.thueCoSo).filter(Boolean))].sort();
+      const phongs = phongList.sort();
+      const coSos = coSoList.sort();
 
       let html = '';
 
@@ -565,6 +540,9 @@
           <div class="empty-state">
             <i class="fas fa-inbox"></i>
             <p>Chưa có dữ liệu phòng hoặc cơ sở</p>
+            <p style="font-size:13px;color:#ccc;margin-top:8px;">
+              Kiểm tra cột donVi trong Sheet để phân loại phòng
+            </p>
           </div>
         `;
       }
@@ -604,6 +582,7 @@
       
       renderBirthdayForUnit(orgName, people);
       document.getElementById('statsContainer').innerHTML = renderQuickStats(people);
+      document.getElementById('debugContainer').innerHTML = '';
       
       populateFilters(people);
       renderPeople(people, orgName);
@@ -636,7 +615,7 @@
 
       let html = `
         <div class="section-title">
-          <i class="fas fa-users"></i> Danh sách cán bộ
+          <i class="fas fa-users"></i> Danh sách cán bộ - ${title}
           <span class="count">(${filtered.length} người)</span>
           ${filtered.length > itemsPerPage ? `<span class="count">· Trang ${currentPage}/${totalPages}</span>` : ''}
         </div>
@@ -657,7 +636,6 @@
                 <div class="dept"><i class="fas fa-building"></i> ${x.phong || x.thueCoSo || ''}</div>
                 ${x.toNghiepVu ? `<div class="dept"><i class="fas fa-layer-group"></i> Tổ: ${x.toNghiepVu}</div>` : ''}
                 ${x.soDienThoai ? `<a href="tel:${x.soDienThoai}" class="phone"><i class="fas fa-phone"></i> ${x.soDienThoai}</a>` : ''}
-                ${x.email ? `<div class="email"><i class="fas fa-envelope"></i> ${x.email}</div>` : ''}
               </div>
             </div>
           `;
@@ -720,7 +698,6 @@
               <div><i class="fas fa-building"></i> <strong>Phòng:</strong> ${person.phong || ''}</div>
               <div><i class="fas fa-layer-group"></i> <strong>Tổ:</strong> ${person.toNghiepVu || ''}</div>
               <div><i class="fas fa-phone"></i> <strong>SĐT:</strong> ${person.soDienThoai || ''}</div>
-              <div><i class="fas fa-envelope"></i> <strong>Email:</strong> ${person.email || ''}</div>
               <div><i class="fas fa-calendar-alt"></i> <strong>Ngày sinh:</strong> ${person.ngaySinh || ''}</div>
             </div>
             ${person.soDienThoai ? `
@@ -839,6 +816,7 @@
         if (!j.success) throw new Error(j.message || 'Unknown error');
         
         console.log('📊 Dữ liệu từ API:', j);
+        console.log('📋 Mẫu dữ liệu đầu tiên:', j.data ? j.data[0] : 'Không có dữ liệu');
         
         allData = (j.data || []).map(x => ({
           ...x,
@@ -850,8 +828,14 @@
           thueCoSo: x.thueCoSo || '',
           toNghiepVu: x.toNghiepVu || '',
           ngaySinh: x.ngaySinh || '',
-          avatar: x.avatar || ''
+          avatar: x.avatar || '',
+          donVi: x.donVi || 'Khác'
         }));
+
+        // Debug: In ra danh sách phòng
+        const phongs = [...new Set(allData.map(x => x.phong).filter(Boolean))];
+        console.log('🏢 Danh sách phòng:', phongs);
+        console.log('🏢 Số phòng:', phongs.length);
 
         units = buildUnits();
 
@@ -861,6 +845,7 @@
         showToast(`Đã tải ${allData.length} cán bộ từ ${units.length} đơn vị`, 'success');
       })
       .catch(err => {
+        console.error('❌ Lỗi:', err);
         document.getElementById('loading').style.display = 'none';
         const errorEl = document.getElementById('error');
         errorEl.style.display = 'block';
