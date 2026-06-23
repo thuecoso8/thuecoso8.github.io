@@ -203,7 +203,21 @@
       // Nếu là đối tượng Date hoặc chuỗi ngày tháng
       try {
         const date = new Date(dateStr);
-        if (isNaN(date.getTime())) return dateStr;
+        if (isNaN(date.getTime())) {
+          // Nếu không parse được, thử xử lý chuỗi "Thu Sep 13 1973 00:00:00 GMT+0700"
+          const match = dateStr.match(/(\w+)\s+(\w+)\s+(\d+)\s+(\d+)/);
+          if (match) {
+            const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+            const monthIndex = monthNames.indexOf(match[2]);
+            if (monthIndex !== -1) {
+              const day = String(parseInt(match[3])).padStart(2, '0');
+              const month = String(monthIndex + 1).padStart(2, '0');
+              const year = match[4];
+              return `${day}/${month}/${year}`;
+            }
+          }
+          return dateStr;
+        }
         
         const day = String(date.getDate()).padStart(2, '0');
         const month = String(date.getMonth() + 1).padStart(2, '0');
@@ -226,13 +240,25 @@
         }
       }
       
-      // Nếu là đối tượng Date
+      // Nếu là đối tượng Date hoặc chuỗi ngày tháng
       try {
         const date = new Date(dateStr);
         if (!isNaN(date.getTime())) {
           return { d: date.getDate(), m: date.getMonth() + 1, y: date.getFullYear() };
         }
       } catch (e) {}
+      
+      // Thử parse chuỗi "Thu Sep 13 1973 00:00:00 GMT+0700"
+      if (typeof dateStr === 'string') {
+        const match = dateStr.match(/(\w+)\s+(\w+)\s+(\d+)\s+(\d+)/);
+        if (match) {
+          const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+          const monthIndex = monthNames.indexOf(match[2]);
+          if (monthIndex !== -1) {
+            return { d: parseInt(match[3]), m: monthIndex + 1, y: parseInt(match[4]) };
+          }
+        }
+      }
       
       return null;
     }
